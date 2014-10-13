@@ -1,0 +1,3 @@
+# Magnet loturak: zerbitzariak
+
+Osatzeko
