@@ -18,6 +18,11 @@
        (json-erantzuna [{:id 1 :titulua "bilduma bat"}
                         {:id 2 :titulua "adibide bat"}
                         {:id 3 :titulua "besterik ez"}]))
+  ; zerbait itzuli
+  (GET "/v1/saioak/:token" []
+       (json-erantzuna {:erabiltzailea "erab1"
+                        :saio_hasiera "oraindik ez"
+                        :iraungitze_data "oraindik ez"}))
 
   (route/resources "/")
   (route/not-found "Not Found"))
