@@ -17,5 +17,5 @@
 (fact "proba2"
       (:id {:id 1 :titulua "tit"}) => 1)
 (fact "benetako deia"
-      (let [eran (json/parse-string (:body (http/get (str aurrizkia "saioak/token_bat"))))]
-        (eran "erabiltzailea") => "erab1"))
+      (let [eran (:body (http/get (str aurrizkia "saioak/token_bat") {:as :json}))]
+        (:erabiltzailea eran) => "erab1"))
