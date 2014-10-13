@@ -4,7 +4,8 @@
             [compojure.route :as route]
             [ring.middleware.cors :refer [wrap-cors]]
             [clojure.java.jdbc :as sql]
-            [clj-json.core :as json]))
+            [clj-json.core :as json]
+            [magnet.konfig :as konfig]))
 
 (defn json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
@@ -18,11 +19,14 @@
        (json-erantzuna [{:id 1 :titulua "bilduma bat"}
                         {:id 2 :titulua "adibide bat"}
                         {:id 3 :titulua "besterik ez"}]))
-  ; zerbait itzuli
-  (GET "/v1/saioak/:token" []
-       (json-erantzuna {:erabiltzailea "erab1"
-                        :saio_hasiera "oraindik ez"
-                        :iraungitze_data "oraindik ez"}))
+
+  (GET "/v1/erabiltzaileak" []
+       (json-erantzuna
+        (let [era (sql/with-connection konfig/db-con
+                    (sql/with-query-results res
+                      ["select erabiltzailea, pasahitza, izena, deskribapena, sortze_data from erabiltzaileak"]
+                      (doall res)))]
+          (if era era []))))
 
   (route/resources "/")
   (route/not-found "Not Found"))
