@@ -3,5 +3,22 @@
             [magnet.handler :refer [app]])
   (:gen-class))
 
+(defonce zerbitzaria (atom nil))
+
+(defn zer-hasi
+  "Zerbitzaria abiarazi"
+  [portua]
+  (when-not @zerbitzaria
+    (println "Zerbitzaria" portua " portuan abiarazten")
+    (swap! zerbitzaria (fn [_] (run-jetty #'app {:port portua :join? false})))))
+
+(defn zer-geratu
+  "Zerbitzaria geratu"
+  []
+  (when @zerbitzaria
+    (println "Zerbitzaria geratzen")
+    (.stop @zerbitzaria)
+    (swap! zerbitzaria (fn [_] nil))))
+
 (defn -main [& [port]]
-  (run-jetty #'app {:port (if port (Integer/parseInt port) 8080)}))
+  (zer-hasi (if port (Integer/parseInt port) 8080)))
