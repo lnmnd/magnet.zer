@@ -1,6 +1,6 @@
 # Magnet loturak: zerbitzariak
 
-Osatzeko
+[![Build Status](https://travis-ci.org/lnmnd/magnet.zer.svg?branch=master)](https://travis-ci.org/lnmnd/magnet.zer)
 
 ## Zerbitzaria martxa jarri
 
