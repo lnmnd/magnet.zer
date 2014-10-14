@@ -17,7 +17,11 @@ http://localhost:3000 helbidean egongo da.
 
 ## Probak
 
-Probak exekutatzeko:
+REPL barnetik:
+> => (use 'midje.repl)
+> => (autotest)
+
+Komando lerrotik:
 > $ lein midje
 	    
 Fitxategiak aldatu ahala probak exekutatzeko:
