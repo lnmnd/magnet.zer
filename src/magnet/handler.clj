@@ -25,11 +25,6 @@
   pas)
 
 (defroutes app-routes
-  (GET "/" []
-       (json-erantzuna [{:id 1 :titulua "bilduma bat"}
-                        {:id 2 :titulua "adibide bat"}
-                        {:id 3 :titulua "besterik ez"}]))
-
   (GET "/v1/erabiltzaileak" []
        (json-erantzuna
         (let [era (sql/with-connection konfig/db-con
