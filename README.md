@@ -4,7 +4,13 @@ Osatzeko
 
 ## Zerbitzaria martxa jarri
 
-Garapen moduan:
+REPL bidez:
+> => (magnet.handler.main/zer-hasi 3000)
+
+Geratzeko:
+> => (magnet.handler.main/zer-geratu)
+
+Komando lerrotik:
 > $ lein ring server-headless
 
 http://localhost:3000 helbidean egongo da.
