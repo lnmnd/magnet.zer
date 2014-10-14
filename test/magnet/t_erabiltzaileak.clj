@@ -19,4 +19,7 @@
 
 (fact "Hutsa"
       (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
-       eran => []))
+       eran => {:desplazamendua 0
+                :muga 0
+                :guztira 0
+                :erabiltzaileak []}))

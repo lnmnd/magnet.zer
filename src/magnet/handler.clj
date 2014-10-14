@@ -26,7 +26,12 @@
                     (sql/with-query-results res
                       ["select erabiltzailea, pasahitza, izena, deskribapena, sortze_data from erabiltzaileak"]
                       (doall res)))]
-          (if era era []))))
+          (if (empty? era)
+            {:desplazamendua 0
+             :muga 0
+             :guztira 0
+             :erabiltzaileak []}
+            "TODO"))))
 
   (route/resources "/")
   (route/not-found "Not Found"))
