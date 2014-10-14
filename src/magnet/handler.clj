@@ -14,6 +14,16 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string datuak)})
 
+(defn baliozko-erabiltzailea
+  "true baliozkoa bada. TODO oraingoz ezer ez"
+  [erabiltzailea]
+  true)
+
+(defn pasahitz-hash
+  "Pasahitzaren hash-a lortzen du. TODO oraingoz ezer ez"
+  [pas]
+  pas)
+
 (defroutes app-routes
   (GET "/" []
        (json-erantzuna [{:id 1 :titulua "bilduma bat"}
@@ -26,12 +36,20 @@
                     (sql/with-query-results res
                       ["select erabiltzailea, pasahitza, izena, deskribapena, sortze_data from erabiltzaileak"]
                       (doall res)))]
-          (if (empty? era)
+          (if era era
             {:desplazamendua 0
              :muga 0
              :guztira 0
-             :erabiltzaileak []}
-            "TODO"))))
+             :erabiltzaileak []}))))
+  (POST "/v1/erabiltzaileak" eskaera
+        (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
+          (if (baliozko-erabiltzailea edukia)
+            (do (sql/with-connection konfig/db-con
+                  (sql/insert-values :erabiltzaileak
+                                     [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
+                                     [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) "TODO zehazteke"]))
+                (json-erantzuna {}))
+            (json-erantzuna {} 400))))
 
   (route/resources "/")
   (route/not-found "Not Found"))
