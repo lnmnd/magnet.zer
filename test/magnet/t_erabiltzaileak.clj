@@ -5,14 +5,19 @@
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
+(def db-con-test {:classname "org.h2.Driver"
+                  :subprotocol "h2"
+                  :subname "jdbc:h2:magnet_test"})
+
 ; Proba guztietarako testuingurua ezartzeko
-(background (before :facts
-                    (do (def aurrizkia "http://localhost:3000/v1/")
-                        (zer-hasi 3000)
-                        (db-hasieratu))
-                    :after
-                    (do (zer-geratu)
-                        (db-garbitu))))
+(with-redefs [magnet.konfig/db-con db-con-test]
+  (background (before :facts
+                      (do (def aurrizkia "http://localhost:3000/v1/")
+                          (zer-hasi 3000)
+                          (db-hasieratu))
+                      :after
+                      (do (zer-geratu)
+                          (db-garbitu)))))
 
 (fact "Hutsa"
       (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
