@@ -2,15 +2,16 @@
   (:use midje.sweet)
   (:require [clj-http.client :as http]
             [clj-json.core :as json]
-            ;[magnet.handler.main :refer [zer-hasi zer-geratu]]
+            [magnet.handler.main :refer [zer-hasi zer-geratu]]
             [magnet.lagun :refer [db-hasieratu]]))
 
 ; Proba guztietarako testuingurua ezartzeko
-;(background (before :contents (zer-hasi 3000)))
-;(background (after :contents (zer-geratu)))
 (background (before :facts
                     (do (def aurrizkia "http://localhost:3000/v1/")
-                        (db-hasieratu))))
+                        (zer-hasi 3000)
+                        (db-hasieratu))
+                    :after
+                    (zer-geratu)))
 
 (fact "Hutsa"
       (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
