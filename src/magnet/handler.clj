@@ -48,7 +48,11 @@
                   (sql/insert-values :erabiltzaileak
                                      [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
                                      [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) "TODO zehazteke"]))
-                (json-erantzuna {}))
+                (json-erantzuna {:erabiltzailea
+                                 (first (sql/with-connection konfig/db-con
+                                          (sql/with-query-results res
+                                            ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]
+                                            (doall res))))}))
             (json-erantzuna {} 400))))
 
   (route/resources "/")

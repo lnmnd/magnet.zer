@@ -21,18 +21,20 @@
                 :erabiltzaileak []}))
 
 (fact "Erabiltzaile bat gehitu"
-      (let [eran (http/post (str aurrizkia "erabiltzaileak")
-                            {:content-type :json
-                             :accept :json
-                             :body (json/generate-string {:erabiltzailea "era1"
-                                                          :pasahitza "1234"
-                                                          :izena "Era"
-                                                          :deskribapena "Erabiltzaile bat naiz"})})]
+      (let [eran (json/parse-string
+                  (:body (http/post (str aurrizkia "erabiltzaileak")
+                                    {:content-type :json
+                                     :accept :json
+                                     :body (json/generate-string {:erabiltzailea "era1"
+                                                                  :pasahitza "1234"
+                                                                  :izena "Era"
+                                                                  :deskribapena "Erabiltzaile bat naiz"})}))
+                  true)]
         (let [erab (:erabiltzailea eran)]
           (:erabiltzailea erab) => "era1"
           (:izena erab) => "Era"
           (:deskribapena erab) => "Erabiltzaile bat naiz"))
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+      #_(let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
         (:guztira eran) => 1
         (let [era1 (first (:erabiltzaileak eran))]
           (:erabiltzailea era1) => "era1"
