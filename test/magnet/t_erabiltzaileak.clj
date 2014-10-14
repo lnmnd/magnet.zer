@@ -45,6 +45,11 @@
         (let [era1 (first (:erabiltzaileak eran))]
           (:erabiltzailea era1) => "era1"
           (:izena era1) => "Era"
+          (:deskribapena era1) => "Erabiltzaile bat naiz"))
+      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak/era1") {:as :json}))]
+        (let [era1 (:erabiltzailea eran)]
+          (:erabiltzailea era1) => "era1"
+          (:izena era1) => "Era"
           (:deskribapena era1) => "Erabiltzaile bat naiz")))
 
 (fact "Erabiltzaile batzuk"
@@ -70,4 +75,9 @@
                                                :izena "Era hiru"
                                                :deskribapena "Eta beste bat"})})
       (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
-        (:guztira eran) => 3))
+        (:guztira eran) => 3)
+      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak/era2") {:as :json}))]
+        (let [era2 (:erabiltzailea eran)]
+          (:erabiltzailea era2) => "era2"
+          (:izena era2) => "Era bi"
+          (:deskribapena era2) => "Beste erabiltzaile bat naiz")))

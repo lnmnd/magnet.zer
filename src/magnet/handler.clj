@@ -44,6 +44,12 @@
              :muga 0
              :guztira 0
              :erabiltzaileak []}))))
+  (GET "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
+       (json-erantzuna {:erabiltzailea
+                        (first (sql/with-connection konfig/db-con
+                                 (sql/with-query-results res
+                                   ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]
+                                   (doall res))))}))
   (POST "/v1/erabiltzaileak" eskaera
         (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
           (if (baliozko-erabiltzailea edukia)
