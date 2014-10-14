@@ -3,7 +3,7 @@
   (:require [clj-http.client :as http]
             [clj-json.core :as json]
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
-            [magnet.lagun :refer [db-hasieratu]]))
+            [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
@@ -11,7 +11,8 @@
                         (zer-hasi 3000)
                         (db-hasieratu))
                     :after
-                    (zer-geratu)))
+                    (do (zer-geratu)
+                        (db-garbitu))))
 
 (fact "Hutsa"
       (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
