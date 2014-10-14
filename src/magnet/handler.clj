@@ -36,7 +36,15 @@
                     (sql/with-query-results res
                       ["select erabiltzailea, pasahitza, izena, deskribapena, sortze_data from erabiltzaileak"]
                       (doall res)))]
-          (if era era
+          (if era
+            (let [erabiltzaileak (sql/with-connection konfig/db-con
+                                   (sql/with-query-results res
+                                     ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"]
+                                     (doall res)))]
+              {:desplazamendua 0
+               :muga 0
+               :guztira (count erabiltzaileak)
+               :erabiltzaileak erabiltzaileak})
             {:desplazamendua 0
              :muga 0
              :guztira 0

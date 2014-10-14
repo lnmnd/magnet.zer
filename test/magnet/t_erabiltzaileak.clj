@@ -34,7 +34,7 @@
           (:erabiltzailea erab) => "era1"
           (:izena erab) => "Era"
           (:deskribapena erab) => "Erabiltzaile bat naiz"))
-      #_(let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
         (:guztira eran) => 1
         (let [era1 (first (:erabiltzaileak eran))]
           (:erabiltzailea era1) => "era1"
