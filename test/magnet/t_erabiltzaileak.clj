@@ -46,3 +46,28 @@
           (:erabiltzailea era1) => "era1"
           (:izena era1) => "Era"
           (:deskribapena era1) => "Erabiltzaile bat naiz")))
+
+(fact "Erabiltzaile batzuk"
+      (http/post (str aurrizkia "erabiltzaileak")
+                 {:content-type :json
+                  :accept :json
+                  :body (json/generate-string {:erabiltzailea "era1"
+                                               :pasahitza "1234"
+                                               :izena "Era"
+                                               :deskribapena "Erabiltzaile bat naiz"})})
+      (http/post (str aurrizkia "erabiltzaileak")
+                 {:content-type :json
+                  :accept :json
+                  :body (json/generate-string {:erabiltzailea "era2"
+                                               :pasahitza "4321"
+                                               :izena "Era bi"
+                                               :deskribapena "Beste erabiltzaile bat naiz"})})
+      (http/post (str aurrizkia "erabiltzaileak")
+                 {:content-type :json
+                  :accept :json
+                  :body (json/generate-string {:erabiltzailea "era3"
+                                               :pasahitza "333"
+                                               :izena "Era hiru"
+                                               :deskribapena "Eta beste bat"})})
+      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+        (:guztira eran) => 3))
