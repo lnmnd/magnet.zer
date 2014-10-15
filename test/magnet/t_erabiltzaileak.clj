@@ -19,8 +19,13 @@
                       (do (zer-geratu)
                           (db-garbitu)))))
 
+(defmacro get-json
+  "Helbide batetik json edukia lortzeko modu laburragoa"
+  [helbidea]
+  `(:body (http/get (str aurrizkia ~helbidea) {:as :json})))
+
 (fact "Hutsa"
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
                 :muga 0
                 :guztira 0
@@ -40,13 +45,13 @@
           (:erabiltzailea erab) => "era1"
           (:izena erab) => "Era"
           (:deskribapena erab) => "Erabiltzaile bat naiz"))
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak")]
         (:guztira eran) => 1
         (let [era1 (first (:erabiltzaileak eran))]
           (:erabiltzailea era1) => "era1"
           (:izena era1) => "Era"
           (:deskribapena era1) => "Erabiltzaile bat naiz"))
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak/era1") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak/era1")]
         (let [era1 (:erabiltzailea eran)]
           (:erabiltzailea era1) => "era1"
           (:izena era1) => "Era"
@@ -74,9 +79,9 @@
                                                :pasahitza "333"
                                                :izena "Era hiru"
                                                :deskribapena "Eta beste bat"})})
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak")]
         (:guztira eran) => 3)
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak/era2") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak/era2")]
         (let [era2 (:erabiltzailea eran)]
           (:erabiltzailea era2) => "era2"
           (:izena era2) => "Era bi"
@@ -96,7 +101,7 @@
                  :body (json/generate-string {:pasahitza "1111"
                                               :izena "Era berria"
                                               :deskribapena "Aldatutako erabiltzaile bat naiz"})})
-      (let [eran (:body (http/get (str aurrizkia "erabiltzaileak/era1") {:as :json}))]
+      (let [eran (get-json "erabiltzaileak/era1")]
         (let [era1 (:erabiltzailea eran)]
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
