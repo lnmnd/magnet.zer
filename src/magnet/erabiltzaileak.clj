@@ -3,9 +3,10 @@
             [magnet.konfig :as konfig]))
 
 (defn baliozko-erabiltzailea
-  "true baliozkoa bada. TODO oraingoz ezer ez"
   [erabiltzailea]
-  true)
+  (and (and (contains? erabiltzailea :erabiltzailea) (string? (:erabiltzailea erabiltzailea)))
+       (and (contains? erabiltzailea :pasahitza) (string? (:pasahitza erabiltzailea)))
+       (and (contains? erabiltzailea :izena) (string? (:izena erabiltzailea)))))
 
 (defn pasahitz-hash
   "Pasahitzaren hash-a lortzen du. TODO oraingoz ezer ez"

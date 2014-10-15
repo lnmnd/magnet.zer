@@ -33,6 +33,36 @@
       (let [eran (http/get (str aurrizkia "erabiltzaileak/ezdago") {:throw-exceptions false})]
         (:status eran) => 404))
 
+(fact "Erabiltzaile okerra"
+      ; post-ek salbuespena altxatzen du
+      (try
+        (do (http/post (str aurrizkia "erabiltzaileak")
+                       {:content-type :json
+                        :accept :json
+                        :body (json/generate-string {:pasahitza "1234"
+                                                     :izena "Era"})}
+                       {:throw-exceptions false})
+            false => true)
+        (catch Exception e nil))
+      (try
+        (do (http/post (str aurrizkia "erabiltzaileak")
+                       {:content-type :json
+                        :accept :json
+                        :body (json/generate-string {:erabiltzailea "era1"
+                                                     :izena "Era"})}
+                       {:throw-exceptions false})
+            false => true)
+        (catch Exception e nil))
+      (try
+        (do (http/post (str aurrizkia "erabiltzaileak")
+                       {:content-type :json
+                        :accept :json
+                        :body (json/generate-string {:erabiltzailea "era"
+                                                     :pasahitza "1234"})}
+                       {:throw-exceptions false})
+            false => true)
+        (catch Exception e nil)))
+
 (fact "Erabiltzaile bat gehitu"
       (let [eran (json/parse-string
                   (:body (http/post (str aurrizkia "erabiltzaileak")
