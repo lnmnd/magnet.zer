@@ -9,6 +9,7 @@
                  [clj-json "0.3.2"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [com.h2database/h2 "1.3.170"]
+                 [clj-time "0.8.0"]
                  [clj-http "1.0.0"]]
   :plugins [[lein-midje "3.1.3"]
             [lein-ring "0.8.11"]]

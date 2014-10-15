@@ -11,7 +11,6 @@
                       [:pasahitza "varchar(255)"]
                       [:izena "varchar(255)"]
                       [:deskribapena "varchar(255)"]
-                      ; TODO formatu egokia
                       [:sortze_data "varchar(255)"])))
 
 (defn db-garbitu []

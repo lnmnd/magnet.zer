@@ -1,5 +1,7 @@
 (ns magnet.erabiltzaileak
   (:require [clojure.java.jdbc :as sql]
+            [clj-time.core :as time]
+            [clj-time.format :as time-format]
             [magnet.konfig :as konfig]))
 
 (defn baliozko-erabiltzailea
@@ -12,6 +14,13 @@
   "Pasahitzaren hash-a lortzen du. TODO oraingoz ezer ez"
   [pas]
   pas)
+
+(defn oraingo-data
+  "Oraingo data itzultzen du yyyy-MM-dd formatuarekin"
+  []
+  (let [formatua (time-format/formatter "yyyy-MM-dd")
+        orain (time/now)]
+    (time-format/unparse formatua orain)))
 
 (defn lortu-bilduma []
   (let [era (sql/with-connection konfig/db-con
@@ -50,7 +59,7 @@
     (do (sql/with-connection konfig/db-con
           (sql/insert-values :erabiltzaileak
                              [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-                             [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) "TODO zehazteke"]))
+                             [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)]))
         [{:erabiltzailea
           (first (sql/with-connection konfig/db-con
                    (sql/with-query-results res
