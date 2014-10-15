@@ -34,12 +34,15 @@
        200])))
 
 (defn lortu [erabiltzailea]
-  [{:erabiltzailea
-    (first (sql/with-connection konfig/db-con
-             (sql/with-query-results res
-               ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]
-               (doall res))))}
-   200])
+  (let [eran (sql/with-connection konfig/db-con
+               (sql/with-query-results res
+                 ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]
+                 (doall res)))]
+    (if eran
+      [{:erabiltzailea
+        (first eran)}
+       200]
+      [{} 404])))
 
 (defn sortu [edukia]
   (if (baliozko-erabiltzailea edukia)

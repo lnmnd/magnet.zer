@@ -29,7 +29,9 @@
        eran => {:desplazamendua 0
                 :muga 0
                 :guztira 0
-                :erabiltzaileak []}))
+                :erabiltzaileak []})
+      (let [eran (http/get (str aurrizkia "erabiltzaileak/ezdago") {:throw-exceptions false})]
+        (:status eran) => 404))
 
 (fact "Erabiltzaile bat gehitu"
       (let [eran (json/parse-string
