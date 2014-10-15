@@ -12,8 +12,8 @@
 ; Proba guztietarako testuingurua ezartzeko
 (with-redefs [magnet.konfig/db-con db-con-test]
   (background (before :facts
-                      (do (def aurrizkia "http://localhost:3000/v1/")
-                          (zer-hasi 3000)
+                      (do (def aurrizkia "http://localhost:3001/v1/")
+                          (zer-hasi 3001)
                           (db-hasieratu))
                       :after
                       (do (zer-geratu)
