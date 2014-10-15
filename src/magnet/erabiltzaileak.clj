@@ -59,7 +59,7 @@
     [{} 400]))
 
 (defn aldatu [erabiltzailea edukia]
-  (if (baliozko-erabiltzailea edukia) ; erabiltzailea edukiari gehitu?
+  (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
     (do (sql/with-connection konfig/db-con
           (sql/update-values :erabiltzaileak
                              ["erabiltzailea=?" erabiltzailea]
