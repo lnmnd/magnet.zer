@@ -74,3 +74,14 @@
                      (doall res))))}
          200])
     [{} 400]))
+
+(defn ezabatu [erabiltzailea]
+  (let [badago (< 0 (count (sql/with-connection konfig/db-con
+                             (sql/with-query-results res
+                               ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]
+                               (doall res)))))]
+    (if badago
+      (do (sql/with-connection konfig/db-con
+            (sql/delete-rows :erabiltzaileak ["erabiltzailea=?" erabiltzailea]))
+          [{} 200])
+      [{} 404])))

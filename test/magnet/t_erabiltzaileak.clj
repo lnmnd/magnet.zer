@@ -137,3 +137,22 @@
         (let [era1 (:erabiltzailea eran)]
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
+
+(fact "Ez dagoen erabiltzailea ezabatzen saiatu"
+      (try
+        (do
+          (http/delete (str aurrizkia "erabiltzaileak/era1"))
+          false => true)
+        (catch Exception _ nil)))
+
+(fact "Erabiltzaile bat ezabatu"
+      (http/post (str aurrizkia "erabiltzaileak")
+                 {:content-type :json
+                  :accept :json
+                  :body (json/generate-string {:erabiltzailea "era1"
+                                               :pasahitza "1234"
+                                               :izena "Era"
+                                               :deskribapena "Erabiltzaile bat naiz"})})
+      (http/delete (str aurrizkia "erabiltzaileak/era1"))
+      (let [eran (http/get (str aurrizkia "erabiltzaileak/era1") {:throw-exceptions false})]
+        (:status eran) => 404))

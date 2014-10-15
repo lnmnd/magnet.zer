@@ -30,6 +30,9 @@
               edukia (json/parse-string (slurp (:body eskaera)) true)
               [datuak egoera] (erak/aldatu erabiltzailea edukia)]
           (json-erantzuna datuak egoera)))
+  (DELETE "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
+        (let [[datuak egoera] (erak/ezabatu erabiltzailea)]
+          (json-erantzuna datuak egoera)))  
   (route/resources "/")
   (route/not-found "Not Found"))
 
