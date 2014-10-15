@@ -12,7 +12,6 @@
                  [clj-http "1.0.0"]]
   :plugins [[lein-midje "3.1.3"]
             [lein-ring "0.8.11"]]
-  :aot :all
   :ring {:handler magnet.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
