@@ -63,7 +63,23 @@
                                             ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]
                                             (doall res))))}))
             (json-erantzuna {} 400))))
-
+  (PUT "/v1/erabiltzaileak/:erabiltzailea" eskaera
+       (let [erabiltzailea (:erabiltzailea (:params eskaera))
+             edukia (json/parse-string (slurp (:body eskaera)) true)]
+         (if (baliozko-erabiltzailea edukia)
+           (do (sql/with-connection konfig/db-con
+                 (sql/update-values :erabiltzaileak
+                                    ["erabiltzailea=?" erabiltzailea]
+                                    {:pasahitza (pasahitz-hash (:pasahitza edukia))
+                                     :izena (:izena edukia)
+                                     :deskribapena (:deskribapena edukia)
+                                     :sortze_data "TODO zehazteke"}))
+               (json-erantzuna {:erabiltzailea
+                                (first (sql/with-connection konfig/db-con
+                                         (sql/with-query-results res
+                                           ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]
+                                           (doall res))))}))
+           (json-erantzuna {} 400))))
   (route/resources "/")
   (route/not-found "Not Found"))
 
