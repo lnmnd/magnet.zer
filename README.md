@@ -19,6 +19,11 @@ http://localhost:3000 helbidean egongo da.
 
 REPL barnetik:
 > => (use 'midje.repl)
+
+Proba denak exekutatu:
+> => (load-facts)
+
+Fitxategiak aldatu ahala probak exekutatzeko:
 > => (autotest)
 
 Komando lerrotik:
