@@ -23,15 +23,15 @@
          (json-erantzuna datuak egoera)))
   (POST "/v1/erabiltzaileak" eskaera
         (let [edukia (json/parse-string (slurp (:body eskaera)) true)
-              [datuak egoera] (erak/sortu edukia)]
+              [datuak egoera] (erak/sortu! edukia)]
           (json-erantzuna datuak egoera)))
   (PUT "/v1/erabiltzaileak/:erabiltzailea" eskaera
         (let [erabiltzailea (:erabiltzailea (:params eskaera))
               edukia (json/parse-string (slurp (:body eskaera)) true)
-              [datuak egoera] (erak/aldatu erabiltzailea edukia)]
+              [datuak egoera] (erak/aldatu! erabiltzailea edukia)]
           (json-erantzuna datuak egoera)))
   (DELETE "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-        (let [[datuak egoera] (erak/ezabatu erabiltzailea)]
+        (let [[datuak egoera] (erak/ezabatu! erabiltzailea)]
           (json-erantzuna datuak egoera)))  
   (route/resources "/")
   (route/not-found "Not Found"))

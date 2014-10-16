@@ -48,7 +48,7 @@
         (first eran)}
        200])))
 
-(defn sortu [edukia]
+(defn sortu! [edukia]
   (if (baliozko-erabiltzailea edukia)
     (do (sql/with-connection konfig/db-con
           (sql/insert-values :erabiltzaileak
@@ -59,7 +59,7 @@
          200])
     [{} 400]))
 
-(defn aldatu [erabiltzailea edukia]
+(defn aldatu! [erabiltzailea edukia]
   (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
     (do (sql/with-connection konfig/db-con
           (sql/update-values :erabiltzaileak
@@ -72,7 +72,7 @@
          200])
     [{} 400]))
 
-(defn ezabatu [erabiltzailea]
+(defn ezabatu! [erabiltzailea]
   (let [badago (< 0 (count (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
     (if badago
       (do (sql/with-connection konfig/db-con
