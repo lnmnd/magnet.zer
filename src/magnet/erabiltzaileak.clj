@@ -24,20 +24,16 @@
     (time-format/unparse formatua orain)))
 
 (defn lortu-bilduma []
-  (let [era (sql/with-connection konfig/db-con
-              (sql/with-query-results res
-                ["select erabiltzailea, pasahitza, izena, deskribapena, sortze_data from erabiltzaileak"]
-                (doall res)))]
-    (if era
-      (let [erabiltzaileak (sql/with-connection konfig/db-con
-                             (sql/with-query-results res
-                               ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"]
-                               (doall res)))]
-        [{:desplazamendua 0
-          :muga 0
-          :guztira (count erabiltzaileak)
-          :erabiltzaileak erabiltzaileak}
-         200])
+  (let [erabiltzaileak (sql/with-connection konfig/db-con
+                         (sql/with-query-results res
+                           ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"]
+                           (doall res)))]
+    (if erabiltzaileak
+      [{:desplazamendua 0
+        :muga 0
+        :guztira (count erabiltzaileak)
+        :erabiltzaileak erabiltzaileak}
+       200]      
       [{:desplazamendua 0
         :muga 0
         :guztira 0
