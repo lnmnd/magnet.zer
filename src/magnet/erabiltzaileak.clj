@@ -2,6 +2,7 @@
   (:require [clojure.java.jdbc :as sql]
             [clj-time.core :as time]
             [clj-time.format :as time-format]
+            [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.konfig :as konfig]))
 
 (defn baliozko-erabiltzailea
@@ -11,9 +12,9 @@
        (and (contains? erabiltzailea :izena) (string? (:izena erabiltzailea)))))
 
 (defn pasahitz-hash
-  "Pasahitzaren hash-a lortzen du. TODO oraingoz ezer ez"
-  [pas]
-  pas)
+  "Pasahitzaren hash sortzen du bcrypt bidez"
+  [pasahitza]
+  (encrypt (gensalt 10) pasahitza))
 
 (defn oraingo-data
   "Oraingo data itzultzen du yyyy-MM-dd formatuarekin"
