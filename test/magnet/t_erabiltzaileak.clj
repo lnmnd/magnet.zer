@@ -38,19 +38,19 @@
       ; post-ek salbuespena altxatzen du
       (try
         (do (post-deia "erabiltzaileak" {:pasahitza "1234"
-                                         :izena "Era"})
-            false => true)
-        (catch Exception e nil))
+                                         :izena "Era"}))
+        (catch Exception e
+          (.getMessage e) => #"400"))
       (try
         (do (post-deia "erabiltzaileak" {:erabiltzailea "era1"
-                                         :izena "Era"})
-            false => true)
-        (catch Exception e nil))
+                                         :izena "Era"}))
+        (catch Exception e
+          (.getMessage e) => #"400"))
       (try
         (do (post-deia "erabiltzaileak" {:erabiltzailea "era"
-                                         :pasahitza "1234"})
-            false => true)
-        (catch Exception e nil)))
+                                         :pasahitza "1234"}))
+        (catch Exception e
+          (.getMessage e) => #"400")))
 
 (fact "Erabiltzaile bat gehitu"
       (let [eran (json/parse-string
@@ -122,9 +122,9 @@
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu"
       (try
         (do
-          (http/delete (str aurrizkia "erabiltzaileak/era1"))
-          false => true)
-        (catch Exception _ nil)))
+          (http/delete (str aurrizkia "erabiltzaileak/era1")))
+        (catch Exception e
+               (.getMessage e) => #"404")))
 
 ; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu"
