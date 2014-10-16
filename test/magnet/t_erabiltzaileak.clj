@@ -24,6 +24,12 @@
   [helbidea]
   `(:body (http/get (str aurrizkia ~helbidea) {:as :json})))
 
+(defmacro post-deia
+  [helbidea edukia]
+  `(http/post (str aurrizkia ~helbidea)
+              {:content-type :json
+               :body (json/generate-string ~edukia)}))
+
 (fact "Hutsa"
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
@@ -36,42 +42,28 @@
 (fact "Erabiltzaile okerra"
       ; post-ek salbuespena altxatzen du
       (try
-        (do (http/post (str aurrizkia "erabiltzaileak")
-                       {:content-type :json
-                        :accept :json
-                        :body (json/generate-string {:pasahitza "1234"
-                                                     :izena "Era"})}
-                       {:throw-exceptions false})
+        (do (post-deia "erabiltzaileak" {:pasahitza "1234"
+                                         :izena "Era"})
             false => true)
         (catch Exception e nil))
       (try
-        (do (http/post (str aurrizkia "erabiltzaileak")
-                       {:content-type :json
-                        :accept :json
-                        :body (json/generate-string {:erabiltzailea "era1"
-                                                     :izena "Era"})}
-                       {:throw-exceptions false})
+        (do (post-deia "erabiltzaileak" {:erabiltzailea "era1"
+                                         :izena "Era"})
             false => true)
         (catch Exception e nil))
       (try
-        (do (http/post (str aurrizkia "erabiltzaileak")
-                       {:content-type :json
-                        :accept :json
-                        :body (json/generate-string {:erabiltzailea "era"
-                                                     :pasahitza "1234"})}
-                       {:throw-exceptions false})
+        (do (post-deia "erabiltzaileak" {:erabiltzailea "era"
+                                         :pasahitza "1234"})
             false => true)
         (catch Exception e nil)))
 
 (fact "Erabiltzaile bat gehitu"
       (let [eran (json/parse-string
-                  (:body (http/post (str aurrizkia "erabiltzaileak")
-                                    {:content-type :json
-                                     :accept :json
-                                     :body (json/generate-string {:erabiltzailea "era1"
-                                                                  :pasahitza "1234"
-                                                                  :izena "Era"
-                                                                  :deskribapena "Erabiltzaile bat naiz"})}))
+                  (:body (post-deia "erabiltzaileak"
+                                    {:erabiltzailea "era1"
+                                     :pasahitza "1234"
+                                     :izena "Era"
+                                     :deskribapena "Erabiltzaile bat naiz"}))
                   true)]
         (let [erab (:erabiltzailea eran)]
           (:erabiltzailea erab) => "era1"
@@ -90,27 +82,21 @@
           (:deskribapena era1) => "Erabiltzaile bat naiz")))
 
 (fact "Erabiltzaile batzuk"
-      (http/post (str aurrizkia "erabiltzaileak")
-                 {:content-type :json
-                  :accept :json
-                  :body (json/generate-string {:erabiltzailea "era1"
-                                               :pasahitza "1234"
-                                               :izena "Era"
-                                               :deskribapena "Erabiltzaile bat naiz"})})
-      (http/post (str aurrizkia "erabiltzaileak")
-                 {:content-type :json
-                  :accept :json
-                  :body (json/generate-string {:erabiltzailea "era2"
-                                               :pasahitza "4321"
-                                               :izena "Era bi"
-                                               :deskribapena "Beste erabiltzaile bat naiz"})})
-      (http/post (str aurrizkia "erabiltzaileak")
-                 {:content-type :json
-                  :accept :json
-                  :body (json/generate-string {:erabiltzailea "era3"
-                                               :pasahitza "333"
-                                               :izena "Era hiru"
-                                               :deskribapena "Eta beste bat"})})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "Era"
+                  :deskribapena "Erabiltzaile bat naiz"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era2"
+                  :pasahitza "4321"
+                  :izena "Era bi"
+                  :deskribapena "Beste erabiltzaile bat naiz"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era3"
+                  :pasahitza "333"
+                  :izena "Era hiru"
+                  :deskribapena "Eta beste bat"})
       (let [eran (get-json "erabiltzaileak")]
         (:guztira eran) => 3)
       (let [eran (get-json "erabiltzaileak/era2")]
@@ -120,13 +106,11 @@
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
 (fact "Erabiltzaile bat aldatu"
-      (http/post (str aurrizkia "erabiltzaileak")
-                 {:content-type :json
-                  :accept :json
-                  :body (json/generate-string {:erabiltzailea "era1"
-                                               :pasahitza "1234"
-                                               :izena "Era"
-                                               :deskribapena "Erabiltzaile bat naiz"})})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "Era"
+                  :deskribapena "Erabiltzaile bat naiz"})
       (http/put (str aurrizkia "erabiltzaileak/era1")
                 {:content-type :json
                  :accept :json
@@ -146,13 +130,11 @@
         (catch Exception _ nil)))
 
 (fact "Erabiltzaile bat ezabatu"
-      (http/post (str aurrizkia "erabiltzaileak")
-                 {:content-type :json
-                  :accept :json
-                  :body (json/generate-string {:erabiltzailea "era1"
-                                               :pasahitza "1234"
-                                               :izena "Era"
-                                               :deskribapena "Erabiltzaile bat naiz"})})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "Era"
+                  :deskribapena "Erabiltzaile bat naiz"})
       (http/delete (str aurrizkia "erabiltzaileak/era1"))
       (let [eran (http/get (str aurrizkia "erabiltzaileak/era1") {:throw-exceptions false})]
         (:status eran) => 404))
