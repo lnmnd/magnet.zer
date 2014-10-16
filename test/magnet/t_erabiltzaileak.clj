@@ -25,6 +25,13 @@
               {:content-type :json
                :body (json/generate-string ~edukia)}))
 
+(defmacro egoera-espero
+ [egoera gorputza]
+ `(try
+    ~gorputza
+    (catch Exception e#
+      (.getMessage e#) => ~egoera)))
+
 (fact "Hutsa"
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
@@ -36,21 +43,15 @@
 
 (fact "Erabiltzaile okerra"
       ; post-ek salbuespena altxatzen du
-      (try
-        (do (post-deia "erabiltzaileak" {:pasahitza "1234"
-                                         :izena "Era"}))
-        (catch Exception e
-          (.getMessage e) => #"400"))
-      (try
-        (do (post-deia "erabiltzaileak" {:erabiltzailea "era1"
-                                         :izena "Era"}))
-        (catch Exception e
-          (.getMessage e) => #"400"))
-      (try
-        (do (post-deia "erabiltzaileak" {:erabiltzailea "era"
-                                         :pasahitza "1234"}))
-        (catch Exception e
-          (.getMessage e) => #"400")))
+      (egoera-espero #"400"
+                     (post-deia "erabiltzaileak" {:pasahitza "1234"
+                                                  :izena "Era"}))
+      (egoera-espero #"400"
+                     (post-deia "erabiltzaileak" {:erabiltzailea "era1"
+                                                  :izena "Era"}))
+      (egoera-espero #"400"
+                     (post-deia "erabiltzaileak" {:erabiltzailea "era"
+                                                  :pasahitza "1234"})))
 
 (fact "Erabiltzaile bat gehitu"
       (let [eran (json/parse-string
@@ -120,11 +121,8 @@
 
 ; TODO tokena behar da
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu"
-      (try
-        (do
-          (http/delete (str aurrizkia "erabiltzaileak/era1")))
-        (catch Exception e
-               (.getMessage e) => #"404")))
+      (egoera-espero #"404"
+                     (http/delete (str aurrizkia "erabiltzaileak/era1"))))
 
 ; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu"
