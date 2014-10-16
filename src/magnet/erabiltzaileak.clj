@@ -8,10 +8,11 @@
 (defn dbtik-jaso
   "Datubasetik eskaeraren emaitzak jaso"
   [query]
-  (sql/with-connection konfig/db-con
-    (sql/with-query-results res
-      query
-      (doall res))))
+  (let [eran (sql/with-connection konfig/db-con
+               (sql/with-query-results res
+                 query
+                 (doall res)))]
+    (if eran eran [])))
 
 (defn baliozko-erabiltzailea
   [erabiltzailea]
@@ -33,25 +34,19 @@
 
 (defn lortu-bilduma []
   (let [erabiltzaileak (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
-    (if erabiltzaileak
-      [{:desplazamendua 0
-        :muga 0
-        :guztira (count erabiltzaileak)
-        :erabiltzaileak erabiltzaileak}
-       200]      
-      [{:desplazamendua 0
-        :muga 0
-        :guztira 0
-        :erabiltzaileak []}
-       200])))
+    [{:desplazamendua 0
+      :muga 0
+      :guztira (count erabiltzaileak)
+      :erabiltzaileak erabiltzaileak}
+     200]))
 
 (defn lortu [erabiltzailea]
   (let [eran (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
-    (if eran
+    (if (empty? eran)
+      [{} 404]
       [{:erabiltzailea
         (first eran)}
-       200]
-      [{} 404])))
+       200])))
 
 (defn sortu [edukia]
   (if (baliozko-erabiltzailea edukia)
