@@ -105,6 +105,7 @@
           (:izena era2) => "Era bi"
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
+; TODO tokena behar da
 (fact "Erabiltzaile bat aldatu"
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
@@ -122,6 +123,7 @@
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
 
+; TODO tokena behar da
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu"
       (try
         (do
@@ -129,6 +131,7 @@
           false => true)
         (catch Exception _ nil)))
 
+; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu"
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
