@@ -14,25 +14,27 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string datuak)})
 
+(defmacro api-erantzuna
+  "TODO"
+  [metodoa url params edukia]
+  `(~metodoa ~url ~params
+       (let [[datuak# egoera#] ~edukia]
+         (json-erantzuna datuak# egoera#))))
+
 (defroutes app-routes
-  (GET "/v1/erabiltzaileak" []
-       (let [[datuak egoera] (erak/lortu-bilduma)]
-         (json-erantzuna datuak egoera)))
-  (GET "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-       (let [[datuak egoera] (erak/lortu erabiltzailea)]
-         (json-erantzuna datuak egoera)))
-  (POST "/v1/erabiltzaileak" eskaera
-        (let [edukia (json/parse-string (slurp (:body eskaera)) true)
-              [datuak egoera] (erak/sortu! edukia)]
-          (json-erantzuna datuak egoera)))
-  (PUT "/v1/erabiltzaileak/:erabiltzailea" eskaera
-        (let [erabiltzailea (:erabiltzailea (:params eskaera))
-              edukia (json/parse-string (slurp (:body eskaera)) true)
-              [datuak egoera] (erak/aldatu! erabiltzailea edukia)]
-          (json-erantzuna datuak egoera)))
-  (DELETE "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-        (let [[datuak egoera] (erak/ezabatu! erabiltzailea)]
-          (json-erantzuna datuak egoera)))  
+  (api-erantzuna GET "/v1/erabiltzaileak" []
+                 (erak/lortu-bilduma))
+  (api-erantzuna GET "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
+                 (erak/lortu erabiltzailea))
+  (api-erantzuna POST "/v1/erabiltzaileak" eskaera
+                 (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (erak/sortu! edukia)))
+  (api-erantzuna PUT "/v1/erabiltzaileak/:erabiltzailea" eskaera
+                 (let [erabiltzailea (:erabiltzailea (:params eskaera))
+                       edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (erak/aldatu! erabiltzailea edukia)))
+  (api-erantzuna DELETE "/v1/erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
+                 (erak/ezabatu! erabiltzailea))  
   (route/resources "/")
   (route/not-found "Not Found"))
 
