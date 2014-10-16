@@ -5,19 +5,14 @@
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
-(def db-con-test {:classname "org.h2.Driver"
-                  :subprotocol "h2"
-                  :subname "jdbc:h2:magnet_test"})
-
 ; Proba guztietarako testuingurua ezartzeko
-(with-redefs [magnet.konfig/db-con db-con-test]
-  (background (before :facts
-                      (do (def aurrizkia "http://localhost:3001/v1/")
-                          (zer-hasi 3001)
-                          (db-hasieratu))
-                      :after
-                      (do (zer-geratu)
-                          (db-garbitu)))))
+(background (before :facts
+                    (do (def aurrizkia "http://localhost:3001/v1/")
+                        (zer-hasi 3001)
+                        (db-hasieratu))
+                    :after
+                    (do (zer-geratu)
+                        (db-garbitu))))
 
 (defmacro get-json
   "Helbide batetik json edukia lortzeko modu laburragoa"
