@@ -39,7 +39,7 @@
         (first eran)}
        200])))
 
-(defn sortu! [edukia]
+(defn gehitu! [edukia]
   (if (baliozko-erabiltzailea edukia)
     (do (sql/insert! konfig/db-con :erabiltzaileak
                      [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]

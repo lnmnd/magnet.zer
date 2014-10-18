@@ -28,7 +28,7 @@
                  (erak/lortu erabiltzailea))
   (api-erantzuna POST "erabiltzaileak" eskaera
                  (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (erak/sortu! edukia)))
+                   (erak/gehitu! edukia)))
   (api-erantzuna PUT "erabiltzaileak/:erabiltzailea" eskaera
                  (let [erabiltzailea (:erabiltzailea (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
