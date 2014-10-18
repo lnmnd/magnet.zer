@@ -7,7 +7,7 @@
                  [compojure "1.1.8"]
                  [ring-cors "0.1.4"]
                  [clj-json "0.3.2"]
-                 [org.clojure/java.jdbc "0.2.3"]
+                 [org.clojure/java.jdbc "0.3.5"]
                  [com.h2database/h2 "1.3.170"]
                  [clj-time "0.8.0"]
                  [clj-bcrypt-wrapper "0.1.0"]
