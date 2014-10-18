@@ -5,12 +5,6 @@
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.konfig :as konfig]))
 
-(defn dbtik-jaso
-  "Datubasetik eskaeraren emaitzak jaso"
-  [query]
-  (let [eran (sql/query konfig/db-con query)]
-    (if (empty? eran) [] eran)))
-
 (defn baliozko-erabiltzailea
   [erabiltzailea]
   (and (and (contains? erabiltzailea :erabiltzailea) (string? (:erabiltzailea erabiltzailea)))
@@ -30,7 +24,7 @@
     (time-format/unparse formatua orain)))
 
 (defn lortu-bilduma []
-  (let [erabiltzaileak (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
+  (let [erabiltzaileak (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
     [{:desplazamendua 0
       :muga 0
       :guztira (count erabiltzaileak)
@@ -38,7 +32,7 @@
      200]))
 
 (defn lortu [erabiltzailea]
-  (let [eran (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
+  (let [eran (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
     (if (empty? eran)
       [{} 404]
       [{:erabiltzailea
@@ -51,7 +45,7 @@
                      [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
                      [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
         [{:erabiltzailea
-          (first (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
+          (first (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
          200])
     [{} 400]))
 
@@ -63,12 +57,12 @@
                       :deskribapena (:deskribapena edukia)}
                      ["erabiltzailea=?" erabiltzailea])
         [{:erabiltzailea
-          (first (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
+          (first (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
          200])
     [{} 400]))
 
 (defn ezabatu! [erabiltzailea]
-  (let [badago (not (empty? (dbtik-jaso ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
+  (let [badago (not (empty? (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
     (if badago
       (do (sql/delete! konfig/db-con :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
           [{} 200])
