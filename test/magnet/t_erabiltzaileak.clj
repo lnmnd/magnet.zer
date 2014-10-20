@@ -35,7 +35,7 @@
 (fact "Hutsa"
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
-                :muga 0
+                :muga 10
                 :guztira 0
                 :erabiltzaileak []})
       (let [eran (http/get (str aurrizkia "erabiltzaileak/ezdago") {:throw-exceptions false})]
