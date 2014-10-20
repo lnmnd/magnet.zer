@@ -3,12 +3,19 @@
   (:require [clj-http.client :as http]
             [clj-json.core :as json]
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
-            [magnet.lagun :refer [db-hasieratu db-garbitu]]))
+            [magnet.lagun :refer [db-hasieratu db-garbitu]]
+            [magnet.konfig :as konfig]))
+
+; Probetarako DB konfigurazioa
+(def test-kon {:classname "org.h2.Driver"
+               :subprotocol "h2"
+               :subname "jdbc:h2:test"})
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
                     (do (def aurrizkia "http://localhost:3001/v1/")
                         (zer-hasi 3001)
+                        (reset! konfig/db-kon test-kon)
                         (db-hasieratu))
                     :after
                     (do (zer-geratu)

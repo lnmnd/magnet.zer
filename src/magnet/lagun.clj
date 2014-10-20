@@ -6,7 +6,7 @@
   "Datubasea hasieratzen du"
   []
   (sql/db-do-commands
-   konfig/db-con
+   @konfig/db-kon
    (sql/create-table-ddl :erabiltzaileak
                          [:erabiltzailea "varchar(255) primary key"]
                          [:pasahitza "varchar(255)"]
@@ -16,5 +16,5 @@
 
 (defn db-garbitu []
   "Taulak ezabatu"
-  (sql/db-do-commands konfig/db-con
+  (sql/db-do-commands @konfig/db-kon
     (sql/drop-table-ddl :erabiltzaileak)))

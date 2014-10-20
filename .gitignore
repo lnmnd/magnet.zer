@@ -10,3 +10,5 @@ pom.xml.asc
 /.nrepl-port
 /jdbc:h2:magnet.h2.db
 /jdbc:h2:magnet.trace.db
+/jdbc:h2:test.h2.db
+/jdbc:h2:test.trace.db
