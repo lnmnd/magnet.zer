@@ -134,6 +134,28 @@
       (let [eran (get-json "erabiltzaileak?muga=666")]
         (:muga eran) => 100))
 
+(fact "Desplazamendua gehitu"
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "era1"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era2"
+                  :pasahitza "1234"
+                  :izena "era2"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era3"
+                  :pasahitza "1234"
+                  :izena "era3"})            
+      (let [eran (get-json "erabiltzaileak?desplazamendua=1")]
+        (:desplazamendua eran) => 1
+        (:guztira eran) => 3
+        (count (:erabiltzaileak eran)) => 2
+        (let [era2 (first (:erabiltzaileak eran))]
+          (:erabiltzailea era2) => "era2")
+        (let [era3 (second (:erabiltzaileak eran))]
+          (:erabiltzailea era3) => "era3")))
+
 ; TODO tokena behar da
 (fact "Erabiltzaile bat aldatu"
       (post-deia "erabiltzaileak"
