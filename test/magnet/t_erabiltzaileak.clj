@@ -19,7 +19,8 @@
                         (db-hasieratu))
                     :after
                     (do (zer-geratu)
-                        (db-garbitu))))
+                        (db-garbitu)
+                        (reset! konfig/db-kon konfig/db-kon-lehenetsia))))
 
 (defmacro get-json
   "Helbide batetik json edukia lortzeko modu laburragoa"
