@@ -130,6 +130,10 @@
         (let [era2 (second (:erabiltzaileak eran))]
           (:erabiltzailea era2) => "era2")))
 
+(fact "Mugaren gehienezko balioa pasa"
+      (let [eran (get-json "erabiltzaileak?muga=666")]
+        (:muga eran) => 100))
+
 ; TODO tokena behar da
 (fact "Erabiltzaile bat aldatu"
       (post-deia "erabiltzaileak"

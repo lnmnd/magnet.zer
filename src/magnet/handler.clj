@@ -27,7 +27,7 @@
                        muga (if (contains? query-params "muga")
                               (read-string (query-params "muga"))
                               konfig/muga)]
-                   (erak/lortu-bilduma 0 muga)))
+                   (erak/lortu-bilduma 0 (if (<= muga 100) muga 100))))
   (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
                  (erak/lortu erabiltzailea))
   (api-erantzuna POST "erabiltzaileak" eskaera
