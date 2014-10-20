@@ -5,9 +5,6 @@
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.konfig :as konfig]))
 
-; bildumako muga
-(def muga 10)
-
 (defn baliozko-erabiltzailea
   [erabiltzailea]
   (and (and (contains? erabiltzailea :erabiltzailea) (string? (:erabiltzailea erabiltzailea)))
@@ -31,7 +28,7 @@
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
       [{:desplazamendua 0
-        :muga muga
+        :muga konfig/muga
         :guztira guztira
         :erabiltzaileak erabiltzaileak}
        200])))
