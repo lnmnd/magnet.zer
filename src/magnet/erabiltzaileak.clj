@@ -27,12 +27,14 @@
     (time-format/unparse formatua orain)))
 
 (defn lortu-bilduma []
-  (let [erabiltzaileak (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
-    [{:desplazamendua 0
-      :muga muga
-      :guztira (count erabiltzaileak)
-      :erabiltzaileak erabiltzaileak}
-     200]))
+  (sql/with-db-connection [kon konfig/db-con]
+    (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
+          erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
+      [{:desplazamendua 0
+        :muga muga
+        :guztira guztira
+        :erabiltzaileak erabiltzaileak}
+       200])))
 
 (defn lortu [erabiltzailea]
   (let [eran (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
