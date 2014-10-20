@@ -41,29 +41,32 @@
 
 (defn gehitu! [edukia]
   (if (baliozko-erabiltzailea edukia)
-    (do (sql/insert! konfig/db-con :erabiltzaileak
-                     [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-                     [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
-        [{:erabiltzailea
-          (first (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
+    (sql/with-db-connection [kon konfig/db-con]
+      (sql/insert! kon :erabiltzaileak
+                   [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
+                   [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
+      [{:erabiltzailea
+        (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
          200])
     [{} 400]))
 
 (defn aldatu! [erabiltzailea edukia]
   (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
-    (do (sql/update! konfig/db-con :erabiltzaileak
-                     {:pasahitza (pasahitz-hash (:pasahitza edukia))
-                      :izena (:izena edukia)
-                      :deskribapena (:deskribapena edukia)}
-                     ["erabiltzailea=?" erabiltzailea])
-        [{:erabiltzailea
-          (first (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
-         200])
+    (sql/with-db-connection [kon konfig/db-con]
+      (sql/update! kon :erabiltzaileak
+                   {:pasahitza (pasahitz-hash (:pasahitza edukia))
+                    :izena (:izena edukia)
+                    :deskribapena (:deskribapena edukia)}
+                   ["erabiltzailea=?" erabiltzailea])
+      [{:erabiltzailea
+        (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
+       200])
     [{} 400]))
 
 (defn ezabatu! [erabiltzailea]
-  (let [badago (not (empty? (sql/query konfig/db-con ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
-    (if badago
-      (do (sql/delete! konfig/db-con :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
-          [{} 200])
-      [{} 404])))
+  (sql/with-db-connection [kon konfig/db-con]
+    (let [badago (not (empty? (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
+      (if badago
+        (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
+            [{} 200])
+        [{} 404]))))
