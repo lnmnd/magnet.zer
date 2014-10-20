@@ -8,3 +8,5 @@ pom.xml.asc
 *.class
 /.lein-*
 /.nrepl-port
+/jdbc:h2:magnet.h2.db
+/jdbc:h2:magnet.trace.db
