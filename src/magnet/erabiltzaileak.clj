@@ -23,12 +23,12 @@
         orain (time/now)]
     (time-format/unparse formatua orain)))
 
-(defn lortu-bilduma []
+(defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc"])]
-      [{:desplazamendua 0
-        :muga konfig/muga
+      [{:desplazamendua desplazamendua
+        :muga muga
         :guztira guztira
         :erabiltzaileak erabiltzaileak}
        200])))

@@ -109,6 +109,27 @@
           (:izena era2) => "Era bi"
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
+(fact "Muga aldatu"
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "era1"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era2"
+                  :pasahitza "1234"
+                  :izena "era2"})
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era3"
+                  :pasahitza "1234"
+                  :izena "era3"})      
+      (let [eran (get-json "erabiltzaileak?muga=2")]
+        (:muga eran) => 2
+        (:guztira eran) => 3
+        (let [era1 (first (:erabiltzaileak eran))]
+          (:erabiltzailea era1) => "era1")
+        (let [era2 (second (:erabiltzaileak eran))]
+          (:erabiltzailea era2) => "era2")))
+
 ; TODO tokena behar da
 (fact "Erabiltzaile bat aldatu"
       (post-deia "erabiltzaileak"

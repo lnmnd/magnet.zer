@@ -22,8 +22,12 @@
          (json-erantzuna datuak# egoera#))))
 
 (defroutes app-routes
-  (api-erantzuna GET "erabiltzaileak" []
-                 (erak/lortu-bilduma))
+  (api-erantzuna GET "erabiltzaileak" eskaera
+                 (let [{query-params :query-params} eskaera
+                       muga (if (contains? query-params "muga")
+                              (read-string (query-params "muga"))
+                              konfig/muga)]
+                   (erak/lortu-bilduma 0 muga)))
   (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
                  (erak/lortu erabiltzailea))
   (api-erantzuna POST "erabiltzaileak" eskaera
