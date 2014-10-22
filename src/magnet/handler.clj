@@ -5,7 +5,8 @@
             [ring.middleware.cors :refer [wrap-cors]]
             [clj-json.core :as json]
             [magnet.konfig :as konfig]
-            [magnet.erabiltzaileak :as erak]))
+            [magnet.erabiltzaileak :as erak]
+            [magnet.saioak :as saioak]))
 
 (defn json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
@@ -41,7 +42,12 @@
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (erak/aldatu! erabiltzailea edukia)))
   (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-                 (erak/ezabatu! erabiltzailea))  
+                 (erak/ezabatu! erabiltzailea))
+
+  ; saioak
+  (api-erantzuna POST "saioak" eskaera
+                 (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (saioak/hasi! edukia)))
   (route/resources "/")
   (route/not-found "Not Found"))
 

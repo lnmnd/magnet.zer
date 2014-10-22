@@ -189,3 +189,26 @@
       (http/delete (str aurrizkia "erabiltzaileak/era1"))
       (let [eran (http/get (str aurrizkia "erabiltzaileak/era1") {:throw-exceptions false})]
         (:status eran) => 404))
+
+
+; SAIOAK
+; ------
+
+(fact "Saioa hasi"
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "Era"})
+      (let [eran (json/parse-string
+                  (:body (post-deia "saioak"
+                                    {:erabiltzailea "era1"
+                                     :pasahitza "1234"}))
+                  true)]
+        (contains? eran :erabiltzailea) => true
+        (contains? eran :token) => true
+        (contains? eran :saio_hasiera) => true
+        (contains? eran :iraungitze_data) => true
+        (:erabiltzailea eran) => "era1"))
+
+; TODO erabiltzailea ez da existitzen
+; TODO pasahitz okerra
