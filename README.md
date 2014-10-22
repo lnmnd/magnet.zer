@@ -23,6 +23,9 @@ REPL barnetik:
 Proba denak exekutatu:
 > => (load-facts)
 
+Etiketa jakin bat dutenak
+> => (load-facts :saioak)
+
 Fitxategiak aldatu ahala probak exekutatzeko:
 > => (autotest)
 

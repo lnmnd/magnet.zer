@@ -42,7 +42,7 @@
 
 ; ERABILTZAILEAK
 ; --------------
-(fact "Hutsa"
+(fact "Hutsa" :erabiltzaileak
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
                 :muga 10
@@ -51,7 +51,7 @@
       (let [eran (http/get (str aurrizkia "erabiltzaileak/ezdago") {:throw-exceptions false})]
         (:status eran) => 404))
 
-(fact "Erabiltzaile okerra"
+(fact "Erabiltzaile okerra" :erabiltzaileak
       ; post-ek salbuespena altxatzen du
       (egoera-espero #"400"
                      (post-deia "erabiltzaileak" {:pasahitza "1234"
@@ -63,7 +63,7 @@
                      (post-deia "erabiltzaileak" {:erabiltzailea "era"
                                                   :pasahitza "1234"})))
 
-(fact "Erabiltzaile bat gehitu"
+(fact "Erabiltzaile bat gehitu" :erabiltzaileak
       (let [eran (json/parse-string
                   (:body (post-deia "erabiltzaileak"
                                     {:erabiltzailea "era1"
@@ -87,7 +87,7 @@
           (:izena era1) => "Era"
           (:deskribapena era1) => "Erabiltzaile bat naiz")))
 
-(fact "Erabiltzaile batzuk"
+(fact "Erabiltzaile batzuk" :erabiltzaileak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -111,7 +111,7 @@
           (:izena era2) => "Era bi"
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
-(fact "Muga aldatu"
+(fact "Muga aldatu" :erabiltzaileak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -132,11 +132,11 @@
         (let [era2 (second (:erabiltzaileak eran))]
           (:erabiltzailea era2) => "era2")))
 
-(fact "Mugaren gehienezko balioa pasa"
+(fact "Mugaren gehienezko balioa pasa" :erabiltzaileak
       (let [eran (get-json "erabiltzaileak?muga=666")]
         (:muga eran) => 100))
 
-(fact "Desplazamendua gehitu"
+(fact "Desplazamendua gehitu" :erabiltzaileak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -160,7 +160,7 @@
 
 ; SAIOAK
 ; ------
-(fact "Saioa hasi"
+(fact "Saioa hasi" :saioak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -185,7 +185,7 @@
 ; ERABILTZAILEAK: token
 ; ---------------------
 ; TODO tokena behar da
-(fact "Erabiltzaile bat aldatu"
+(fact "Erabiltzaile bat aldatu" :erabiltzaileak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -203,12 +203,12 @@
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
 
 ; TODO tokena behar da
-(fact "Ez dagoen erabiltzailea ezabatzen saiatu"
+(fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
       (egoera-espero #"404"
                      (http/delete (str aurrizkia "erabiltzaileak/era1"))))
 
 ; TODO tokena behar da
-(fact "Erabiltzaile bat ezabatu"
+(fact "Erabiltzaile bat ezabatu" :erabiltzaileak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
