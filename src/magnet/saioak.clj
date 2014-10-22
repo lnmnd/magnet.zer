@@ -46,7 +46,7 @@
   [token]
   (if (contains? @saioak token)
     [(@saioak token) 200]
-    [{} 400]))
+    [{} 404]))
 
 (defn amaitu!
   "Saioa amaitu, tokena baliogabetuz"
