@@ -49,7 +49,9 @@
                  (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (saioak/hasi! edukia)))
   (api-erantzuna GET "saioak/:token" {{token :token} :params}
-                 (saioak/lortu token))  
+                 (saioak/lortu token))
+  (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
+                 (saioak/amaitu! token))
   (route/resources "/")
   (route/not-found "Not Found"))
 

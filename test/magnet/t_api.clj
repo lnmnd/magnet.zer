@@ -160,7 +160,7 @@
 
 ; SAIOAK
 ; ------
-(fact "Saioa hasi" :saioak
+(fact "Saioak" :saioak
       (post-deia "erabiltzaileak"
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
@@ -177,7 +177,11 @@
         (:erabiltzailea saioa) => "era1"
         ; saioa sortu dela egiaztatzeko lortu
         (let [eran (get-json (str "saioak/" (:token saioa)))]
-          (:erabiltzailea eran) => "era1")))
+          (:erabiltzailea eran) => "era1")
+        ; saioa amaitu
+        (http/delete (str aurrizkia "saioak/" (:token saioa)))
+        (let [eran (http/get (str aurrizkia "saioak/" (:token saioa)) {:throw-exceptions false})]
+          (:status eran) => 404)))
 
 ; TODO erabiltzailea ez da existitzen
 ; TODO pasahitz okerra
