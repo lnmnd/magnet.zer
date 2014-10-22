@@ -5,6 +5,14 @@
             [clj-bcrypt-wrapper.core :refer [check-password]]
             [magnet.konfig :as konfig]))
 
+; TODO iraungitze_data pasatzean modu automatikoan kendu
+(def saioak (atom {}))
+
+(defn gehitu-saioa!
+  "Saioa saioen zerrendan sartzen du tokenaren arabera"
+  [saioa]
+  (swap! saioak conj {(:token saioa) saioa}))
+
 (defn ausazko-hizkia []
   (rand-nth ["0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
              "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"]))
@@ -25,9 +33,17 @@
 
 (defn hasi! [edukia]
   (if (erabiltzaile-zuzena (:erabiltzailea edukia) (:pasahitza edukia))
-    [{:erabiltzailea (:erabiltzailea edukia)
-      :token (sortu-tokena)
-      :saio_hasiera "TODO"
-      :iraungitze_data "TODO"}
-     200]
+    (let [saioa {:erabiltzailea (:erabiltzailea edukia)
+                 :token (sortu-tokena)
+                 :saio_hasiera "TODO"
+                 :iraungitze_data "TODO"}]
+      (gehitu-saioa! saioa)
+      [saioa 200]) 
     [{} 422]))
+
+(defn lortu
+  "Tokena duen saioa lortu"
+  [token]
+  (if (contains? @saioak token)
+    [(@saioak token) 200]
+    [{} 400]))

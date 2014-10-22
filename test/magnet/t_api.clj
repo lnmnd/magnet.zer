@@ -199,16 +199,19 @@
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
                   :izena "Era"})
-      (let [eran (json/parse-string
+      (let [saioa (json/parse-string
                   (:body (post-deia "saioak"
                                     {:erabiltzailea "era1"
                                      :pasahitza "1234"}))
                   true)]
-        (contains? eran :erabiltzailea) => true
-        (contains? eran :token) => true
-        (contains? eran :saio_hasiera) => true
-        (contains? eran :iraungitze_data) => true
-        (:erabiltzailea eran) => "era1"))
+        (contains? saioa :erabiltzailea) => true
+        (contains? saioa :token) => true
+        (contains? saioa :saio_hasiera) => true
+        (contains? saioa :iraungitze_data) => true
+        (:erabiltzailea saioa) => "era1"
+        ; saioa sortu dela egiaztatzeko lortu
+        (let [eran (get-json (str "saioak/" (:token saioa)))]
+          (:erabiltzailea eran) => "era1")))
 
 ; TODO erabiltzailea ez da existitzen
 ; TODO pasahitz okerra

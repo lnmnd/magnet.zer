@@ -48,6 +48,8 @@
   (api-erantzuna POST "saioak" eskaera
                  (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (saioak/hasi! edukia)))
+  (api-erantzuna GET "saioak/:token" {{token :token} :params}
+                 (saioak/lortu token))  
   (route/resources "/")
   (route/not-found "Not Found"))
 
