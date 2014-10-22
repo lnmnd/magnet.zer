@@ -1,4 +1,4 @@
-(ns magnet.t_erabiltzaileak
+(ns magnet.t_api
   (:use midje.sweet)
   (:require [clj-http.client :as http]
             [clj-json.core :as json]
