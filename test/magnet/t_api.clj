@@ -40,6 +40,8 @@
     (catch Exception e#
       (.getMessage e#) => ~egoera)))
 
+; ERABILTZAILEAK
+; --------------
 (fact "Hutsa"
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
@@ -156,6 +158,32 @@
         (let [era3 (second (:erabiltzaileak eran))]
           (:erabiltzailea era3) => "era3")))
 
+; SAIOAK
+; ------
+(fact "Saioa hasi"
+      (post-deia "erabiltzaileak"
+                 {:erabiltzailea "era1"
+                  :pasahitza "1234"
+                  :izena "Era"})
+      (let [saioa (json/parse-string
+                  (:body (post-deia "saioak"
+                                    {:erabiltzailea "era1"
+                                     :pasahitza "1234"}))
+                  true)]
+        (contains? saioa :erabiltzailea) => true
+        (contains? saioa :token) => true
+        (contains? saioa :saio_hasiera) => true
+        (contains? saioa :iraungitze_data) => true
+        (:erabiltzailea saioa) => "era1"
+        ; saioa sortu dela egiaztatzeko lortu
+        (let [eran (get-json (str "saioak/" (:token saioa)))]
+          (:erabiltzailea eran) => "era1")))
+
+; TODO erabiltzailea ez da existitzen
+; TODO pasahitz okerra
+
+; ERABILTZAILEAK: token
+; ---------------------
 ; TODO tokena behar da
 (fact "Erabiltzaile bat aldatu"
       (post-deia "erabiltzaileak"
@@ -189,29 +217,3 @@
       (http/delete (str aurrizkia "erabiltzaileak/era1"))
       (let [eran (http/get (str aurrizkia "erabiltzaileak/era1") {:throw-exceptions false})]
         (:status eran) => 404))
-
-
-; SAIOAK
-; ------
-
-(fact "Saioa hasi"
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era1"
-                  :pasahitza "1234"
-                  :izena "Era"})
-      (let [saioa (json/parse-string
-                  (:body (post-deia "saioak"
-                                    {:erabiltzailea "era1"
-                                     :pasahitza "1234"}))
-                  true)]
-        (contains? saioa :erabiltzailea) => true
-        (contains? saioa :token) => true
-        (contains? saioa :saio_hasiera) => true
-        (contains? saioa :iraungitze_data) => true
-        (:erabiltzailea saioa) => "era1"
-        ; saioa sortu dela egiaztatzeko lortu
-        (let [eran (get-json (str "saioak/" (:token saioa)))]
-          (:erabiltzailea eran) => "era1")))
-
-; TODO erabiltzailea ez da existitzen
-; TODO pasahitz okerra
