@@ -116,6 +116,17 @@
           (:izena era2) => "Era bi"
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
+(fact "Erabiltzaile izen errepikatua" :erabiltzaileak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era"
+                 :pasahitza "1234"
+                 :izena "Era"})
+      (let [egoera (api-deia :post "erabiltzaileak" :egoera
+                             {:erabiltzailea "era"
+                              :pasahitza "4321"
+                              :izena "Era erre"})]
+        egoera => 422))
+
 (fact "Muga aldatu" :erabiltzaileak
       (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era1"

@@ -44,12 +44,14 @@
 (defn gehitu! [edukia]
   (if (baliozko-erabiltzailea edukia)
     (sql/with-db-connection [kon @konfig/db-kon]
-      (sql/insert! kon :erabiltzaileak
-                   [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-                   [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
-      [{:erabiltzailea
-        (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
-         200])
+      (if (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))
+        (do (sql/insert! kon :erabiltzaileak
+                         [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
+                         [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
+            [{:erabiltzailea
+              (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
+             200])
+        [{} 422]))
     [{} 400]))
 
 (defn aldatu! [erabiltzailea edukia]
