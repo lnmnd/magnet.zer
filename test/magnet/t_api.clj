@@ -192,7 +192,7 @@
 ; ERABILTZAILEAK: token
 ; ---------------------
 ; TODO tokena behar da
-(fact "Erabiltzaile bat aldatu" :erabiltzaileak :t
+(fact "Erabiltzaile bat aldatu" :erabiltzaileak
       (api-deia :post "erabiltzaileak" :ezer
                 {:erabiltzailea "era1"
                  :pasahitza "1234"
