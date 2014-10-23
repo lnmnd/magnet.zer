@@ -43,12 +43,7 @@
 (defmacro get-json
   "Helbide batetik json edukia lortzeko modu laburragoa"
   [helbidea]
-  `(json/parse-string (:body @(http/get (str aurrizkia ~helbidea))) true))
-
-(defmacro post-deia
-  [helbidea edukia]
-  `@(http/post (str aurrizkia ~helbidea)
-               {:body (json/generate-string ~edukia)}))
+  `(api-deia :get ~helbidea :json))
 
 ; ERABILTZAILEAK
 ; --------------
@@ -58,31 +53,29 @@
                 :muga 10
                 :guztira 0
                 :erabiltzaileak []})
-      (let [{egoera :status} @(http/get (str aurrizkia "erabiltzaileak/ezdago"))]
+      (let [egoera (api-deia :get (str aurrizkia "erabiltzaileak/ezdago") :egoera)]
         egoera => 404))
 
 (fact "Erabiltzaile okerra" :erabiltzaileak
-  (let [options {:body (json/generate-string {:pasahitza "1234"
-                                              :izena "Era"})}
-        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
-    status => 400)
-  (let [options {:body (json/generate-string {:erabiltzailea "era1"
-                                              :izena "Era"})}
-        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
-    status => 400)
-  (let [options {:body (json/generate-string {:erabiltzailea "era"
-                                              :pasahitza "1234"})}
-        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
-    status => 400))
+      (let [egoera (api-deia :post "erabiltzaileak" :egoera
+                             {:pasahitza "1234"
+                              :izena "Era"})]
+        egoera => 400)
+      (let [egoera (api-deia :post "erabiltzaileak" :egoera
+                             {:erabiltzailea "era1"
+                              :izena "Era"})]
+        egoera => 400)
+      (let [egoera (api-deia :post "erabiltzaileak" :egoera
+                             {:erabiltzailea "era"
+                              :pasahitza "1234"})]
+        egoera => 400))
 
 (fact "Erabiltzaile bat gehitu" :erabiltzaileak
-      (let [eran (json/parse-string
-                  (:body (post-deia "erabiltzaileak"
+      (let [eran (api-deia :post "erabiltzaileak" :json
                                     {:erabiltzailea "era1"
                                      :pasahitza "1234"
                                      :izena "Era"
-                                     :deskribapena "Erabiltzaile bat naiz"}))
-                  true)]
+                                     :deskribapena "Erabiltzaile bat naiz"})]
         (let [erab (:erabiltzailea eran)]
           (:erabiltzailea erab) => "era1"
           (:izena erab) => "Era"
@@ -100,21 +93,21 @@
           (:deskribapena era1) => "Erabiltzaile bat naiz")))
 
 (fact "Erabiltzaile batzuk" :erabiltzaileak
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era1"
-                  :pasahitza "1234"
-                  :izena "Era"
-                  :deskribapena "Erabiltzaile bat naiz"})
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era2"
-                  :pasahitza "4321"
-                  :izena "Era bi"
-                  :deskribapena "Beste erabiltzaile bat naiz"})
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era3"
-                  :pasahitza "333"
-                  :izena "Era hiru"
-                  :deskribapena "Eta beste bat"})
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era2"
+                 :pasahitza "4321"
+                 :izena "Era bi"
+                 :deskribapena "Beste erabiltzaile bat naiz"})
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era3"
+                 :pasahitza "333"
+                 :izena "Era hiru"
+                 :deskribapena "Eta beste bat"})
       (let [eran (get-json "erabiltzaileak")]
         (:guztira eran) => 3)
       (let [eran (get-json "erabiltzaileak/era2")]
@@ -124,15 +117,15 @@
           (:deskribapena era2) => "Beste erabiltzaile bat naiz")))
 
 (fact "Muga aldatu" :erabiltzaileak
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
                   :izena "era1"})
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era2"
                   :pasahitza "1234"
                   :izena "era2"})
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era3"
                   :pasahitza "1234"
                   :izena "era3"})      
@@ -149,15 +142,15 @@
         (:muga eran) => 100))
 
 (fact "Desplazamendua gehitu" :erabiltzaileak
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era1"
                   :pasahitza "1234"
                   :izena "era1"})
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era2"
                   :pasahitza "1234"
                   :izena "era2"})
-      (post-deia "erabiltzaileak"
+      (api-deia :post "erabiltzaileak" :ezer
                  {:erabiltzailea "era3"
                   :pasahitza "1234"
                   :izena "era3"})            
@@ -186,7 +179,7 @@
     (contains? saioa :iraungitze_data) => true
     (:erabiltzailea saioa) => "era1"
     ; saioa sortu dela egiaztatzeko lortu
-    (let [eran (api-deia :get :json (str "saioak/" (:token saioa)))]
+    (let [eran (api-deia :get (str "saioak/" (:token saioa)) :json)]
       (:erabiltzailea eran) => "era1")
     ; saioa amaitu
     (api-deia :delete (str "saioak/" (:token saioa)))
@@ -199,34 +192,33 @@
 ; ERABILTZAILEAK: token
 ; ---------------------
 ; TODO tokena behar da
-(fact "Erabiltzaile bat aldatu" :erabiltzaileak
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era1"
-                  :pasahitza "1234"
-                  :izena "Era"
-                  :deskribapena "Erabiltzaile bat naiz"})
-      (http/put (str aurrizkia "erabiltzaileak/era1")
-                {:body (json/generate-string {:pasahitza "1111"
-                                              :izena "Era berria"
-                                              :deskribapena "Aldatutako erabiltzaile bat naiz"})})
-      (let [eran (get-json "erabiltzaileak/era1")]
+(fact "Erabiltzaile bat aldatu" :erabiltzaileak :t
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (api-deia :put "erabiltzaileak/era1" :egoera
+                {:pasahitza "1111"
+                 :izena "Era berria"
+                 :deskribapena "Aldatutako erabiltzaile bat naiz"})      
+      (let [eran (api-deia :get "erabiltzaileak/era1" :json)]
         (let [era1 (:erabiltzailea eran)]
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
 
 ; TODO tokena behar da
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
-    (let [options {:body (json/generate-string nil)}
-        {:keys [status]} @(http/delete (str aurrizkia "erabiltzaileak/era1") options)]
-    status => 404))
+      (let [egoera (api-deia :delete (str aurrizkia "erabiltzaileak/era1") :egoera)]
+        egoera => 404))
 
 ; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu" :erabiltzaileak
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era1"
-                  :pasahitza "1234"
-                  :izena "Era"
-                  :deskribapena "Erabiltzaile bat naiz"})
-      (http/delete (str aurrizkia "erabiltzaileak/era1"))
-      (let [{egoera :status} @(http/get (str aurrizkia "erabiltzaileak/era1"))]
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (api-deia :delete (str aurrizkia "erabiltzaileak/era1"))
+      (let [egoera (api-deia :get (str aurrizkia "erabiltzaileak/era1") :egoera)]
         egoera => 404))
