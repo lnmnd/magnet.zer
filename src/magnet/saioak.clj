@@ -53,3 +53,7 @@
   [token]
   (swap! saioak dissoc token)
   [{} 200])
+
+(defn token-zuzena [token erabiltzailea]
+  (and (contains? @saioak token)
+       (= erabiltzailea (:erabiltzailea (@saioak token)))))

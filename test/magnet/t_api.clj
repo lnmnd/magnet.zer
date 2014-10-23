@@ -218,18 +218,28 @@
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
 
-; TODO tokena behar da
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
       (let [egoera (api-deia :delete (str aurrizkia "erabiltzaileak/era1") :egoera)]
         egoera => 404))
 
-; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu" :erabiltzaileak
       (api-deia :post "erabiltzaileak" :ezer
                 {:erabiltzailea "era1"
                  :pasahitza "1234"
                  :izena "Era"
                  :deskribapena "Erabiltzaile bat naiz"})
-      (api-deia :delete (str aurrizkia "erabiltzaileak/era1"))
-      (let [egoera (api-deia :get (str aurrizkia "erabiltzaileak/era1") :egoera)]
+      (let [{token :token} (api-deia :post "saioak" :json
+                           {:erabiltzailea "era1"
+                            :pasahitza "1234"})]
+        (api-deia :delete (str "erabiltzaileak/era1?token=" token)))
+      (let [egoera (api-deia :get "erabiltzaileak/era1" :egoera)]
         egoera => 404))
+
+(fact "Erabiltzaile bat ezabatu token okerrarekin" :erabiltzaileak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (let [egoera (api-deia :delete "erabiltzaileak/era1?token=ezdago" :egoera)]
+        egoera => 401))

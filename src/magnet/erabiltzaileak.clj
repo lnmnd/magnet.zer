@@ -3,6 +3,7 @@
             [clj-time.core :as time]
             [clj-time.format :as time-format]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
+            [magnet.saioak :as saioak]
             [magnet.konfig :as konfig]))
 
 (defn baliozko-erabiltzailea
@@ -67,10 +68,12 @@
        200])
     [{} 400]))
 
-(defn ezabatu! [erabiltzailea]
+(defn ezabatu! [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [badago (not (empty? (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
       (if badago
-        (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
-            [{} 200])
+        (if (saioak/token-zuzena token erabiltzailea)
+          (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
+              [{} 200])
+          [{} 401])
         [{} 404]))))

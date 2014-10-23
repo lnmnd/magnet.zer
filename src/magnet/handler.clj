@@ -41,8 +41,10 @@
                  (let [erabiltzailea (:erabiltzailea (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (erak/aldatu! erabiltzailea edukia)))
-  (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-                 (erak/ezabatu! erabiltzailea))
+  (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
+                 (let [token (:token (:params eskaera))
+                       erabiltzailea (:erabiltzailea (:params eskaera))]
+                   (erak/ezabatu! token erabiltzailea)))
 
   ; saioak
   (api-erantzuna POST "saioak" eskaera
