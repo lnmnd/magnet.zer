@@ -22,6 +22,24 @@
                         (db-garbitu)
                         (reset! konfig/db-kon konfig/db-kon-lehenetsia))))
 
+(defn api-deia
+  "API deia burutu eta erantzuna jaso eskatzen bada"
+  ([metodoa helbidea]
+     (api-deia metodoa helbidea :ezer {}))
+  ([metodoa helbidea erantzun-mota]
+     (api-deia metodoa helbidea erantzun-mota {}))  
+  ([metodoa helbidea erantzun-mota gorputza]
+     (let [metodoak {:get http/get :post http/post :put http/put :delete http/delete}
+           ema @((metodoa metodoak) (str "http://localhost:3001/v1/" helbidea) {:body (json/generate-string gorputza)})]
+       (condp = erantzun-mota
+         :json
+         (json/parse-string (:body ema) true)
+         :egoera
+         (:status ema)
+         :ezer
+         nil
+         nil))))
+
 (defmacro get-json
   "Helbide batetik json edukia lortzeko modu laburragoa"
   [helbidea]
@@ -155,27 +173,25 @@
 ; SAIOAK
 ; ------
 (fact "Saioak" :saioak
-      (post-deia "erabiltzaileak"
-                 {:erabiltzailea "era1"
-                  :pasahitza "1234"
-                  :izena "Era"})
-      (let [saioa (json/parse-string
-                  (:body (post-deia "saioak"
-                                    {:erabiltzailea "era1"
-                                     :pasahitza "1234"}))
-                  true)]
-        (contains? saioa :erabiltzailea) => true
-        (contains? saioa :token) => true
-        (contains? saioa :saio_hasiera) => true
-        (contains? saioa :iraungitze_data) => true
-        (:erabiltzailea saioa) => "era1"
-        ; saioa sortu dela egiaztatzeko lortu
-        (let [eran (get-json (str "saioak/" (:token saioa)))]
-          (:erabiltzailea eran) => "era1")
-        ; saioa amaitu
-        (http/delete (str aurrizkia "saioak/" (:token saioa)))
-        (let [{egoera :status} @(http/get (str aurrizkia "saioak/" (:token saioa)))]
-          egoera => 404)))
+  (api-deia :post "erabiltzaileak" :ezer
+            {:erabiltzailea "era1"
+             :pasahitza "1234"
+             :izena "Era"})
+  (let [saioa (api-deia :post "saioak" :json
+                        {:erabiltzailea "era1"
+                         :pasahitza "1234"})]
+    (contains? saioa :erabiltzailea) => true
+    (contains? saioa :token) => true
+    (contains? saioa :saio_hasiera) => true
+    (contains? saioa :iraungitze_data) => true
+    (:erabiltzailea saioa) => "era1"
+    ; saioa sortu dela egiaztatzeko lortu
+    (let [eran (api-deia :get :json (str "saioak/" (:token saioa)))]
+      (:erabiltzailea eran) => "era1")
+    ; saioa amaitu
+    (api-deia :delete (str "saioak/" (:token saioa)))
+    (let [egoera (api-deia :get (str "saioak/" (:token saioa)) :egoera)]
+      egoera => 404)))
 
 ; TODO erabiltzailea ez da existitzen
 ; TODO pasahitz okerra
