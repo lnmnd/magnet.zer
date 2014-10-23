@@ -1,6 +1,6 @@
 (ns magnet.t_api
   (:use midje.sweet)
-  (:require [clj-http.client :as http]
+  (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
@@ -25,20 +25,12 @@
 (defmacro get-json
   "Helbide batetik json edukia lortzeko modu laburragoa"
   [helbidea]
-  `(:body (http/get (str aurrizkia ~helbidea) {:as :json})))
+  `(json/parse-string (:body @(http/get (str aurrizkia ~helbidea))) true))
 
 (defmacro post-deia
   [helbidea edukia]
-  `(http/post (str aurrizkia ~helbidea)
-              {:content-type :json
-               :body (json/generate-string ~edukia)}))
-
-(defmacro egoera-espero
- [egoera gorputza]
- `(try
-    ~gorputza
-    (catch Exception e#
-      (.getMessage e#) => ~egoera)))
+  `@(http/post (str aurrizkia ~helbidea)
+               {:body (json/generate-string ~edukia)}))
 
 ; ERABILTZAILEAK
 ; --------------
@@ -48,20 +40,22 @@
                 :muga 10
                 :guztira 0
                 :erabiltzaileak []})
-      (let [eran (http/get (str aurrizkia "erabiltzaileak/ezdago") {:throw-exceptions false})]
-        (:status eran) => 404))
+      (let [{egoera :status} @(http/get (str aurrizkia "erabiltzaileak/ezdago"))]
+        egoera => 404))
 
 (fact "Erabiltzaile okerra" :erabiltzaileak
-      ; post-ek salbuespena altxatzen du
-      (egoera-espero #"400"
-                     (post-deia "erabiltzaileak" {:pasahitza "1234"
-                                                  :izena "Era"}))
-      (egoera-espero #"400"
-                     (post-deia "erabiltzaileak" {:erabiltzailea "era1"
-                                                  :izena "Era"}))
-      (egoera-espero #"400"
-                     (post-deia "erabiltzaileak" {:erabiltzailea "era"
-                                                  :pasahitza "1234"})))
+  (let [options {:body (json/generate-string {:pasahitza "1234"
+                                              :izena "Era"})}
+        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
+    status => 400)
+  (let [options {:body (json/generate-string {:erabiltzailea "era1"
+                                              :izena "Era"})}
+        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
+    status => 400)
+  (let [options {:body (json/generate-string {:erabiltzailea "era"
+                                              :pasahitza "1234"})}
+        {:keys [status]} @(http/post (str aurrizkia "erabiltzaileak") options)]
+    status => 400))
 
 (fact "Erabiltzaile bat gehitu" :erabiltzaileak
       (let [eran (json/parse-string
@@ -180,8 +174,8 @@
           (:erabiltzailea eran) => "era1")
         ; saioa amaitu
         (http/delete (str aurrizkia "saioak/" (:token saioa)))
-        (let [eran (http/get (str aurrizkia "saioak/" (:token saioa)) {:throw-exceptions false})]
-          (:status eran) => 404)))
+        (let [{egoera :status} @(http/get (str aurrizkia "saioak/" (:token saioa)))]
+          egoera => 404)))
 
 ; TODO erabiltzailea ez da existitzen
 ; TODO pasahitz okerra
@@ -196,9 +190,7 @@
                   :izena "Era"
                   :deskribapena "Erabiltzaile bat naiz"})
       (http/put (str aurrizkia "erabiltzaileak/era1")
-                {:content-type :json
-                 :accept :json
-                 :body (json/generate-string {:pasahitza "1111"
+                {:body (json/generate-string {:pasahitza "1111"
                                               :izena "Era berria"
                                               :deskribapena "Aldatutako erabiltzaile bat naiz"})})
       (let [eran (get-json "erabiltzaileak/era1")]
@@ -208,8 +200,9 @@
 
 ; TODO tokena behar da
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
-      (egoera-espero #"404"
-                     (http/delete (str aurrizkia "erabiltzaileak/era1"))))
+    (let [options {:body (json/generate-string nil)}
+        {:keys [status]} @(http/delete (str aurrizkia "erabiltzaileak/era1") options)]
+    status => 404))
 
 ; TODO tokena behar da
 (fact "Erabiltzaile bat ezabatu" :erabiltzaileak
@@ -219,5 +212,5 @@
                   :izena "Era"
                   :deskribapena "Erabiltzaile bat naiz"})
       (http/delete (str aurrizkia "erabiltzaileak/era1"))
-      (let [eran (http/get (str aurrizkia "erabiltzaileak/era1") {:throw-exceptions false})]
-        (:status eran) => 404))
+      (let [{egoera :status} @(http/get (str aurrizkia "erabiltzaileak/era1"))]
+        egoera => 404))
