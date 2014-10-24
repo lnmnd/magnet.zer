@@ -45,6 +45,19 @@
   [helbidea]
   `(api-deia :get ~helbidea :json))
 
+(defn saioa-hasi
+  "Erabiltzaile bat sortu, horrekin saioa hasi eta tokena lortu"
+  ([erabiltzailea pasahitza]
+     (saioa-hasi erabiltzailea pasahitza "izena"))
+  ([erabiltzailea pasahitza izena]
+     (api-deia :post "erabiltzaileak" :ezer
+               {:erabiltzailea erabiltzailea
+                :pasahitza pasahitza
+                :izena izena})
+     (:token (api-deia :post "saioak" :json
+                       {:erabiltzailea erabiltzailea
+                        :pasahitza pasahitza}))))
+
 ; ERABILTZAILEAK
 ; --------------
 (fact "Hutsa" :erabiltzaileak
