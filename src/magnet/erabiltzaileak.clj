@@ -6,18 +6,18 @@
             [magnet.saioak :as saioak]
             [magnet.konfig :as konfig]))
 
-(defn baliozko-erabiltzailea
+(defn- baliozko-erabiltzailea
   [erabiltzailea]
   (and (and (contains? erabiltzailea :erabiltzailea) (string? (:erabiltzailea erabiltzailea)))
        (and (contains? erabiltzailea :pasahitza) (string? (:pasahitza erabiltzailea)))
        (and (contains? erabiltzailea :izena) (string? (:izena erabiltzailea)))))
 
-(defn pasahitz-hash
+(defn- pasahitz-hash
   "Pasahitzaren hash sortzen du bcrypt bidez"
   [pasahitza]
   (encrypt (gensalt 10) pasahitza))
 
-(defn oraingo-data
+(defn- oraingo-data
   "Oraingo data itzultzen du yyyy-MM-dd formatuarekin"
   []
   (let [formatua (time-format/formatter "yyyy-MM-dd")
