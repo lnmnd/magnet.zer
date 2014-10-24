@@ -45,15 +45,20 @@
   [helbidea]
   `(api-deia :get ~helbidea :json))
 
+(defn erabiltzailea-ez-dago
+  [erabiltzailea]
+  (= 404 (api-deia :get (str "erabiltzaileak/" erabiltzailea) :egoera)))
+
 (defn saioa-hasi
-  "Erabiltzaile bat sortu, horrekin saioa hasi eta tokena lortu"
+  "Erabiltzailearen saioa hasi. Erabiltzailea existitzen ez bada sortu."
   ([erabiltzailea pasahitza]
      (saioa-hasi erabiltzailea pasahitza "izena"))
   ([erabiltzailea pasahitza izena]
-     (api-deia :post "erabiltzaileak" :ezer
-               {:erabiltzailea erabiltzailea
-                :pasahitza pasahitza
-                :izena izena})
+     (when (erabiltzailea-ez-dago erabiltzailea)
+       (api-deia :post "erabiltzaileak" :ezer
+                 {:erabiltzailea erabiltzailea
+                  :pasahitza pasahitza
+                  :izena izena}))
      (:token (api-deia :post "saioak" :json
                        {:erabiltzailea erabiltzailea
                         :pasahitza pasahitza}))))
