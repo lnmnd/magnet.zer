@@ -38,9 +38,10 @@
                  (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (erak/gehitu! edukia)))
   (api-erantzuna PUT "erabiltzaileak/:erabiltzailea" eskaera
-                 (let [erabiltzailea (:erabiltzailea (:params eskaera))
+                 (let [token (:token (:params eskaera))
+                       erabiltzailea (:erabiltzailea (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (erak/aldatu! erabiltzailea edukia)))
+                   (erak/aldatu! token erabiltzailea edukia)))
   (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
                  (let [token (:token (:params eskaera))
                        erabiltzailea (:erabiltzailea (:params eskaera))]
