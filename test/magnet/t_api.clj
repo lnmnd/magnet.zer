@@ -216,14 +216,7 @@
 ; ERABILTZAILEAK: token
 ; ---------------------
 (fact "Erabiltzaile bat aldatu" :erabiltzaileak
-      (api-deia :post "erabiltzaileak" :ezer
-                {:erabiltzailea "era1"
-                 :pasahitza "1234"
-                 :izena "Era"
-                 :deskribapena "Erabiltzaile bat naiz"})
-      (let [{token :token} (api-deia :post "saioak" :json
-                           {:erabiltzailea "era1"
-                            :pasahitza "1234"})]
+      (let [token (saioa-hasi "era1" "1234" "Era")]
         (api-deia :put (str "erabiltzaileak/era1?token=" token) :ezer
                   {:pasahitza "1111"
                    :izena "Era berria"
@@ -258,14 +251,7 @@
         egoera => 404))
 
 (fact "Erabiltzaile bat ezabatu" :erabiltzaileak
-      (api-deia :post "erabiltzaileak" :ezer
-                {:erabiltzailea "era1"
-                 :pasahitza "1234"
-                 :izena "Era"
-                 :deskribapena "Erabiltzaile bat naiz"})
-      (let [{token :token} (api-deia :post "saioak" :json
-                           {:erabiltzailea "era1"
-                            :pasahitza "1234"})]
+      (let [token (saioa-hasi "era1" "1234" "Era")]
         (api-deia :delete (str "erabiltzaileak/era1?token=" token)))
       (let [egoera (api-deia :get "erabiltzaileak/era1" :egoera)]
         egoera => 404))
