@@ -58,17 +58,20 @@
 (defn aldatu! [token erabiltzailea edukia]
   (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
     (sql/with-db-connection [kon @konfig/db-kon]
-      (if (saioak/token-zuzena token erabiltzailea)
-        (do
-          (sql/update! kon :erabiltzaileak
-                       {:pasahitza (pasahitz-hash (:pasahitza edukia))
-                        :izena (:izena edukia)
-                        :deskribapena (:deskribapena edukia)}
-                       ["erabiltzailea=?" erabiltzailea])
-          [{:erabiltzailea
-            (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
-           200])
-        [{} 401]))
+      (let [badago (not (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
+        (if badago
+          (if (saioak/token-zuzena token erabiltzailea)
+            (do
+              (sql/update! kon :erabiltzaileak
+                           {:pasahitza (pasahitz-hash (:pasahitza edukia))
+                            :izena (:izena edukia)
+                            :deskribapena (:deskribapena edukia)}
+                           ["erabiltzailea=?" erabiltzailea])
+              [{:erabiltzailea
+                (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
+               200])
+            [{} 401])
+          [{} 404])))
     [{} 400]))
 
 (defn ezabatu! [token erabiltzailea]

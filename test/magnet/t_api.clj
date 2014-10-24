@@ -221,6 +221,13 @@
           (:izena era1) => "Era berria"
           (:deskribapena era1) => "Aldatutako erabiltzaile bat naiz")))
 
+(fact "Ez dagoen erabiltzaile bat aldatzen saiatu" :erabiltzaileak
+      (let [egoera (api-deia :put "erabiltzaileak/era1?token=edozer" :egoera
+                             {:pasahitza "1111"
+                              :izena "Era berria"
+                              :deskribapena "Aldatutako erabiltzaile bat naiz"})]
+        egoera => 404))
+
 (fact "Erabiltzaile bat aldatu token okerrarekin" :erabiltzaileak
       (api-deia :post "erabiltzaileak" :ezer
                 {:erabiltzailea "era1"
