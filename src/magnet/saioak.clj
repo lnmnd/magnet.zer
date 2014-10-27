@@ -56,3 +56,8 @@
 (defn token-zuzena [token erabiltzailea]
   (and (contains? @saioak token)
        (= erabiltzailea (:erabiltzailea (@saioak token)))))
+
+(defn token-erabiltzailea [token]
+  (if (contains? @saioak token)
+    (:erabiltzailea (@saioak token))
+    false))

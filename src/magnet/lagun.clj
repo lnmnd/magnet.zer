@@ -14,12 +14,20 @@
                          [:pasahitza "varchar(255)"]
                          [:izena "varchar(255)"]
                          [:deskribapena "varchar(255)"]
-                         [:sortze_data "varchar(255)"])))
+                         [:sortze_data "varchar(255)"])
+   (sql/create-table-ddl :liburuak
+                         [:id "bigint auto_increment"]
+                         [:erabiltzailea "varchar(255)"]
+                         [:magnet "varchar(255)"]
+                         [:titulua "varchar(255)"]
+                         [:egileak "varchar(255)"])
+   "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"))
 
 (defn db-garbitu []
   "Taulak ezabatu"
   (sql/db-do-commands @konfig/db-kon
-    (sql/drop-table-ddl :erabiltzaileak)))
+    (sql/drop-table-ddl :erabiltzaileak)
+    (sql/drop-table-ddl :liburuak)))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.

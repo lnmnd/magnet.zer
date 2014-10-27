@@ -269,3 +269,15 @@
                  :deskribapena "Erabiltzaile bat naiz"})
       (let [egoera (api-deia :delete "erabiltzaileak/era1?token=ezdago" :egoera)]
         egoera => 401))
+
+(fact "Liburua gehitu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]}
+          eran (api-deia :post (str "liburuak?token=" token) :json param)]
+      (let [lib (:liburua eran)]
+        (:id lib) => 1
+        (:erabiltzailea lib) => "era"
+        ; Aurrez ezin dugu jakin zer magnet sortuko den
+        (:titulua lib) => (:titulua param)
+        (:egileak lib) => (:egileak param)))))

@@ -6,7 +6,8 @@
             [clj-json.core :as json]
             [magnet.konfig :as konfig]
             [magnet.erabiltzaileak :as erak]
-            [magnet.saioak :as saioak]))
+            [magnet.saioak :as saioak]
+            [magnet.liburuak :as liburuak]))
 
 (defn json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
@@ -55,6 +56,13 @@
                  (saioak/lortu token))
   (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
                  (saioak/amaitu! token))
+
+  ; liburuak
+  (api-erantzuna POST "liburuak" eskaera
+                 (let [token (:token (:params eskaera))
+                       edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (liburuak/gehitu! token edukia)))
+  
   (route/resources "/")
   (route/not-found "Not Found"))
 
