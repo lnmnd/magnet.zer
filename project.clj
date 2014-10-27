@@ -3,6 +3,7 @@
   :url "https://github.com/lnmnd/magnet.zer"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [midje "1.6.3"]
+                 [org.clojure/tools.namespace "0.2.7"]
                  [ring/ring-jetty-adapter "1.3.1"]
                  [compojure "1.1.8"]
                  [ring-cors "0.1.4"]
