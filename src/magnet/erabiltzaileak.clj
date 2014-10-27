@@ -1,9 +1,8 @@
 (ns magnet.erabiltzaileak
   (:require [clojure.java.jdbc :as sql]
-            [clj-time.core :as time]
-            [clj-time.format :as time-format]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.saioak :as saioak]
+            [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
 
 (defn- baliozko-erabiltzailea
@@ -16,14 +15,6 @@
   "Pasahitzaren hash sortzen du bcrypt bidez"
   [pasahitza]
   (encrypt (gensalt 10) pasahitza))
-
-(defn- oraingo-data
-  "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
-   Formatuak ikusteko: (clj-time.format/show-formatters)"
-  []
-  (let [formatua (time-format/formatters :basic-date-time-no-ms)
-        orain (time/now)]
-    (time-format/unparse formatua orain)))
 
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
