@@ -13,7 +13,8 @@
                  [clj-bcrypt-wrapper "0.1.0"]
                  [http-kit "2.1.16"]]
   :plugins [[lein-midje "3.1.3"]
-            [lein-ring "0.8.11"]]
+            [lein-ring "0.8.11"]
+            [codox "0.8.10"]]
   :ring {:handler magnet.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]

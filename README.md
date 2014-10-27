@@ -34,3 +34,8 @@ Komando lerrotik:
 	    
 Fitxategiak aldatu ahala probak exekutatzeko:
 > $ lein midje :autotest
+
+## Kodearen dokumentazioa
+> $ lein doc
+
+doc katalogoan dokumentazioa sortzen du.
