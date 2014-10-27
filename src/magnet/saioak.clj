@@ -1,7 +1,5 @@
 (ns magnet.saioak
   (:require [clojure.java.jdbc :as sql]
-            [clj-time.core :as time]
-            [clj-time.format :as time-format]
             [clj-bcrypt-wrapper.core :refer [check-password]]
             [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
