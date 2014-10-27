@@ -5,22 +5,31 @@
             [magnet.saioak :refer [token-erabiltzailea]]
             [magnet.konfig :as konfig]))
 
-(defn egileak-lortuta [era]
-  "Erabiltzailea egileen zerrenda string-etik aterata"
-  (assoc era :egileak (read-string (:egileak era))))
+(defn eremuak-irakurrita
+  "String gisa gordetako eremuak irakurritako liburua"
+  [lib]
+  (assoc lib :egileak (read-string (:egileak lib))
+         :etiketak (read-string (:etiketak lib))))
 
 (defn- lortu-liburua [kon lib]
-  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak from liburuak where erabiltzailea=? and titulua=? and egileak=?" (:erabiltzailea lib) (:titulua lib) (:egileak lib)])
+  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where erabiltzailea=? and titulua=? and egileak=? and sinopsia=? and argitaletxea=? and urtea=? and generoa=? and etiketak=?"
+                       (:erabiltzailea lib) (:titulua lib) (:egileak lib)
+                       (:sinopsia lib) (:argitaletxea lib) (:urtea lib) (:generoa lib) (:etiketak lib)])
        first
-       egileak-lortuta))
+       eremuak-irakurrita))
 
 (defn gehitu! [token edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (let [egileak (prn-str (:egileak edukia))]
+    (let [egileak (prn-str (:egileak edukia))
+          etiketak (prn-str (:etiketak edukia))]
       (do (sql/insert! kon :liburuak
-                       [:erabiltzailea :magnet :titulua :egileak]
-                       [(token-erabiltzailea token) "magnet:?xt=urn:btih:TODO" (:titulua edukia) egileak])
+                       [:erabiltzailea :magnet :titulua :egileak :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
+                       [(token-erabiltzailea token) "magnet:?xt=urn:btih:TODO" (:titulua edukia) egileak
+                        (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) etiketak
+                        "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
+                        (oraingo-data) 0])
           [{:liburua (lortu-liburua kon (assoc edukia
                                           :erabiltzailea (token-erabiltzailea token)
-                                          :egileak egileak))}
+                                          :egileak egileak
+                                          :etiketak etiketak))}
            200]))))

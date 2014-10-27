@@ -273,11 +273,24 @@
 (fact "Liburua gehitu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
     (let [param {:titulua "Kaixo mundua"
-                 :egileak ["Joxe" "Patxi"]}
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :argitaletxea "Etxea"
+                 :urtea "2009"
+                 :generoa "Eleberria"
+                 :etiketak ["kaixo" "joxe" "zaharra"]}
           eran (api-deia :post (str "liburuak?token=" token) :json param)]
       (let [lib (:liburua eran)]
         (:id lib) => 1
         (:erabiltzailea lib) => "era"
         ; Aurrez ezin dugu jakin zer magnet sortuko den
         (:titulua lib) => (:titulua param)
-        (:egileak lib) => (:egileak param)))))
+        (:egileak lib) => (:egileak param)
+        (:sinopsia lib) => (:sinopsia param)
+        (:argitaletxea lib) => (:argitaletxea param)
+        (:urtea lib) => (:urtea param)
+        (:generoa lib) => (:generoa param)
+        (:etiketak lib) => (:etiketak param)
+        ; Azalaren izena zein izango den ez dakigu
+        ; 0 iruzkinekin hasiko da
+        (:iruzkin_kopurua lib) => 0))))

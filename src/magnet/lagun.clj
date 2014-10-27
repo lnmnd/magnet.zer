@@ -20,7 +20,15 @@
                          [:erabiltzailea "varchar(255)"]
                          [:magnet "varchar(255)"]
                          [:titulua "varchar(255)"]
-                         [:egileak "varchar(255)"])
+                         [:egileak "varchar(255)"]
+                         [:sinopsia "varchar(255)"]
+                         [:argitaletxea "varchar(255)"]
+                         [:urtea "varchar(255)"]
+                         [:generoa "varchar(255)"]
+                         [:etiketak "varchar(255)"]
+                         [:azala "varchar(255)"]
+                         [:igotze_data "varchar(255)"]
+                         [:iruzkin_kopurua "int"])
    "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"))
 
 (defn db-garbitu []
