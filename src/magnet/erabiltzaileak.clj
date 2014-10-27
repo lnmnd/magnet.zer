@@ -18,9 +18,10 @@
   (encrypt (gensalt 10) pasahitza))
 
 (defn- oraingo-data
-  "Oraingo data itzultzen du yyyy-MM-dd formatuarekin"
+  "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
+   Formatuak ikusteko: (clj-time.format/show-formatters)"
   []
-  (let [formatua (time-format/formatter "yyyy-MM-dd")
+  (let [formatua (time-format/formatters :basic-date-time-no-ms)
         orain (time/now)]
     (time-format/unparse formatua orain)))
 
