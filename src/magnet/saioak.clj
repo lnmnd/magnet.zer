@@ -3,6 +3,7 @@
             [clj-time.core :as time]
             [clj-time.format :as time-format]
             [clj-bcrypt-wrapper.core :refer [check-password]]
+            [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
 
 ; TODO iraungitze_data pasatzean modu automatikoan kendu
@@ -35,7 +36,7 @@
   (if (erabiltzaile-zuzena (:erabiltzailea edukia) (:pasahitza edukia))
     (let [saioa {:erabiltzailea (:erabiltzailea edukia)
                  :token (sortu-tokena)
-                 :saio_hasiera "TODO"
+                 :saio_hasiera (oraingo-data)
                  :iraungitze_data "TODO"}]
       (gehitu-saioa! saioa)
       [saioa 200]) 
