@@ -16,6 +16,8 @@
             [lein-ring "0.8.11"]
             [codox "0.8.10"]]
   :ring {:handler magnet.handler/app}
+  :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
+          :src-linenum-anchor-prefix "L"}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}})
