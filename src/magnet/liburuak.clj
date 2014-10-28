@@ -11,7 +11,7 @@
   (every? #(contains? lib %)
           [:epub :titulua :egileak :sinopsia :urtea :etiketak :azala]))
 
-(defn eremuak-irakurrita
+(defn- eremuak-irakurrita
   "String gisa gordetako eremuak irakurritako liburua"
   [lib]
   (assoc lib :egileak (read-string (:egileak lib))
