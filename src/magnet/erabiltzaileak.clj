@@ -66,12 +66,13 @@
           [{} 404])))
     [{} 400]))
 
-(defn ezabatu! [token erabiltzailea]
+(defn ezabatu!
+  "Erabiltzaile bat ezabatzen du"
+  [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (let [badago (not (empty? (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
-      (if badago
-        (if (saioak/token-zuzena token erabiltzailea)
-          (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
-              [{} 200])
-          [{} 401])
-        [{} 404]))))
+    (if (not (empty? (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))
+      (if (saioak/token-zuzena token erabiltzailea)
+        (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
+            [{} 200])
+        [{} 401])
+      [{} 404])))
