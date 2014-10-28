@@ -21,6 +21,15 @@
   [kon erabiltzailea]
   (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))
 
+(defn- aldatu-erabiltzailea!
+  "Erabiltzailea aldatzen du."
+  [kon erabiltzailea edukia]
+  (sql/update! kon :erabiltzaileak
+               {:pasahitza (pasahitz-hash (:pasahitza edukia))
+                :izena (:izena edukia)
+                :deskribapena (:deskribapena edukia)}
+               ["erabiltzailea=?" erabiltzailea]))
+
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
@@ -49,21 +58,16 @@
     [{} 422]))
 
 (defn aldatu! [token erabiltzailea edukia]
-  (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
-    (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
       (if (lortu-erabiltzailea kon erabiltzailea)
         (if (saioak/token-zuzena token erabiltzailea)
-          (do
-            (sql/update! kon :erabiltzaileak
-                         {:pasahitza (pasahitz-hash (:pasahitza edukia))
-                          :izena (:izena edukia)
-                          :deskribapena (:deskribapena edukia)}
-                         ["erabiltzailea=?" erabiltzailea])
-            [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
-             200])
+          (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
+              [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
+               200])
           [{} 401])
-        [{} 404]))
-    [{} 400]))
+        [{} 404])
+      [{} 400])))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
