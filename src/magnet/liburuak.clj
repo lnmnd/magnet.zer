@@ -26,23 +26,25 @@
 
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (sql/with-db-connection [kon @konfig/db-kon]
-      (let [edukia (assoc edukia
-                     :argitaletxea (if (nil? (:argitaletxea edukia))
-                                     "" (:argitaletxea edukia))
-                     :generoa (if (nil? (:generoa edukia))
-                                "" (:generoa edukia)))
-            egileak (prn-str (:egileak edukia))
-            etiketak (prn-str (:etiketak edukia))]
-        (do (sql/insert! kon :liburuak
-                         [:erabiltzailea :magnet :titulua :egileak :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
-                         [(token-erabiltzailea token) "magnet:?xt=urn:btih:TODO" (:titulua edukia) egileak
-                          (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) etiketak
-                          "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
-                          (oraingo-data) 0])
-            [{:liburua (lortu-liburua kon (assoc edukia
-                                            :erabiltzailea (token-erabiltzailea token)
-                                            :egileak egileak
-                                            :etiketak etiketak))}
-             200])))
+    (if-let [erabiltzailea (token-erabiltzailea token)]
+      (sql/with-db-connection [kon @konfig/db-kon]
+        (let [edukia (assoc edukia
+                       :argitaletxea (if (nil? (:argitaletxea edukia))
+                                       "" (:argitaletxea edukia))
+                       :generoa (if (nil? (:generoa edukia))
+                                  "" (:generoa edukia)))
+              egileak (prn-str (:egileak edukia))
+              etiketak (prn-str (:etiketak edukia))]
+          (do (sql/insert! kon :liburuak
+                           [:erabiltzailea :magnet :titulua :egileak :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
+                           [erabiltzailea "magnet:?xt=urn:btih:TODO" (:titulua edukia) egileak
+                            (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) etiketak
+                            "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
+                            (oraingo-data) 0])
+              [{:liburua (lortu-liburua kon (assoc edukia
+                                              :erabiltzailea erabiltzailea
+                                              :egileak egileak
+                                              :etiketak etiketak))}
+               200])))
+      [{} 401])
     [{} 422]))

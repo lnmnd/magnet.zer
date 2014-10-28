@@ -318,3 +318,14 @@
         (eremu-gabe :generoa) => 200
         (eremu-gabe :etiketak) => 422
         (eremu-gabe :azala) => 422)))
+
+(fact "Token okerrarekin liburua gehitu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (api-deia :post "liburuak?token=okerra" :egoera param) => 401)))
