@@ -16,6 +16,11 @@
   [pasahitza]
   (encrypt (gensalt 10) pasahitza))
 
+(defn- lortu-erabiltzailea
+  "Erabiltzailea lortzen du, nil ez badago"
+  [kon erabiltzailea]
+  (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))
+
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
@@ -27,50 +32,44 @@
        200])))
 
 (defn lortu [erabiltzailea]
-  (let [eran (sql/query @konfig/db-kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
-    (if (empty? eran)
-      [{} 404]
-      [{:erabiltzailea
-        (first eran)}
-       200])))
+  (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
+    [{:erabiltzailea era} 200]
+    [{} 404]))
 
 (defn gehitu! [edukia]
   (if (baliozko-erabiltzailea edukia)
     (sql/with-db-connection [kon @konfig/db-kon]
-      (if (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))
+      (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
+        [{} 422]
         (do (sql/insert! kon :erabiltzaileak
                          [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
                          [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
-            [{:erabiltzailea
-              (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
-             200])
-        [{} 422]))
+            [{:erabiltzailea (lortu-erabiltzailea kon (:erabiltzailea edukia))}
+             200])))
     [{} 422]))
 
 (defn aldatu! [token erabiltzailea edukia]
   (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
     (sql/with-db-connection [kon @konfig/db-kon]
-      (let [badago (not (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" erabiltzailea])))]
-        (if badago
-          (if (saioak/token-zuzena token erabiltzailea)
-            (do
-              (sql/update! kon :erabiltzaileak
-                           {:pasahitza (pasahitz-hash (:pasahitza edukia))
-                            :izena (:izena edukia)
-                            :deskribapena (:deskribapena edukia)}
-                           ["erabiltzailea=?" erabiltzailea])
-              [{:erabiltzailea
-                (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea]))}
-               200])
-            [{} 401])
-          [{} 404])))
+      (if (lortu-erabiltzailea kon erabiltzailea)
+        (if (saioak/token-zuzena token erabiltzailea)
+          (do
+            (sql/update! kon :erabiltzaileak
+                         {:pasahitza (pasahitz-hash (:pasahitza edukia))
+                          :izena (:izena edukia)
+                          :deskribapena (:deskribapena edukia)}
+                         ["erabiltzailea=?" erabiltzailea])
+            [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
+             200])
+          [{} 401])
+        [{} 404]))
     [{} 400]))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
   [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (if (not (empty? (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" erabiltzailea])))
+    (if (lortu-erabiltzailea kon erabiltzailea)
       (if (saioak/token-zuzena token erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
             [{} 200])
