@@ -329,3 +329,20 @@
                  :etiketak ["kaixo" "joxe" "zaharra"]
                  :azala "base64"}]
       (api-deia :post "liburuak?token=okerra" :egoera param) => 401)))
+
+(fact "Liburua lortu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)
+            {lib :liburua} (api-deia :get (str "liburuak/" id) :json)]
+        (:titulua lib) => (:titulua param)
+        (:egileak lib) => (:egileak param)
+        (:sinopsia lib) => (:sinopsia param)
+        (:urtea lib) => (:urtea param)
+        (:etiketak lib) => (:etiketak param)))))

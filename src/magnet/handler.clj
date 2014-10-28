@@ -58,6 +58,8 @@
                  (saioak/amaitu! token))
 
   ; liburuak
+  (api-erantzuna GET "liburuak/:id" {{id :id} :params}
+                 (liburuak/lortu id))
   (api-erantzuna POST "liburuak" eskaera
                  (let [token (:token (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]

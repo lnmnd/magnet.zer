@@ -49,3 +49,9 @@
       [(liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea)) 200]
       [{} 401])
     [{} 422]))
+
+(defn lortu
+  "Eskatutako id-a duen liburua lortu"
+  [id]
+  [{:liburua (eremuak-irakurrita (first (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])))}
+   200])
