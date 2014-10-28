@@ -64,6 +64,11 @@
                  (let [token (:token (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (liburuak/gehitu! token edukia)))
+  (api-erantzuna PUT "liburuak/:id" eskaera
+                 (let [token (:token (:params eskaera))
+                       id (:id (:params eskaera))
+                       edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (liburuak/aldatu! token id edukia)))
   
   (route/resources "/")
   (route/not-found "Not Found"))

@@ -349,3 +349,44 @@
 
 (fact "Existitzen ez den liburua" :liburuak
   (api-deia :get "liburuak/1" :egoera) => 404)
+
+(fact "Liburua aldatu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)
+            {lib :liburua} (api-deia :put (str "liburuak/" id "?token=" token) :json (assoc param :titulua "Titulu berria"))]
+        (:titulua lib) => "Titulu berria"
+        (:egileak lib) => (:egileak param)
+        (:sinopsia lib) => (:sinopsia param)
+        (:urtea lib) => (:urtea param)
+        (:etiketak lib) => (:etiketak param)))))
+
+(fact "Liburua aldatu eremu okerrak" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (api-deia :put (str "liburuak/" id "?token=okerra") :egoera (dissoc param :titulua)) => 422))))
+
+(fact "Liburua aldatu token okerra" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (api-deia :put (str "liburuak/" id "?token=okerra") :egoera param) => 401))))

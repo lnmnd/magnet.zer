@@ -43,6 +43,23 @@
                                          :egileak egileak
                                          :etiketak etiketak))}))))
 
+(defn liburua-aldatu! [id edukia]
+  (let [argitaletxea (if (nil? (:argitaletxea edukia))
+                        "" (:argitaletxea edukia))
+        generoa (if (nil? (:generoa edukia))
+                  "" (:generoa edukia))]
+    (sql/update! @konfig/db-kon :liburuak
+                 {:titulua (:titulua edukia)
+                  :egileak (prn-str (:egileak edukia))
+                  :sinopsia (:sinopsia edukia)
+                  :argitaletxea argitaletxea
+                  :urtea (:urtea edukia)
+                  :generoa generoa
+                  :etiketak (prn-str (:etiketak edukia))
+                  :azala (:azala edukia)}
+                 ["id=?" id])
+    (lortu id)))
+
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [erabiltzailea (token-erabiltzailea token)]
@@ -57,3 +74,12 @@
     (if (empty? ema)
       [{} 404]
       [{:liburua (eremuak-irakurrita (first ema))} 200])))
+
+(defn aldatu!
+  "id bat eta edukia emanda liburua aldatu"
+  [token id edukia]
+  (if (baliozko-liburu-eskaera edukia)
+    (if-let [erabiltzailea (token-erabiltzailea token)]
+      (liburua-aldatu! id (assoc edukia :erabiltzailea erabiltzailea))
+      [{} 401])
+    [{} 422]))
