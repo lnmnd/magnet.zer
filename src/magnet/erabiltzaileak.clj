@@ -5,11 +5,11 @@
             [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
 
-(defn- baliozko-erabiltzailea
+(defn- baliozko-erabiltzailea?
+  "Erabiltzaileak beharrezko eremu guztiak dituen edo ez"
   [erabiltzailea]
-  (and (and (contains? erabiltzailea :erabiltzailea) (string? (:erabiltzailea erabiltzailea)))
-       (and (contains? erabiltzailea :pasahitza) (string? (:pasahitza erabiltzailea)))
-       (and (contains? erabiltzailea :izena) (string? (:izena erabiltzailea)))))
+  (every? #(contains? erabiltzailea %)
+          [:erabiltzailea :pasahitza :izena]))
 
 (defn- pasahitz-hash
   "Pasahitzaren hash sortzen du bcrypt bidez"
@@ -46,7 +46,7 @@
     [{} 404]))
 
 (defn gehitu! [edukia]
-  (if (baliozko-erabiltzailea edukia)
+  (if (baliozko-erabiltzailea? edukia)
     (sql/with-db-connection [kon @konfig/db-kon]
       (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
         [{} 422]
@@ -59,7 +59,7 @@
 
 (defn aldatu! [token erabiltzailea edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
+    (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
       (if (lortu-erabiltzailea kon erabiltzailea)
         (if (saioak/token-zuzena token erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
