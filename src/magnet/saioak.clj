@@ -24,11 +24,9 @@
        (reduce str "")))
 
 (defn- erabiltzaile-zuzena [erabiltzailea pasahitza]
-  (let [ema (sql/query @konfig/db-kon ["select pasahitza from erabiltzaileak where erabiltzailea=?" erabiltzailea])]
-    (if (empty? ema)
-      false
-      (let [{pasahitz_hash :pasahitza} (first ema)]
-        (check-password pasahitza pasahitz_hash)))))
+  (if-let [{pasahitz_hash :pasahitza} (first (sql/query @konfig/db-kon ["select pasahitza from erabiltzaileak where erabiltzailea=?" erabiltzailea]))]
+    (check-password pasahitza pasahitz_hash)
+    false))
 
 (defn hasi!
   "Erabiltzaile baten saioa hasten du"
