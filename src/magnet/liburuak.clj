@@ -24,6 +24,7 @@
        first
        eremuak-irakurrita))
 
+(declare lortu)
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [edukia (assoc edukia
