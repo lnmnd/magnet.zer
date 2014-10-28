@@ -69,6 +69,10 @@
                        id (:id (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (liburuak/aldatu! token id edukia)))
+  (api-erantzuna DELETE "liburuak/:id" eskaera
+                 (let [token (:token (:params eskaera))
+                       id (:id (:params eskaera))]
+                   (liburuak/ezabatu! token id)))  
   
   (route/resources "/")
   (route/not-found "Not Found"))

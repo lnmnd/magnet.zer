@@ -83,3 +83,14 @@
       (liburua-aldatu! id (assoc edukia :erabiltzailea erabiltzailea))
       [{} 401])
     [{} 422]))
+
+(defn ezabatu!
+  "id bat emanda liburua ezabatu"
+  [token id]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (if (not (empty? (sql/query kon ["select id from liburuak where id=?" id])))
+      (if (token-erabiltzailea token)
+        (do (sql/delete! kon :liburuak ["id=?" id])
+            [{} 200])
+        [{} 401])
+      [{} 404])))
