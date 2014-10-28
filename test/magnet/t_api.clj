@@ -78,15 +78,15 @@
       (let [egoera (api-deia :post "erabiltzaileak" :egoera
                              {:pasahitza "1234"
                               :izena "Era"})]
-        egoera => 400)
+        egoera => 422)
       (let [egoera (api-deia :post "erabiltzaileak" :egoera
                              {:erabiltzailea "era1"
                               :izena "Era"})]
-        egoera => 400)
+        egoera => 422)
       (let [egoera (api-deia :post "erabiltzaileak" :egoera
                              {:erabiltzailea "era"
                               :pasahitza "1234"})]
-        egoera => 400))
+        egoera => 422))
 
 (fact "Erabiltzaile bat gehitu" :erabiltzaileak
       (let [eran (api-deia :post "erabiltzaileak" :json

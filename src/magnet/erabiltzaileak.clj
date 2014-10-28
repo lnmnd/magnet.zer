@@ -45,7 +45,7 @@
               (first (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak where erabiltzailea=?" (:erabiltzailea edukia)]))}
              200])
         [{} 422]))
-    [{} 400]))
+    [{} 422]))
 
 (defn aldatu! [token erabiltzailea edukia]
   (if (baliozko-erabiltzailea (assoc edukia :erabiltzailea erabiltzailea))
