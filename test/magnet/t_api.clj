@@ -272,13 +272,15 @@
 
 (fact "Liburua gehitu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
-    (let [param {:titulua "Kaixo mundua"
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
                  :sinopsia "Duela urte asko..."
                  :argitaletxea "Etxea"
                  :urtea "2009"
                  :generoa "Eleberria"
-                 :etiketak ["kaixo" "joxe" "zaharra"]}
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}
           eran (api-deia :post (str "liburuak?token=" token) :json param)]
       (let [lib (:liburua eran)]
         (:id lib) => 1
@@ -294,3 +296,25 @@
         ; Azalaren izena zein izango den ez dakigu
         ; 0 iruzkinekin hasiko da
         (:iruzkin_kopurua lib) => 0))))
+
+(fact "Eremu bat falta duen liburua gehitu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :argitaletxea "Etxea"
+                 :urtea "2009"
+                 :generoa "Eleberria"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}
+          eremu-gabe #(api-deia :post (str "liburuak?token=" token) :egoera (dissoc param %))]
+        (eremu-gabe :epub) => 422
+        (eremu-gabe :titulua) => 422
+        (eremu-gabe :egileak) => 422
+        (eremu-gabe :sinopsia) => 422
+        (eremu-gabe :argitaletxea) => 200
+        (eremu-gabe :urtea) => 422
+        (eremu-gabe :generoa) => 200
+        (eremu-gabe :etiketak) => 422
+        (eremu-gabe :azala) => 422)))
