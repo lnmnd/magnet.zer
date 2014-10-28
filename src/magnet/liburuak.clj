@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
             [magnet.lagun :refer [oraingo-data]]
-            [magnet.saioak :refer [token-erabiltzailea]]
+            [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
 
 (defn- baliozko-liburu-eskaera
@@ -63,7 +63,7 @@
 
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (if-let [erabiltzailea (token-erabiltzailea token)]
+    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
       [(liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea)) 200]
       [{} 401])
     [{} 422]))
@@ -80,7 +80,7 @@
   "id bat eta edukia emanda liburua aldatu"
   [token id edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (if-let [erabiltzailea (token-erabiltzailea token)]
+    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
       (liburua-aldatu! id (assoc edukia :erabiltzailea erabiltzailea))
       [{} 401])
     [{} 422]))
@@ -90,7 +90,7 @@
   [token id]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (not (empty? (sql/query kon ["select id from liburuak where id=?" id])))
-      (if (token-erabiltzailea token)
+      (if (lortu-saioa token)
         (do (sql/delete! kon :liburuak ["id=?" id])
             [{} 200])
         [{} 401])

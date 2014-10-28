@@ -55,15 +55,10 @@
   (swap! saioak dissoc token)
   [{} 200])
 
-(defn token-zuzena
-  "true tokena existitzen bada eta erabiltzailearena bada."
-  [token erabiltzailea]
-  (and (contains? @saioak token)
-       (= erabiltzailea (:erabiltzailea (@saioak token)))))
-
-(defn token-erabiltzailea
-  "Tokenaren jabea itzultzen du edo false tokena ez badago."
+(defn lortu-saioa
+  "Tokena duen saioa lortzen du.
+\"lortu\" bezala baina saioa-egoera bikotea ordez saioa soilik itzultzen du edo false tokena ez badago."
   [token]
   (if (contains? @saioak token)
-    (:erabiltzailea (@saioak token))
+    (@saioak token)
     false))

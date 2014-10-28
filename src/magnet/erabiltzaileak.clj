@@ -1,7 +1,7 @@
 (ns magnet.erabiltzaileak
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
-            [magnet.saioak :as saioak]
+            [magnet.saioak :refer [lortu-saioa]]
             [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
 
@@ -61,7 +61,7 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
       (if (lortu-erabiltzailea kon erabiltzailea)
-        (if (saioak/token-zuzena token erabiltzailea)
+        (if (lortu-saioa token)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
               [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
                200])
@@ -74,7 +74,7 @@
   [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (lortu-erabiltzailea kon erabiltzailea)
-      (if (saioak/token-zuzena token erabiltzailea)
+      (if (lortu-saioa token)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
             [{} 200])
         [{} 401])
