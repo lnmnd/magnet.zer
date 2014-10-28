@@ -30,7 +30,9 @@
       (let [{pasahitz_hash :pasahitza} (first ema)]
         (check-password pasahitza pasahitz_hash)))))
 
-(defn hasi! [edukia]
+(defn hasi!
+  "Erabiltzaile baten saioa hasten du"
+  [edukia]
   (if (erabiltzaile-zuzena (:erabiltzailea edukia) (:pasahitza edukia))
     (let [saioa {:erabiltzailea (:erabiltzailea edukia)
                  :token (sortu-tokena)
@@ -53,11 +55,15 @@
   (swap! saioak dissoc token)
   [{} 200])
 
-(defn token-zuzena [token erabiltzailea]
+(defn token-zuzena
+  "true tokena existitzen bada eta erabiltzailearena bada"
+  [token erabiltzailea]
   (and (contains? @saioak token)
        (= erabiltzailea (:erabiltzailea (@saioak token)))))
 
-(defn token-erabiltzailea [token]
+(defn token-erabiltzailea
+  "Tokenaren jabea itzultzen du edo false tokena ez badago"
+  [token]
   (if (contains? @saioak token)
     (:erabiltzailea (@saioak token))
     false))
