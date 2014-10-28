@@ -346,3 +346,6 @@
         (:sinopsia lib) => (:sinopsia param)
         (:urtea lib) => (:urtea param)
         (:etiketak lib) => (:etiketak param)))))
+
+(fact "Existitzen ez den liburua" :liburuak
+  (api-deia :get "liburuak/1" :egoera) => 404)
