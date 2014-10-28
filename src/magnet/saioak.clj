@@ -12,9 +12,11 @@
   [saioa]
   (swap! saioak conj {(:token saioa) saioa}))
 
+(defmacro ^:private zerrendatu [s]
+  (into [] (re-seq #"[A-Z,0-9]" s)))
+
 (defn- ausazko-hizkia []
-  (rand-nth ["0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
-             "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"]))
+  (rand-nth (zerrendatu "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")))
 
 (defn- sortu-tokena
   "Zenbaki eta hizki larriz osatutako 32 luzerako ausazko tokena sortzen du."
