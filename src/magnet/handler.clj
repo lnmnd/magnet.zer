@@ -51,7 +51,7 @@
   ; saioak
   (api-erantzuna POST "saioak" eskaera
                  (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (saioak/hasi! edukia)))
+                   (saioak/hasi! (:erabiltzailea edukia) (:pasahitza edukia))))
   (api-erantzuna GET "saioak/:token" {{token :token} :params}
                  (saioak/lortu token))
   (api-erantzuna DELETE "saioak/:token" {{token :token} :params}

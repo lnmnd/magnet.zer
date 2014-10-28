@@ -8,7 +8,7 @@
 (def ^{:private true} saioak (atom {}))
 
 (defn- gehitu-saioa!
-  "Saioa saioen zerrendan sartzen du tokenaren arabera"
+  "Saioa saioen zerrendan sartzen du."
   [saioa]
   (swap! saioak conj {(:token saioa) saioa}))
 
@@ -17,22 +17,24 @@
              "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"]))
 
 (defn- sortu-tokena
-  "Zenbaki eta hizkiz osatutako 32 luzerako tokena sortzen du"
+  "Zenbaki eta hizki larriz osatutako 32 luzerako ausazko tokena sortzen du."
   []
   (->> (for [x (range 32)]
          (ausazko-hizkia))
        (reduce str "")))
 
-(defn- erabiltzaile-zuzena [erabiltzailea pasahitza]
+(defn- erabiltzaile-zuzena?
+  "true erabiltzailea eta pasahitza zuzenak badira."
+  [erabiltzailea pasahitza]
   (if-let [{pasahitz_hash :pasahitza} (first (sql/query @konfig/db-kon ["select pasahitza from erabiltzaileak where erabiltzailea=?" erabiltzailea]))]
     (check-password pasahitza pasahitz_hash)
     false))
 
 (defn hasi!
-  "Erabiltzaile baten saioa hasten du"
-  [edukia]
-  (if (erabiltzaile-zuzena (:erabiltzailea edukia) (:pasahitza edukia))
-    (let [saioa {:erabiltzailea (:erabiltzailea edukia)
+  "Erabiltzailea eta pasahitza zuzenak badira saioa hasten du."
+  [erabiltzailea pasahitza]
+  (if (erabiltzaile-zuzena? erabiltzailea pasahitza)
+    (let [saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
                  :saio_hasiera (oraingo-data)
                  :iraungitze_data "TODO"}]
@@ -41,26 +43,26 @@
     [{} 422]))
 
 (defn lortu
-  "Tokena duen saioa lortu"
+  "Tokena duen saioa lortzen du."
   [token]
   (if (contains? @saioak token)
     [(@saioak token) 200]
     [{} 404]))
 
 (defn amaitu!
-  "Saioa amaitu, tokena baliogabetuz"
+  "Saioa amaitzen du, tokena baliogabetuz."
   [token]
   (swap! saioak dissoc token)
   [{} 200])
 
 (defn token-zuzena
-  "true tokena existitzen bada eta erabiltzailearena bada"
+  "true tokena existitzen bada eta erabiltzailearena bada."
   [token erabiltzailea]
   (and (contains? @saioak token)
        (= erabiltzailea (:erabiltzailea (@saioak token)))))
 
 (defn token-erabiltzailea
-  "Tokenaren jabea itzultzen du edo false tokena ez badago"
+  "Tokenaren jabea itzultzen du edo false tokena ez badago."
   [token]
   (if (contains? @saioak token)
     (:erabiltzailea (@saioak token))
