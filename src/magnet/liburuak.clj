@@ -18,9 +18,9 @@
          :etiketak (read-string (:etiketak lib))))
 
 (defn- lortu-liburua [kon lib]
-  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where erabiltzailea=? and titulua=? and egileak=? and sinopsia=? and argitaletxea=? and urtea=? and generoa=? and etiketak=?"
+  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where erabiltzailea=? and titulua=? and egileak=? and sinopsia=? and  urtea=? and  etiketak=?"
                        (:erabiltzailea lib) (:titulua lib) (:egileak lib)
-                       (:sinopsia lib) (:argitaletxea lib) (:urtea lib) (:generoa lib) (:etiketak lib)])
+                       (:sinopsia lib) (:urtea lib) (:etiketak lib)])
        first
        eremuak-irakurrita))
 
