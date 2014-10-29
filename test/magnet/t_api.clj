@@ -427,3 +427,23 @@
                  :azala "base64"}]
       (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
         (api-deia :delete (str "liburuak/666?token=" token) :egoera) => 404))))
+
+(fact "Liburuak lortu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (api-deia :post (str "liburuak?token=" token) :ezer param)
+      (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Beste liburu bat"))
+      (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Hirugarrena"))
+      (let [eran (api-deia :get "liburuak" :json)]
+        (:guztira eran) => 3
+        (let [liburuak (:liburuak eran)]
+          (count liburuak) => 3
+          (:titulua (first liburuak)) => "Kaixo mundua"
+          (:titulua (second liburuak)) => "Beste liburu bat"
+          (:titulua (liburuak 2)) => "Hirugarrena")))))

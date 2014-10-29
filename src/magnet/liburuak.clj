@@ -95,3 +95,15 @@
             [{} 200])
         [{} 401])
       [{} 404])))
+
+(defn lortu-bilduma
+  "Liburuen bilduma lortzen du."
+  [desplazamendua muga]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak"]))
+          liburuak (sql/query kon ["select * from liburuak limit ? offset ?" muga desplazamendua])]
+      [{:desplazamendua desplazamendua
+        :muga muga
+        :guztira guztira
+        :liburuak liburuak}
+       200])))

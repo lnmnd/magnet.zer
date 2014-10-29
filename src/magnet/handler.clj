@@ -58,6 +58,15 @@
                  (saioak/amaitu! token))
 
   ; liburuak
+  (api-erantzuna GET "liburuak" eskaera
+                 (let [{query-params :query-params} eskaera
+                       muga (if (contains? query-params "muga")
+                              (read-string (query-params "muga"))
+                              konfig/muga)
+                       desplazamendua (if (contains? query-params "desplazamendua")
+                                        (read-string (query-params "desplazamendua"))
+                                        0)]
+                   (liburuak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))  
   (api-erantzuna GET "liburuak/:id" {{id :id} :params}
                  (liburuak/lortu id))
   (api-erantzuna POST "liburuak" eskaera
