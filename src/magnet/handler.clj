@@ -90,6 +90,11 @@
                        id (:id (:params eskaera))
                        edukia (json/parse-string (slurp (:body eskaera)) true)]
                    (iruzkinak/gehitu! token id edukia)))
+    (api-erantzuna PUT "iruzkinak/:id" eskaera
+                 (let [token (:token (:params eskaera))
+                       id (:id (:params eskaera))
+                       edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (iruzkinak/aldatu! token id edukia)))
   
   (route/resources "/")
   (route/not-found "Not Found"))

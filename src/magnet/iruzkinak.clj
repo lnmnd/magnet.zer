@@ -14,6 +14,16 @@
                        [(:liburua edukia) (:erabiltzailea edukia) (:data edukia) (:edukia edukia)])
           (assoc edukia :id (:id (first (sql/query kon "select identity() as id"))))))))
 
+(defn- lortu-iruzkina
+  [id]
+  (first (sql/query @konfig/db-kon ["select * from iruzkinak where id=?" id])))
+
+(defn- aldatu-iruzkina!
+  [id edukia]
+  (sql/update! @konfig/db-kon :iruzkinak
+               {:edukia (:edukia edukia)}
+               ["id=?" id]))
+
 (defn gehitu!
   "id liburuarekin lotutako iruzkina gehitu."
   [token id edukia]
@@ -24,3 +34,14 @@
                           :erabiltzailea erabiltzailea))}
      200]
     [{} 401]))
+
+(defn aldatu!
+  "Iruzkinaren edukia aldatzen du."
+  [token id edukia]
+  (if-let [ir (lortu-iruzkina id)]
+    (if (lortu-saioa token)
+      (do (aldatu-iruzkina! id edukia)
+          [{:iruzkina (assoc ir :edukia (:edukia edukia))}
+           200])
+      [{} 401])
+    [{} 404]))
