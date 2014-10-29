@@ -43,7 +43,8 @@
   "Iruzkinaren edukia aldatzen du."
   [token id edukia]
   (if-let [ir (lortu-iruzkina id)]
-    (if (lortu-saioa token)
+    (if (= (:erabiltzailea (lortu-saioa token))
+           (:erabiltzailea ir))
       (do (aldatu-iruzkina! id edukia)
           [{:iruzkina (assoc ir :edukia (:edukia edukia))}
            200])
@@ -61,7 +62,8 @@
   "Iruzkina ezabatzen du."
   [token id]
   (if-let [ir (lortu-iruzkina id)]
-    (if (lortu-saioa token)
+    (if (= (:erabiltzailea (lortu-saioa token))
+           (:erabiltzailea ir))
       (do (ezabatu-iruzkina! id)
           [{} 200])
       [{} 401])

@@ -508,6 +508,22 @@
               (api-deia :put (str "iruzkinak/" id  "?token=okerra") :egoera
                         {:edukia "Eduki berria"}) => 401)))))
 
+(fact "Iruzkina aldatu beste token batekin" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (let [token (saioa-hasi "era2" "4321" "Era2")]
+                (api-deia :put (str "iruzkinak/" id  "?token=" token) :egoera
+                          {:edukia "Eduki berria"})) => 401)))))
+
 (fact "Existitzen ez den iruzkina aldatu" :iruzkinak
       (let [token (saioa-hasi "era" "1234" "Era")]
         (let [param {:epub "base64"
@@ -569,6 +585,21 @@
             (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
                                                  {:edukia "Hau iruzkin bat da"})]
               (api-deia :delete (str "iruzkinak/" id  "?token=okerra") :egoera) => 401)))))
+
+(fact "Iruzkina ezabatu beste token batekin" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (let [token (saioa-hasi "era2" "4321" "Era2")]
+                (api-deia :delete (str "iruzkinak/" id  "?token=" token) :egoera)) => 401)))))
 
 (fact "Existitzen ez den iruzkina ezabatu" :iruzkinak
       (let [token (saioa-hasi "era" "1234" "Era")]
