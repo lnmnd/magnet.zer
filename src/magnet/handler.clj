@@ -7,7 +7,8 @@
             [magnet.konfig :as konfig]
             [magnet.erabiltzaileak :as erak]
             [magnet.saioak :as saioak]
-            [magnet.liburuak :as liburuak]))
+            [magnet.liburuak :as liburuak]
+            [magnet.iruzkinak :as iruzkinak]))
 
 (defn json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
@@ -82,6 +83,13 @@
                  (let [token (:token (:params eskaera))
                        id (:id (:params eskaera))]
                    (liburuak/ezabatu! token id)))  
+
+  ; iruzkinak
+  (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
+                 (let [token (:token (:params eskaera))
+                       id (:id (:params eskaera))
+                       edukia (json/parse-string (slurp (:body eskaera)) true)]
+                   (iruzkinak/gehitu! token id edukia)))
   
   (route/resources "/")
   (route/not-found "Not Found"))

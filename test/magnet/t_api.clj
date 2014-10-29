@@ -447,3 +447,32 @@
           (:titulua (first liburuak)) => "Kaixo mundua"
           (:titulua (second liburuak)) => "Beste liburu bat"
           (:titulua (liburuak 2)) => "Hirugarrena")))))
+
+(fact "Iruzkina gehitu" :iruzkinak
+    (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (let [{ir :iruzkina} (api-deia :post (str "liburuak/" id  "/iruzkinak?token=" token) :json
+                                       {:edukia "Hau iruzkin bat da"})]
+          (:liburua ir) => (str id)
+          (:erabiltzailea ir) => "era"
+          (:edukia ir) => "Hau iruzkin bat da")))))
+
+(fact "Iruzkina gehitu token okerrarekin" :iruzkinak
+    (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (api-deia :post (str "liburuak/" id  "/iruzkinak?token=okerra") :egoera
+                  {:edukia "Hau iruzkin bat da"}) => 401))))

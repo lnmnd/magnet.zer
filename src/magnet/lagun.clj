@@ -29,13 +29,22 @@
                          [:azala "varchar(255)"]
                          [:igotze_data "varchar(255)"]
                          [:iruzkin_kopurua "int"])
-   "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"))
+   "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   (sql/create-table-ddl :iruzkinak
+                         [:id "bigint auto_increment"]
+                         [:liburua "bigint"]
+                         [:erabiltzailea "varchar(255)"]
+                         [:data "varchar(255)"]
+                         [:edukia "varchar(255)"])
+   "alter table iruzkinak add foreign key (liburua) references liburuak(id)"
+   "alter table iruzkinak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"))
 
 (defn db-garbitu []
   "Taulak ezabatu"
   (sql/db-do-commands @konfig/db-kon
     (sql/drop-table-ddl :erabiltzaileak)
-    (sql/drop-table-ddl :liburuak)))
+    (sql/drop-table-ddl :liburuak)
+    (sql/drop-table-ddl :iruzkinak)))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
