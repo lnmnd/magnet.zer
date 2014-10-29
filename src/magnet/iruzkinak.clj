@@ -45,3 +45,10 @@
            200])
       [{} 401])
     [{} 404]))
+
+(defn lortu
+  "id jakineko iruzkina lortzen du."
+  [id]
+  (if-let [ir (lortu-iruzkina id)]
+    [{:iruzkina ir} 200]
+    [{} 404]))

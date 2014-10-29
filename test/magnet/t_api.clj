@@ -522,3 +522,21 @@
                                                  {:edukia "Hau iruzkin bat da"})]
               (api-deia :put (str "iruzkinak/" 999  "?token=" token) :egoera
                         {:edukia "Eduki berria"}) => 404)))))
+
+(fact "Iruzkina lortu" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (let [{ir :iruzkina} (api-deia :get (str "iruzkinak/" id) :json)]
+                (:edukia ir) => "Hau iruzkin bat da"))))))
+
+(fact "Existitzen ez den iruzkina lortu" :iruzkinak
+      (api-deia :get "iruzkinak/999" :egoera) => 404)
