@@ -61,7 +61,8 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
       (if (lortu-erabiltzailea kon erabiltzailea)
-        (if (lortu-saioa token)
+        (if (= (:erabiltzailea (lortu-saioa token))
+               erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
               [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
                200])
@@ -74,7 +75,8 @@
   [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (lortu-erabiltzailea kon erabiltzailea)
-      (if (lortu-saioa token)
+      (if (= (:erabiltzailea (lortu-saioa token))
+               erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
             [{} 200])
         [{} 401])

@@ -251,6 +251,19 @@
                               :deskribapena "Aldatutako erabiltzaile bat naiz"})]
         egoera => 401))
 
+(fact "Erabiltzaile bat aldatu beste token batekin" :erabiltzaileak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (let [token (saioa-hasi "era2" "4321" "Era2")]
+        (let [egoera (api-deia :put (str "erabiltzaileak/era1?token=" token) :egoera
+                               {:pasahitza "1111"
+                                :izena "Era berria"
+                                :deskribapena "Aldatutako erabiltzaile bat naiz"})]
+          egoera => 401)))
+
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
       (let [egoera (api-deia :delete (str aurrizkia "erabiltzaileak/era1") :egoera)]
         egoera => 404))
@@ -269,6 +282,16 @@
                  :deskribapena "Erabiltzaile bat naiz"})
       (let [egoera (api-deia :delete "erabiltzaileak/era1?token=ezdago" :egoera)]
         egoera => 401))
+
+(fact "Erabiltzaile bat ezabatu beste token batekin" :erabiltzaileak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "Era"
+                 :deskribapena "Erabiltzaile bat naiz"})
+      (let [token (saioa-hasi "era2" "4321" "Era2")]
+        (let [egoera (api-deia :delete (str "erabiltzaileak/era1?token=" token) :egoera)]
+          egoera => 401)))
 
 (fact "Liburua gehitu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
