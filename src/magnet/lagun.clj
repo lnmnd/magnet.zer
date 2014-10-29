@@ -53,3 +53,10 @@
   (let [formatua (time-format/formatters :basic-date-time-no-ms)
         orain (time/now)]
     (time-format/unparse formatua orain)))
+
+(defmacro trafun
+  "Transakzio baten barnean exekutatuko den funtzioa definitzen du."
+  [kon izena dok param & gorputza]
+  `(defn ~izena ~dok ~param
+     (sql/with-db-transaction [~kon @konfig/db-kon]
+       ~@gorputza)))

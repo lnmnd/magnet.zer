@@ -1,7 +1,7 @@
 (ns magnet.iruzkinak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
-            [magnet.lagun :refer [oraingo-data]]
+            [magnet.lagun :refer [trafun oraingo-data]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
 
@@ -27,47 +27,51 @@
   [kon id]
   (sql/delete! kon :iruzkinak ["id=?" id]))
 
-(defn gehitu!
-  "id liburuarekin lotutako iruzkina gehitu."
-  [token id edukia]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      [{:iruzkina
-        (gehitu-iruzkina! kon (assoc edukia
-                                :liburua id
-                                :erabiltzailea erabiltzailea))}
-       200]
-      [{} 401])))
+(trafun
+ kon
+ gehitu!
+ "id liburuarekin lotutako iruzkina gehitu."
+ [token id edukia]
+ (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
+   [{:iruzkina
+     (gehitu-iruzkina! kon (assoc edukia
+                             :liburua id
+                             :erabiltzailea erabiltzailea))}
+    200]
+   [{} 401]))
 
-(defn aldatu!
-  "Iruzkinaren edukia aldatzen du."
-  [token id edukia]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [ir (lortu-iruzkina kon id)]
-      (if (= (:erabiltzailea (lortu-saioa token))
-             (:erabiltzailea ir))
-        (do (aldatu-iruzkina! kon id edukia)
-            [{:iruzkina (assoc ir :edukia (:edukia edukia))}
-             200])
-        [{} 401])
-      [{} 404])))
+(trafun
+ kon
+ aldatu!
+ "Iruzkinaren edukia aldatzen du."
+ [token id edukia]
+ (if-let [ir (lortu-iruzkina kon id)]
+   (if (= (:erabiltzailea (lortu-saioa token))
+          (:erabiltzailea ir))
+     (do (aldatu-iruzkina! kon id edukia)
+         [{:iruzkina (assoc ir :edukia (:edukia edukia))}
+          200])
+     [{} 401])
+   [{} 404]))
 
-(defn lortu
-  "id jakineko iruzkina lortzen du."
-  [id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [ir (lortu-iruzkina kon id)]
-      [{:iruzkina ir} 200]
-      [{} 404])))
+(trafun
+ kon
+ lortu
+ "id jakineko iruzkina lortzen du."
+ [id]
+ (if-let [ir (lortu-iruzkina kon id)]
+   [{:iruzkina ir} 200]
+   [{} 404]))
 
-(defn ezabatu!
-  "Iruzkina ezabatzen du."
-  [token id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [ir (lortu-iruzkina kon id)]
-      (if (= (:erabiltzailea (lortu-saioa token))
-             (:erabiltzailea ir))
-        (do (ezabatu-iruzkina! kon id)
-            [{} 200])
-        [{} 401])
-      [{} 404])))
+(trafun
+ kon
+ ezabatu!
+ "Iruzkina ezabatzen du."
+ [token id]
+ (if-let [ir (lortu-iruzkina kon id)]
+   (if (= (:erabiltzailea (lortu-saioa token))
+          (:erabiltzailea ir))
+     (do (ezabatu-iruzkina! kon id)
+         [{} 200])
+     [{} 401])
+   [{} 404]))
