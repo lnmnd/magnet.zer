@@ -15,6 +15,7 @@
                  [http-kit "2.1.16"]]
   :plugins [[lein-midje "3.1.3"]
             [lein-ring "0.8.11"]
+            [cider/cider-nrepl "0.7.0"]
             [codox "0.8.10"]]
   :ring {:handler magnet.handler/app}
   :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
