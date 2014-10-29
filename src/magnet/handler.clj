@@ -98,6 +98,10 @@
     (api-erantzuna GET "iruzkinak/:id" eskaera
                    (let [id (:id (:params eskaera))]
                      (iruzkinak/lortu id)))
+    (api-erantzuna DELETE "iruzkinak/:id" eskaera
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))]
+                     (iruzkinak/ezabatu! token id)))
   
   (route/resources "/")
   (route/not-found "Not Found"))

@@ -540,3 +540,46 @@
 
 (fact "Existitzen ez den iruzkina lortu" :iruzkinak
       (api-deia :get "iruzkinak/999" :egoera) => 404)
+
+(fact "Iruzkina ezabatu" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (api-deia :delete (str "iruzkinak/" id "?token=" token))
+              (api-deia :get (str "iruzkinak/" id) :egoera) => 404)))))
+
+(fact "Iruzkina ezabatu token okerrarekin" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (api-deia :delete (str "iruzkinak/" id  "?token=okerra") :egoera) => 401)))))
+
+(fact "Existitzen ez den iruzkina ezabatu" :iruzkinak
+      (let [token (saioa-hasi "era" "1234" "Era")]
+        (let [param {:epub "base64"
+                     :titulua "Kaixo mundua"
+                     :egileak ["Joxe" "Patxi"]
+                     :sinopsia "Duela urte asko..."
+                     :urtea "2009"
+                     :etiketak ["kaixo" "joxe" "zaharra"]
+                     :azala "base64"}]
+          (let [{{libid :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+            (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                 {:edukia "Hau iruzkin bat da"})]
+              (api-deia :delete (str "iruzkinak/" 999  "?token=" token) :egoera) => 404)))))

@@ -24,6 +24,10 @@
                {:edukia (:edukia edukia)}
                ["id=?" id]))
 
+(defn- ezabatu-iruzkina!
+  [id]
+  (sql/delete! @konfig/db-kon :iruzkinak ["id=?" id]))
+
 (defn gehitu!
   "id liburuarekin lotutako iruzkina gehitu."
   [token id edukia]
@@ -51,4 +55,14 @@
   [id]
   (if-let [ir (lortu-iruzkina id)]
     [{:iruzkina ir} 200]
+    [{} 404]))
+
+(defn ezabatu!
+  "Iruzkina ezabatzen du."
+  [token id]
+  (if-let [ir (lortu-iruzkina id)]
+    (if (lortu-saioa token)
+      (do (ezabatu-iruzkina! id)
+          [{} 200])
+      [{} 401])
     [{} 404]))
