@@ -80,9 +80,14 @@
   "id bat eta edukia emanda liburua aldatu"
   [token id edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      (liburua-aldatu! id (assoc edukia :erabiltzailea erabiltzailea))
-      [{} 401])
+    (let [[lib egoera] (lortu id)]
+      (if (= egoera 404)
+        [{} 404]
+        (if-let [era (:erabiltzailea (lortu-saioa token))]
+          (if (= era (:erabiltzailea (:liburua lib)))
+            (liburua-aldatu! id (assoc edukia :erabiltzailea era))
+            [{} 401])
+          [{} 401])))
     [{} 422]))
 
 (defn ezabatu!

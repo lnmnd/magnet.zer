@@ -412,7 +412,20 @@
                  :etiketak ["kaixo" "joxe" "zaharra"]
                  :azala "base64"}]
       (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (let [token (saioa-hasi "era2" "4321" "Era2")]
+          (api-deia :put (str "liburuak/" id "?token=" token) :egoera param) => 401)
         (api-deia :put (str "liburuak/" id "?token=okerra") :egoera param) => 401))))
+
+(fact "Existitzen ez den liburu bat aldatu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")
+        param {:epub "base64"
+               :titulua "Kaixo mundua"
+               :egileak ["Joxe" "Patxi"]
+               :sinopsia "Duela urte asko..."
+               :urtea "2009"
+               :etiketak ["kaixo" "joxe" "zaharra"]
+               :azala "base64"}]
+    (api-deia :put (str "liburuak/" 999 "?token=" token) :egoera param) => 404))
 
 (fact "Liburu bat ezabatu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
