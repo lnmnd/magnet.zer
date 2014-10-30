@@ -440,7 +440,7 @@
         (api-deia :delete (str "liburuak/" id "?token=" token) :egoera) => 200
         (api-deia :get (str "liburuak/" id) :egoera param) => 404))))
 
-(fact "Liburu bat ezabatutoken okerrarekin" :liburuak
+(fact "Liburu bat ezabatu token okerrarekin" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
@@ -450,6 +450,8 @@
                  :etiketak ["kaixo" "joxe" "zaharra"]
                  :azala "base64"}]
       (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
+        (let [token (saioa-hasi "era2" "4321" "Era2")]
+          (api-deia :delete (str "liburuak/" id "?token=" token) :egoera) => 401)
         (api-deia :delete (str "liburuak/" id "?token=okerra") :egoera) => 401))))
 
 (fact "Existitzen ez den liburu bat ezabatu" :liburuak

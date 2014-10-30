@@ -94,12 +94,15 @@
   "id bat emanda liburua ezabatu"
   [token id]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (if (not (empty? (sql/query kon ["select id from liburuak where id=?" id])))
-      (if (lortu-saioa token)
-        (do (sql/delete! kon :liburuak ["id=?" id])
-            [{} 200])
-        [{} 401])
-      [{} 404])))
+    (let [[lib egoera] (lortu id)]
+      (if (= egoera 404)
+        [{} 404]
+        (if-let [era (:erabiltzailea (lortu-saioa token))]
+          (if (= era (:erabiltzailea (:liburua lib)))
+            (do (sql/delete! kon :liburuak ["id=?" id])
+                [{} 200])            
+            [{} 401])
+          [{} 401])))))
 
 (defn lortu-bilduma
   "Liburuen bilduma lortzen du."
