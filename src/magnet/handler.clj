@@ -110,7 +110,17 @@
                        desplazamendua (if (contains? query-params "desplazamendua")
                                         (read-string (query-params "desplazamendua"))
                                         0)]
-                   (iruzkinak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))    
+                   (iruzkinak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))
+    (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
+                   (let [id (:id (:params eskaera))
+                         {query-params :query-params} eskaera
+                         muga (if (contains? query-params "muga")
+                                (read-string (query-params "muga"))
+                                konfig/muga)
+                         desplazamendua (if (contains? query-params "desplazamendua")
+                                          (read-string (query-params "desplazamendua"))
+                                          0)]
+                     (iruzkinak/lortu-liburuarenak id desplazamendua (if (<= muga 100) muga 100))))
   
   (route/resources "/")
   (route/not-found "Not Found"))

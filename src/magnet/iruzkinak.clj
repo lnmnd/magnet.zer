@@ -88,3 +88,16 @@
         :guztira guztira
         :iruzkinak irak}
        200]))
+
+(trafun
+ kon
+ lortu-liburuarenak
+ "Liburu baten iruzkinak lortzen ditu."
+ [id desplazamendua muga]
+ (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where liburua=?" id]))
+       irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where liburua=? limit ? offset ?" id muga desplazamendua])]
+      [{:desplazamendua desplazamendua
+        :muga muga
+        :guztira guztira
+        :iruzkinak irak}
+       200]))
