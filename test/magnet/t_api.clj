@@ -568,3 +568,19 @@
 
 (fact "Existitzen ez den iruzkina ezabatu" :iruzkinak
       (api-deia :delete (str "iruzkinak/999?token=edozer") :egoera) => 404)
+
+(fact "Iruzkinak lortu" :iruzkinak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                  {:edukia "Hau iruzkin bat da"})
+        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                  {:edukia "Hau beste iruzkin bat da"})
+        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                  {:edukia "Hirugarrena"}))
+      (let [eran (api-deia :get "iruzkinak" :json)]
+        (:guztira eran) => 3
+        (let [irak (:iruzkinak eran)]
+          (count irak) => 3
+          (:edukia (first irak)) => "Hau iruzkin bat da"
+          (:edukia (second irak)) => "Hau beste iruzkin bat da"
+          (:edukia (nth irak 2)) => "Hirugarrena")))

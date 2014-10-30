@@ -75,3 +75,16 @@
          [{} 200])
      [{} 401])
    [{} 404]))
+
+(trafun
+ kon
+ lortu-bilduma
+ "Iruzkinen bilduma lortu"
+ [desplazamendua muga]
+ (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak"]))
+       irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak limit ? offset ?" muga desplazamendua])]
+      [{:desplazamendua desplazamendua
+        :muga muga
+        :guztira guztira
+        :iruzkinak irak}
+       200]))

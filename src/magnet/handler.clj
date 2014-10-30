@@ -102,6 +102,15 @@
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
                      (iruzkinak/ezabatu! token id)))
+  (api-erantzuna GET "iruzkinak" eskaera
+                 (let [{query-params :query-params} eskaera
+                       muga (if (contains? query-params "muga")
+                              (read-string (query-params "muga"))
+                              konfig/muga)
+                       desplazamendua (if (contains? query-params "desplazamendua")
+                                        (read-string (query-params "desplazamendua"))
+                                        0)]
+                   (iruzkinak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))    
   
   (route/resources "/")
   (route/not-found "Not Found"))
