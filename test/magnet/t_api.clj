@@ -600,3 +600,19 @@
             (count irak) => 2
             (:edukia (first irak)) => "Hau iruzkin bat da"
             (:edukia (second irak)) => "Hau beste iruzkin bat da"))))
+
+(fact "Erabiltzaile baten iruzkinak" :iruzkinak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                  {:edukia "Hau iruzkin bat da"})
+        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                  {:edukia "Hau beste iruzkin bat da"})
+        (let [token (saioa-hasi "era2" "4321")]
+          (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
+                    {:edukia "Hau beste erabiltzaile batena"}))
+        (let [eran (api-deia :get "erabiltzaileak/era/iruzkinak" :json)]
+          (:guztira eran) => 2
+          (let [irak (:iruzkinak eran)]
+            (count irak) => 2
+            (:edukia (first irak)) => "Hau iruzkin bat da"
+            (:edukia (second irak)) => "Hau beste iruzkin bat da"))))
