@@ -318,7 +318,9 @@
         (:etiketak lib) => (:etiketak param)
         ; Azalaren izena zein izango den ez dakigu
         ; 0 iruzkinekin hasiko da
-        (:iruzkin_kopurua lib) => 0))))
+        (:iruzkin_kopurua lib) => 0
+        ; 0 gogokoekin hasiko da
+        (:gogoko_kopurua lib) => 0))))
 
 (fact "Eremu bat falta duen liburua gehitu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]

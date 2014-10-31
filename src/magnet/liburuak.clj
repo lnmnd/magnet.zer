@@ -17,12 +17,21 @@
   (assoc lib :egileak (read-string (:egileak lib))
          :etiketak (read-string (:etiketak lib))))
 
+(defn- gogokoak-gehitu
+  [kon lib]
+  (->>
+   (sql/query kon ["select count(liburua) as gogoko_kopurua from gogokoak where liburua=?" (:id lib)])
+   first
+   :gogoko_kopurua
+   (assoc lib :gogoko_kopurua)))
+
 (defn- lortu-liburua [kon lib]
   (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where erabiltzailea=? and titulua=? and egileak=? and sinopsia=? and  urtea=? and  etiketak=?"
                        (:erabiltzailea lib) (:titulua lib) (:egileak lib)
                        (:sinopsia lib) (:urtea lib) (:etiketak lib)])
        first
-       eremuak-irakurrita))
+       eremuak-irakurrita
+       (gogokoak-gehitu kon)))
 
 (declare lortu)
 (defn- liburua-gehitu! [edukia]
