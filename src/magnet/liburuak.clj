@@ -25,10 +25,8 @@
    :gogoko_kopurua
    (assoc lib :gogoko_kopurua)))
 
-(defn- lortu-liburua [kon lib]
-  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where erabiltzailea=? and titulua=? and egileak=? and sinopsia=? and  urtea=? and  etiketak=?"
-                       (:erabiltzailea lib) (:titulua lib) (:egileak lib)
-                       (:sinopsia lib) (:urtea lib) (:etiketak lib)])
+(defn- lortu-liburua [kon id]
+  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])
        first
        eremuak-irakurrita
        (gogokoak-gehitu kon)))
@@ -49,9 +47,7 @@
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) etiketak
                         "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
                         (oraingo-data) 0])
-          {:liburua (lortu-liburua kon (assoc edukia
-                                         :egileak egileak
-                                         :etiketak etiketak))}))))
+          {:liburua (lortu-liburua kon (:id (first (sql/query kon "select identity() as id"))))}))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
