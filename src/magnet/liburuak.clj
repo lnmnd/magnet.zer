@@ -35,19 +35,27 @@
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [edukia (assoc edukia
+                   :magnet "magnet:?xt=urn:btih:TODO"
                    :argitaletxea (if (nil? (:argitaletxea edukia))
                                    "" (:argitaletxea edukia))
                    :generoa (if (nil? (:generoa edukia))
-                              "" (:generoa edukia)))
-          egileak (prn-str (:egileak edukia))
-          etiketak (prn-str (:etiketak edukia))]
+                              "" (:generoa edukia))
+                   :egileak (prn-str (:egileak edukia))
+                   :etiketak (prn-str (:etiketak edukia))
+                   :azala "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
+                   :data (oraingo-data)
+                   :iruzkin_kopurua 0
+                   :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
                        [:erabiltzailea :magnet :titulua :egileak :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
-                       [(:erabiltzailea edukia) "magnet:?xt=urn:btih:TODO" (:titulua edukia) egileak
-                        (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) etiketak
-                        "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
-                        (oraingo-data) 0])
-          {:liburua (lortu-liburua kon (:id (first (sql/query kon "select identity() as id"))))}))))
+                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:egileak edukia)
+                        (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) (:etiketak edukia)
+                        (:azala edukia) (:data edukia) (:iruzkin_kopurua edukia)])
+          {:liburua (->> (sql/query kon "select identity() as id")
+                         first
+                         :id
+                         (assoc edukia :id)
+                         eremuak-irakurrita)}))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
