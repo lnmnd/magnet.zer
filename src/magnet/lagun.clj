@@ -45,13 +45,15 @@
    "alter table gogokoak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
    "alter table gogokoak add foreign key (liburua) references liburuak(id)"))
 
+(defmacro ^:private ezabatu-taulak
+  [& taulak]
+    (let [aginduak# (map #(sql/drop-table-ddl %) taulak)]
+      `(sql/db-do-commands @konfig/db-kon
+                           ~@aginduak#)))
+
 (defn db-garbitu []
   "Taulak ezabatu"
-  (sql/db-do-commands @konfig/db-kon
-    (sql/drop-table-ddl :erabiltzaileak)
-    (sql/drop-table-ddl :liburuak)
-    (sql/drop-table-ddl :iruzkinak)
-    (sql/drop-table-ddl :gogokoak)))
+  (ezabatu-taulak :erabiltzaileak :liburuak :iruzkinak :gogokoak))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
