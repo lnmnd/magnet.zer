@@ -9,7 +9,7 @@
   "Liburuak beharrezko eremu guztiak dituen edo ez"
   [lib]
   (every? #(contains? lib %)
-          [:epub :titulua :egileak :sinopsia :urtea :etiketak :azala]))
+          [:epub :titulua :egileak :hizkuntza :sinopsia :urtea :etiketak :azala]))
 
 (defn- eremuak-irakurrita
   "String gisa gordetako eremuak irakurritako liburua"
@@ -26,7 +26,7 @@
    (assoc lib :gogoko_kopurua)))
 
 (defn- lortu-liburua [kon id]
-  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])
+  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])
        first
        eremuak-irakurrita
        (gogokoak-gehitu kon)))
@@ -47,8 +47,8 @@
                    :iruzkin_kopurua 0
                    :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
-                       [:erabiltzailea :magnet :titulua :egileak :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
-                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:egileak edukia)
+                       [:erabiltzailea :magnet :titulua :egileak :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
+                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:egileak edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) (:etiketak edukia)
                         (:azala edukia) (:data edukia) (:iruzkin_kopurua edukia)])
           {:liburua (->> (sql/query kon "select identity() as id")
@@ -65,6 +65,7 @@
     (sql/update! @konfig/db-kon :liburuak
                  {:titulua (:titulua edukia)
                   :egileak (prn-str (:egileak edukia))
+                  :hizkuntza (:hizkuntza edukia)
                   :sinopsia (:sinopsia edukia)
                   :argitaletxea argitaletxea
                   :urtea (:urtea edukia)
@@ -84,7 +85,7 @@
 (defn lortu
   "Eskatutako id-a duen liburua lortu"
   [id]
-  (let [ema (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])]
+  (let [ema (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])]
     (if (empty? ema)
       [{} 404]
       [{:liburua (eremuak-irakurrita (first ema))} 200])))

@@ -299,6 +299,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :argitaletxea "Etxea"
                  :urtea "2009"
@@ -312,6 +313,7 @@
         ; Aurrez ezin dugu jakin zer magnet sortuko den
         (:titulua lib) => (:titulua param)
         (:egileak lib) => (:egileak param)
+        (:hizkuntza lib) => (:hizkuntza param)
         (:sinopsia lib) => (:sinopsia param)
         (:argitaletxea lib) => (:argitaletxea param)
         (:urtea lib) => (:urtea param)
@@ -328,6 +330,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :argitaletxea "Etxea"
                  :urtea "2009"
@@ -338,6 +341,7 @@
         (eremu-gabe :epub) => 422
         (eremu-gabe :titulua) => 422
         (eremu-gabe :egileak) => 422
+        (eremu-gabe :hizkuntza) => 422        
         (eremu-gabe :sinopsia) => 422
         (eremu-gabe :argitaletxea) => 200
         (eremu-gabe :urtea) => 422
@@ -350,6 +354,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -361,6 +366,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -369,6 +375,7 @@
             {lib :liburua} (api-deia :get (str "liburuak/" id) :json)]
         (:titulua lib) => (:titulua param)
         (:egileak lib) => (:egileak param)
+        (:hizkuntza lib) => (:hizkuntza param)        
         (:sinopsia lib) => (:sinopsia param)
         (:urtea lib) => (:urtea param)
         (:etiketak lib) => (:etiketak param)))))
@@ -381,6 +388,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -389,6 +397,7 @@
             {lib :liburua} (api-deia :put (str "liburuak/" id "?token=" token) :json (assoc param :titulua "Titulu berria"))]
         (:titulua lib) => "Titulu berria"
         (:egileak lib) => (:egileak param)
+        (:hizkuntza lib) => (:hizkuntza param)        
         (:sinopsia lib) => (:sinopsia param)
         (:urtea lib) => (:urtea param)
         (:etiketak lib) => (:etiketak param)))))
@@ -398,6 +407,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -410,6 +420,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -424,6 +435,7 @@
         param {:epub "base64"
                :titulua "Kaixo mundua"
                :egileak ["Joxe" "Patxi"]
+               :hizkuntza "euskara"               
                :sinopsia "Duela urte asko..."
                :urtea "2009"
                :etiketak ["kaixo" "joxe" "zaharra"]
@@ -435,6 +447,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -448,6 +461,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -462,6 +476,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -474,6 +489,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
@@ -496,6 +512,7 @@
     (let [param {:epub "base64"
                  :titulua "Kaixo mundua"
                  :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
                  :sinopsia "Duela urte asko..."
                  :urtea "2009"
                  :etiketak ["kaixo" "joxe" "zaharra"]
