@@ -46,16 +46,17 @@
     [{} 404]))
 
 (defn gehitu! [edukia]
-  (if (baliozko-erabiltzailea? edukia)
-    (sql/with-db-connection [kon @konfig/db-kon]
-      (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
-        [{} 422]
-        (do (sql/insert! kon :erabiltzaileak
-                         [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-                         [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (oraingo-data)])
-            [{:erabiltzailea (lortu-erabiltzailea kon (:erabiltzailea edukia))}
-             200])))
-    [{} 422]))
+  (let [edukia (assoc edukia :sortze_data (oraingo-data))]
+    (if (baliozko-erabiltzailea? edukia)
+      (sql/with-db-connection [kon @konfig/db-kon]
+        (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
+          [{} 422]
+          (do (sql/insert! kon :erabiltzaileak
+                           [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
+                           [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)])
+              [{:erabiltzailea (dissoc edukia :pasahitza)}
+               200])))
+      [{} 422])))
 
 (defn aldatu! [token erabiltzailea edukia]
   (sql/with-db-connection [kon @konfig/db-kon]

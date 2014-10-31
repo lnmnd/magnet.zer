@@ -95,6 +95,7 @@
                                      :izena "Era"
                                      :deskribapena "Erabiltzaile bat naiz"})]
         (let [erab (:erabiltzailea eran)]
+          (keys (:erabiltzailea eran)) => [:sortze_data :izena :deskribapena :erabiltzailea]
           (:erabiltzailea erab) => "era1"
           (:izena erab) => "Era"
           (:deskribapena erab) => "Erabiltzaile bat naiz"))
