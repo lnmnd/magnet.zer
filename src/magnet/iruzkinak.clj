@@ -37,7 +37,7 @@
          (gehitu-iruzkina! kon (assoc edukia
                                  :liburua id
                                  :erabiltzailea erabiltzailea))}]
-   [401 {}]))
+   [401]))
 
 (trafun
  kon
@@ -49,8 +49,8 @@
           (:erabiltzailea ir))
      (do (aldatu-iruzkina! kon id edukia)
          [200 {:iruzkina (assoc ir :edukia (:edukia edukia))}])
-     [401 {}])
-   [404 {}]))
+     [401])
+   [404]))
 
 (trafun
  kon
@@ -59,7 +59,7 @@
  [id]
  (if-let [ir (lortu-iruzkina kon id)]
    [200 {:iruzkina ir}]
-   [404 {}]))
+   [404]))
 
 (trafun
  kon
@@ -70,9 +70,9 @@
    (if (= (:erabiltzailea (lortu-saioa token))
           (:erabiltzailea ir))
      (do (ezabatu-iruzkina! kon id)
-         [200 {}])
-     [401 {}])
-   [404 {}]))
+         [200])
+     [401])
+   [404]))
 
 (trafun
  kon

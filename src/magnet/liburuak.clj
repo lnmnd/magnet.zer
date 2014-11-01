@@ -79,15 +79,15 @@
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
       [200 (liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea))]
-      [401 {}])
-    [422 {}]))
+      [401])
+    [422]))
 
 (defn lortu
   "Eskatutako id-a duen liburua lortu"
   [id]
   (let [ema (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])]
     (if (empty? ema)
-      [404 {}]
+      [404]
       [200 {:liburua (eremuak-irakurrita (first ema))}])))
 
 (defn aldatu!
@@ -96,13 +96,13 @@
   (if (baliozko-liburu-eskaera edukia)
     (let [[egoera lib] (lortu id)]
       (if (= egoera 404)
-        [404 {}]
+        [404]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             (liburua-aldatu! id (assoc edukia :erabiltzailea era))
-            [401 {}])
-          [401 {}])))
-    [422 {}]))
+            [401])
+          [401])))
+    [422]))
 
 (defn ezabatu!
   "id bat emanda liburua ezabatu"
@@ -110,13 +110,13 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [[egoera lib] (lortu id)]
       (if (= egoera 404)
-        [404 {}]
+        [404]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             (do (sql/delete! kon :liburuak ["id=?" id])
-                [200 {}])            
-            [401 {}])
-          [401 {}])))))
+                [200])            
+            [401])
+          [401])))))
 
 (defn lortu-bilduma
   "Liburuen bilduma lortzen du."

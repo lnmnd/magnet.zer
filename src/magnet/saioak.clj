@@ -42,20 +42,20 @@
                  :iraungitze_data "TODO"}]
       (gehitu-saioa! saioa)
       [200 saioa]) 
-    [422 {}]))
+    [422]))
 
 (defn lortu
   "Tokena duen saioa lortzen du."
   [token]
   (if (contains? @saioak token)
     [200 (@saioak token)]
-    [404 {}]))
+    [404]))
 
 (defn amaitu!
   "Saioa amaitzen du, tokena baliogabetuz."
   [token]
   (swap! saioak dissoc token)
-  [200 {}])
+  [200])
 
 (defn lortu-saioa
   "Tokena duen saioa lortzen du.

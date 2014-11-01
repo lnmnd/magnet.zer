@@ -22,7 +22,7 @@
   [metodoa url params edukia]
   `(~metodoa ~(str "/v1/" url) ~params
        (let [[egoera# datuak#] ~edukia]
-         (json-erantzuna datuak# egoera#))))
+         (json-erantzuna (if datuak# datuak# {}) egoera#))))
 
 (defroutes app-routes
   (api-erantzuna GET "erabiltzaileak" eskaera
