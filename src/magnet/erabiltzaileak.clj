@@ -34,29 +34,27 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc limit ? offset ?" muga desplazamendua])]
-      [{:desplazamendua desplazamendua
-        :muga muga
-        :guztira guztira
-        :erabiltzaileak erabiltzaileak}
-       200])))
+      [200 {:desplazamendua desplazamendua
+            :muga muga
+            :guztira guztira
+            :erabiltzaileak erabiltzaileak}])))
 
 (defn lortu [erabiltzailea]
   (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
-    [{:erabiltzailea era} 200]
-    [{} 404]))
+    [200 {:erabiltzailea era}]
+    [404 {}]))
 
 (defn gehitu! [edukia]
   (let [edukia (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? edukia)
       (sql/with-db-connection [kon @konfig/db-kon]
         (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
-          [{} 422]
+          [422 {}]
           (do (sql/insert! kon :erabiltzaileak
                            [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
                            [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)])
-              [{:erabiltzailea (dissoc edukia :pasahitza)}
-               200])))
-      [{} 422])))
+              [200 {:erabiltzailea (dissoc edukia :pasahitza)}])))
+      [422 {}])))
 
 (defn aldatu! [token erabiltzailea edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
@@ -65,11 +63,10 @@
         (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
-              [{:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}
-               200])
-          [{} 401])
-        [{} 404])
-      [{} 400])))
+              [200 {:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}])
+          [401 {}])
+        [404 {}])
+      [400 {}])))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
@@ -79,6 +76,6 @@
       (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
-            [{} 200])
-        [{} 401])
-      [{} 404])))
+            [200 {}])
+        [401 {}])
+      [404 {}])))

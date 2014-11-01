@@ -21,7 +21,7 @@
   "Metodo, url, parametro eta edukia emanik erantzuna osatzen du"
   [metodoa url params edukia]
   `(~metodoa ~(str "/v1/" url) ~params
-       (let [[datuak# egoera#] ~edukia]
+       (let [[egoera# datuak#] ~edukia]
          (json-erantzuna datuak# egoera#))))
 
 (defroutes app-routes
