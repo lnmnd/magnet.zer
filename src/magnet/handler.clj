@@ -10,14 +10,14 @@
             [magnet.liburuak :as liburuak]
             [magnet.iruzkinak :as iruzkinak]))
 
-(defn json-erantzuna
+(defn- json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
   [datuak & [egoera]]
   {:status (or egoera 200)
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string datuak)})
 
-(defmacro api-erantzuna
+(defmacro ^:private api-erantzuna
   "Metodo, url, parametro eta edukia emanik erantzuna osatzen du"
   [metodoa url params edukia]
   `(~metodoa ~(str "/v1/" url) ~params
