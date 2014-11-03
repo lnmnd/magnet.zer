@@ -66,7 +66,7 @@
         (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
-              [:ok {:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}])
+              [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])
           [:baimenik-ez])
         [:ez-dago])
       [400])))
