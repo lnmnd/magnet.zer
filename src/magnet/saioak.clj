@@ -44,13 +44,6 @@
       [200 saioa]) 
     [422]))
 
-(defn lortu
-  "Tokena duen saioa lortzen du."
-  [token]
-  (if (contains? @saioak token)
-    [200 (@saioak token)]
-    [404]))
-
 (defn amaitu!
   "Saioa amaitzen du, tokena baliogabetuz."
   [token]

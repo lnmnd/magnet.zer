@@ -208,9 +208,6 @@
     (contains? saioa :saio_hasiera) => true
     (contains? saioa :iraungitze_data) => true
     (:erabiltzailea saioa) => "era1"
-    ; saioa sortu dela egiaztatzeko lortu
-    (let [eran (api-deia :get (str "saioak/" (:token saioa)) :json)]
-      (:erabiltzailea eran) => "era1")
     ; saioa amaitu
     (api-deia :delete (str "saioak/" (:token saioa)))
     (let [egoera (api-deia :get (str "saioak/" (:token saioa)) :egoera)]
