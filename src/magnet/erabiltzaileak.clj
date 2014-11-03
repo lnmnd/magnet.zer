@@ -47,17 +47,17 @@
 (defn lortu [erabiltzailea]
   (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
     [:ok {:erabiltzailea era}]
-    [:ez-dago {}]))
+    [:ez-dago]))
 
 (defn gehitu! [edukia]
   (let [edukia (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? edukia)
       (sql/with-db-connection [kon @konfig/db-kon]
         (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
-          [:ezin-prozesatu {}]
+          [:ezin-prozesatu]
           (do (gehitu-erabiltzailea! kon edukia)
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])))
-      [:ezin-prozesatu {}])))
+      [:ezin-prozesatu])))
 
 (defn aldatu! [token erabiltzailea edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
@@ -67,9 +67,9 @@
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
               [:ok {:erabiltzailea (lortu-erabiltzailea kon erabiltzailea)}])
-          [:baimenik-ez {}])
-        [:ez-dago {}])
-      [400 {}])))
+          [:baimenik-ez])
+        [:ez-dago])
+      [400])))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
@@ -79,6 +79,6 @@
       (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
-            [:ok {}])
-        [:baimenik-ez {}])
-      [:ez-dago {}])))
+            [:ok])
+        [:baimenik-ez])
+      [:ez-dago])))
