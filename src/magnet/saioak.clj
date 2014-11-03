@@ -41,14 +41,14 @@
                  :saio_hasiera (oraingo-data)
                  :iraungitze_data "TODO"}]
       (gehitu-saioa! saioa)
-      [200 saioa]) 
-    [422]))
+      [:ok saioa]) 
+    [:ezin-prozesatu]))
 
 (defn amaitu!
   "Saioa amaitzen du, tokena baliogabetuz."
   [token]
   (swap! saioak dissoc token)
-  [200])
+  [:ok])
 
 (defn lortu-saioa
   "Tokena duen saioa lortzen du.

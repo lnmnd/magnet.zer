@@ -33,11 +33,11 @@
  "id liburuarekin lotutako iruzkina gehitu."
  [token id edukia]
  (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-   [200 {:iruzkina
+   [:ok {:iruzkina
          (gehitu-iruzkina! kon (assoc edukia
                                  :liburua id
                                  :erabiltzailea erabiltzailea))}]
-   [401]))
+   [:baimenik-ez]))
 
 (trafun
  kon
@@ -48,9 +48,9 @@
    (if (= (:erabiltzailea (lortu-saioa token))
           (:erabiltzailea ir))
      (do (aldatu-iruzkina! kon id edukia)
-         [200 {:iruzkina (assoc ir :edukia (:edukia edukia))}])
-     [401])
-   [404]))
+         [:ok {:iruzkina (assoc ir :edukia (:edukia edukia))}])
+     [:baimenik-ez])
+   [:ez-dago]))
 
 (trafun
  kon
@@ -58,8 +58,8 @@
  "id jakineko iruzkina lortzen du."
  [id]
  (if-let [ir (lortu-iruzkina kon id)]
-   [200 {:iruzkina ir}]
-   [404]))
+   [:ok {:iruzkina ir}]
+   [:ez-dago]))
 
 (trafun
  kon
@@ -70,9 +70,9 @@
    (if (= (:erabiltzailea (lortu-saioa token))
           (:erabiltzailea ir))
      (do (ezabatu-iruzkina! kon id)
-         [200])
-     [401])
-   [404]))
+         [:ok])
+     [:baimenik-ez])
+   [:ez-dago]))
 
 (trafun
  kon
@@ -81,7 +81,7 @@
  [desplazamendua muga]
  (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak"]))
        irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak limit ? offset ?" muga desplazamendua])]
-   [200 {:desplazamendua desplazamendua
+   [:ok {:desplazamendua desplazamendua
          :muga muga
          :guztira guztira
          :iruzkinak irak}]))
@@ -93,7 +93,7 @@
  [id desplazamendua muga]
  (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where liburua=?" id]))
        irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where liburua=? limit ? offset ?" id muga desplazamendua])]
-   [200 {:desplazamendua desplazamendua
+   [:ok {:desplazamendua desplazamendua
          :muga muga
          :guztira guztira
          :iruzkinak irak}]))
@@ -105,7 +105,7 @@
  [era desplazamendua muga]
  (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where erabiltzailea=?" era]))
        irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where erabiltzailea=? limit ? offset ?" era muga desplazamendua])]
-   [200 {:desplazamendua desplazamendua
+   [:ok {:desplazamendua desplazamendua
          :muga muga
          :guztira guztira
          :iruzkinak irak}]))

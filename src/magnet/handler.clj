@@ -17,12 +17,18 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string datuak)})
 
+(defn- egoera-zenbakia [egoera]
+  (egoera {:ok 200
+           :baimenik-ez 401
+           :ez-dago 404
+           :ezin-prozesatu 422}))
+
 (defmacro ^:private api-erantzuna
   "Metodo, url, parametro eta edukia emanik erantzuna osatzen du"
   [metodoa url params edukia]
   `(~metodoa ~(str "/v1/" url) ~params
        (let [[egoera# datuak#] ~edukia]
-         (json-erantzuna (if datuak# datuak# {}) egoera#))))
+         (json-erantzuna (if datuak# datuak# {}) (egoera-zenbakia egoera#)))))
 
 (defroutes app-routes
   (api-erantzuna GET "erabiltzaileak" eskaera

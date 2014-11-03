@@ -78,45 +78,45 @@
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      [200 (liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea))]
-      [401])
-    [422]))
+      [:ok (liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea))]
+      [:baimenik-ez])
+    [:ezin-prozesatu]))
 
 (defn lortu
   "Eskatutako id-a duen liburua lortu"
   [id]
   (let [ema (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])]
     (if (empty? ema)
-      [404]
-      [200 {:liburua (eremuak-irakurrita (first ema))}])))
+      [:ez-dago]
+      [:ok {:liburua (eremuak-irakurrita (first ema))}])))
 
 (defn aldatu!
   "id bat eta edukia emanda liburua aldatu"
   [token id edukia]
   (if (baliozko-liburu-eskaera edukia)
     (let [[egoera lib] (lortu id)]
-      (if (= egoera 404)
-        [404]
+      (if (= egoera :ez-dago)
+        [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             (liburua-aldatu! id (assoc edukia :erabiltzailea era))
-            [401])
-          [401])))
-    [422]))
+            [:baimenik-ez])
+          [:baimenik-ez])))
+    [:ezin-prozesatu]))
 
 (defn ezabatu!
   "id bat emanda liburua ezabatu"
   [token id]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [[egoera lib] (lortu id)]
-      (if (= egoera 404)
-        [404]
+      (if (= egoera :ez-dago)
+        [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             (do (sql/delete! kon :liburuak ["id=?" id])
-                [200])            
-            [401])
-          [401])))))
+                [:ok])            
+            [:baimenik-ez])
+          [:baimenik-ez])))))
 
 (defn lortu-bilduma
   "Liburuen bilduma lortzen du."
@@ -124,7 +124,7 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak"]))
           liburuak (sql/query kon ["select * from liburuak limit ? offset ?" muga desplazamendua])]
-      [200 {:desplazamendua desplazamendua
+      [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
             :liburuak liburuak}])))
