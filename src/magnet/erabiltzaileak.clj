@@ -39,7 +39,7 @@
                ["erabiltzailea=?" erabiltzailea]))
 
 (defn lortu-bilduma [desplazamendua muga]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc limit ? offset ?" muga desplazamendua])]
       [:ok {:desplazamendua desplazamendua
@@ -48,14 +48,15 @@
             :erabiltzaileak erabiltzaileak}])))
 
 (defn lortu [erabiltzailea]
-  (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
-    [:ok {:erabiltzailea era}]
-    [:ez-dago]))
+  (sql/with-db-transaction [kon @konfig/db-kon]
+    (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
+      [:ok {:erabiltzailea era}]
+      [:ez-dago])))
 
 (defn gehitu! [edukia]
   (let [edukia (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? edukia)
-      (sql/with-db-connection [kon @konfig/db-kon]
+      (sql/with-db-transaction [kon @konfig/db-kon]
         (if (badago? kon (:erabiltzailea edukia))
           [:ezin-prozesatu]
           (do (gehitu-erabiltzailea! kon edukia)
@@ -63,21 +64,21 @@
       [:ezin-prozesatu])))
 
 (defn aldatu! [token erabiltzailea edukia]
-  (sql/with-db-connection [kon @konfig/db-kon]
-    (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
+  (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
+    (sql/with-db-transaction [kon @konfig/db-kon]
       (if (badago? kon erabiltzailea)
         (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])
           [:baimenik-ez])
-        [:ez-dago])
-      [400])))
+        [:ez-dago]))
+    [400]))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
   [token erabiltzailea]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-transaction [kon @konfig/db-kon]
     (if (badago? kon erabiltzailea)
       (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
