@@ -16,6 +16,11 @@
   [pasahitza]
   (encrypt (gensalt 10) pasahitza))
 
+(defn- gehitu-erabiltzailea! [kon edukia]
+  (sql/insert! kon :erabiltzaileak
+               [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
+               [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)]))
+
 (defn- lortu-erabiltzailea
   "Erabiltzailea lortzen du, nil ez badago"
   [kon erabiltzailea]
@@ -50,9 +55,7 @@
       (sql/with-db-connection [kon @konfig/db-kon]
         (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
           [:ezin-prozesatu {}]
-          (do (sql/insert! kon :erabiltzaileak
-                           [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-                           [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)])
+          (do (gehitu-erabiltzailea! kon edukia)
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])))
       [:ezin-prozesatu {}])))
 
