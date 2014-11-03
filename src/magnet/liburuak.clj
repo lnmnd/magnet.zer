@@ -68,6 +68,7 @@
                            [id eti]))
             {:liburua (assoc edukia :id id)})))))
 
+(declare lortu)
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
                         "" (:argitaletxea edukia))
