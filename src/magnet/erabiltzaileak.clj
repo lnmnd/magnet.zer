@@ -21,6 +21,9 @@
                [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
                [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)]))
 
+(defn- badago? [kon era]
+  (not (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" era]))))
+
 (defn- lortu-erabiltzailea
   "Erabiltzailea lortzen du, nil ez badago"
   [kon erabiltzailea]
@@ -53,7 +56,7 @@
   (let [edukia (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? edukia)
       (sql/with-db-connection [kon @konfig/db-kon]
-        (if (lortu-erabiltzailea kon (:erabiltzailea edukia))
+        (if (badago? kon (:erabiltzailea edukia))
           [:ezin-prozesatu]
           (do (gehitu-erabiltzailea! kon edukia)
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])))
@@ -62,7 +65,7 @@
 (defn aldatu! [token erabiltzailea edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
-      (if (lortu-erabiltzailea kon erabiltzailea)
+      (if (badago? kon erabiltzailea)
         (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
@@ -75,7 +78,7 @@
   "Erabiltzaile bat ezabatzen du"
   [token erabiltzailea]
   (sql/with-db-connection [kon @konfig/db-kon]
-    (if (lortu-erabiltzailea kon erabiltzailea)
+    (if (badago? kon erabiltzailea)
       (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
