@@ -73,7 +73,7 @@
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])
           [:baimenik-ez])
         [:ez-dago]))
-    [400]))
+    [:ezin-prozesatux]))
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
