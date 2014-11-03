@@ -31,6 +31,10 @@
                          [:igotze_data "varchar(255)"]
                          [:iruzkin_kopurua "int"])
    "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   (sql/create-table-ddl :liburu_egileak
+                         [:liburua "bigint"]
+                         [:egilea "varchar(255)"])
+   "alter table liburu_egileak add foreign key (liburua) references liburuak(id)"
    (sql/create-table-ddl :iruzkinak
                          [:id "bigint auto_increment"]
                          [:liburua "bigint"]
@@ -53,7 +57,7 @@
 
 (defn db-garbitu []
   "Taulak ezabatu"
-  (ezabatu-taulak :erabiltzaileak :liburuak :iruzkinak :gogokoak))
+  (ezabatu-taulak :erabiltzaileak :liburuak :liburu_egileak :iruzkinak :gogokoak))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.

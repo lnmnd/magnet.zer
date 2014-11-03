@@ -17,6 +17,14 @@
   (assoc lib :egileak (read-string (:egileak lib))
          :etiketak (read-string (:etiketak lib))))
 
+(defn- egileak-gehitu
+  [kon lib]
+  (if-let [egilea (->> (sql/query kon ["select egilea from liburu_egileak where liburua=?" (:id lib)])
+                    first
+                    :egilea)]
+    (assoc lib :egileak (conj (:egileak egilea)))
+    lib))
+
 (defn- gogokoak-gehitu
   [kon lib]
   (->>
