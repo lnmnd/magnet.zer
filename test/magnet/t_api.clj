@@ -517,7 +517,7 @@
       (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
         [token id]))))
 
-(fact "Iruzkina gehitu" :iruzkinak :t
+(fact "Iruzkina gehitu" :iruzkinak
       (let [[token id] (gehitu-liburua "era" "1234")]
         (let [{ir :iruzkina} (api-deia :post (str "liburuak/" id  "/iruzkinak?token=" token) :json
                                        {:edukia "Hau iruzkin bat da"})]
