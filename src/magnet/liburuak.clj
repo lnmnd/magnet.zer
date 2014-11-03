@@ -25,24 +25,26 @@
     (assoc lib :egileak (conj (:egileak egilea)))
     lib))
 
-(defn- iruzkin-kopurua-gehitu
+(defn- iruzkin-kopurua
   [kon lib]
   (->>
    (sql/query kon ["select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?" (:id lib)])
    first
-   :iruzkin_kopurua
-   (assoc lib :iruzkin_kopurua)))
+   :iruzkin_kopurua))
 
-(defn- gogokoak-gehitu
+(defn- gogokoak
   [kon lib]
   (->>
    (sql/query kon ["select count(liburua) as gogoko_kopurua from gogokoak where liburua=?" (:id lib)])
    first
-   :gogoko_kopurua
-   (assoc lib :gogoko_kopurua)))
+   :gogoko_kopurua))
 
 (defn- lortu-liburua [kon id]
-  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id])))
+  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id]))]
+    (assoc lib
+      :iruzkin_kopurua (iruzkin-kopurua kon id)
+      :gogoko_kopurua (gogokoak kon id))
+    nil))
 
 (declare lortu)
 (defn- liburua-gehitu! [edukia]
@@ -99,9 +101,7 @@
   "Eskatutako id-a duen liburua lortu"
   [id]
   (if-let [lib (lortu-liburua @konfig/db-kon id)]
-    [:ok {:liburua (->> lib eremuak-irakurrita
-                        (iruzkin-kopurua-gehitu @konfig/db-kon)
-                        (gogokoak-gehitu @konfig/db-kon))}]
+    [:ok {:liburua (eremuak-irakurrita lib)}]
     [:ez-dago]))
 
 (defn aldatu!
