@@ -11,14 +11,13 @@
   (every? #(contains? lib %)
           [:epub :titulua :egileak :hizkuntza :sinopsia :urtea :etiketak :azala]))
 
-(defn- eremuak-irakurrita
-  "String gisa gordetako eremuak irakurritako liburua"
-  [lib]
-  (assoc lib :etiketak (read-string (:etiketak lib))))
-
 (defn- egileak [kon id]
   (map (fn [x] (:egilea x))
        (sql/query kon ["select egilea from liburu_egileak where liburua=?" id])))
+
+(defn- etiketak [kon id]
+  (map (fn [x] (:etiketa x))
+       (sql/query kon ["select etiketa from liburu_etiketak where liburua=?" id])))
 
 (defn- iruzkin-kopurua [kon id]
   (->>
@@ -33,14 +32,14 @@
    :gogoko_kopurua))
 
 (defn- lortu-liburua [kon id]
-  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id]))]
+  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, azala, igotze_data from liburuak where id=?" id]))]
     (assoc lib
       :egileak (egileak kon id)
+      :etiketak (etiketak kon id)      
       :iruzkin_kopurua (iruzkin-kopurua kon id)
       :gogoko_kopurua (gogokoak kon id))
     nil))
 
-(declare lortu)
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [edukia (assoc edukia
@@ -49,24 +48,25 @@
                                    "" (:argitaletxea edukia))
                    :generoa (if (nil? (:generoa edukia))
                               "" (:generoa edukia))
-                   :etiketak (prn-str (:etiketak edukia))
                    :azala "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
                    :data (oraingo-data)
                    :iruzkin_kopurua 0
                    :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
-                       [:erabiltzailea :magnet :titulua :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data]
+                       [:erabiltzailea :magnet :titulua :hizkuntza :sinopsia :argitaletxea :urtea :generoa :azala :igotze_data]
                        [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:hizkuntza edukia)
-                        (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) (:etiketak edukia)
+                        (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         (:azala edukia) (:data edukia)])
           (let [id (:id (first (sql/query kon "select identity() as id")))]
             (doseq [egi (:egileak edukia)]
               (sql/insert! kon :liburu_egileak
                            [:liburua :egilea]
                            [id egi]))
-            {:liburua (->> id
-                           (assoc edukia :id)
-                           eremuak-irakurrita)})))))
+            (doseq [eti (:etiketak edukia)]
+              (sql/insert! kon :liburu_etiketak
+                           [:liburua :etiketa]
+                           [id eti]))
+            {:liburua (assoc edukia :id id)})))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
@@ -80,10 +80,8 @@
                   :argitaletxea argitaletxea
                   :urtea (:urtea edukia)
                   :generoa generoa
-                  :etiketak (prn-str (:etiketak edukia))
                   :azala (:azala edukia)}
                  ["id=?" id])
-    ; TODO egileak
     (lortu id)))
 
 (defn gehitu! [token edukia]
@@ -97,7 +95,7 @@
   "Eskatutako id-a duen liburua lortu"
   [id]
   (if-let [lib (lortu-liburua @konfig/db-kon id)]
-    [:ok {:liburua (eremuak-irakurrita lib)}]
+    [:ok {:liburua lib}]
     [:ez-dago]))
 
 (defn aldatu!
@@ -126,6 +124,7 @@
             (do (sql/delete! kon :iruzkinak ["liburua=?" id])
                 ; TODO iruzkin_erantzunak
                 (sql/delete! kon :liburu_egileak ["liburua=?" id])
+                (sql/delete! kon :liburu_etiketak ["liburua=?" id])                
                 (sql/delete! kon :liburuak ["id=?" id])
                 [:ok])            
             [:baimenik-ez])
