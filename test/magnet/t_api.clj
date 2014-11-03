@@ -517,13 +517,15 @@
       (let [{{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)]
         [token id]))))
 
-(fact "Iruzkina gehitu" :iruzkinak
+(fact "Iruzkina gehitu" :iruzkinak :t
       (let [[token id] (gehitu-liburua "era" "1234")]
         (let [{ir :iruzkina} (api-deia :post (str "liburuak/" id  "/iruzkinak?token=" token) :json
                                        {:edukia "Hau iruzkin bat da"})]
           (:liburua ir) => (str id)
           (:erabiltzailea ir) => "era"
-          (:edukia ir) => "Hau iruzkin bat da")))
+          (:edukia ir) => "Hau iruzkin bat da")
+        (let [{lib :liburua} (api-deia :get (str "liburuak/" id) :json)]
+          (:iruzkin_kopurua lib) => 1)))
 
 (fact "Iruzkina gehitu token okerrarekin" :iruzkinak
       (let [[token id] (gehitu-liburua "era" "1234")]

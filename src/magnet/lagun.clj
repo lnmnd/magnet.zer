@@ -28,8 +28,7 @@
                          [:generoa "varchar(255)"]
                          [:etiketak "varchar(255)"]
                          [:azala "varchar(255)"]
-                         [:igotze_data "varchar(255)"]
-                         [:iruzkin_kopurua "int"])
+                         [:igotze_data "varchar(255)"])
    "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
    (sql/create-table-ddl :liburu_egileak
                          [:liburua "bigint"]

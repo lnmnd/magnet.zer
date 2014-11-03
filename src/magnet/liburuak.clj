@@ -25,6 +25,14 @@
     (assoc lib :egileak (conj (:egileak egilea)))
     lib))
 
+(defn- iruzkin-kopurua-gehitu
+  [kon lib]
+  (->>
+   (sql/query kon ["select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?" (:id lib)])
+   first
+   :iruzkin_kopurua
+   (assoc lib :iruzkin_kopurua)))
+
 (defn- gogokoak-gehitu
   [kon lib]
   (->>
@@ -34,10 +42,7 @@
    (assoc lib :gogoko_kopurua)))
 
 (defn- lortu-liburua [kon id]
-  (->> (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])
-       first
-       eremuak-irakurrita
-       (gogokoak-gehitu kon)))
+  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id])))
 
 (declare lortu)
 (defn- liburua-gehitu! [edukia]
@@ -55,10 +60,10 @@
                    :iruzkin_kopurua 0
                    :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
-                       [:erabiltzailea :magnet :titulua :egileak :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data :iruzkin_kopurua]
+                       [:erabiltzailea :magnet :titulua :egileak :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data]
                        [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:egileak edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) (:etiketak edukia)
-                        (:azala edukia) (:data edukia) (:iruzkin_kopurua edukia)])
+                        (:azala edukia) (:data edukia)])
           {:liburua (->> (sql/query kon "select identity() as id")
                          first
                          :id
@@ -93,10 +98,11 @@
 (defn lortu
   "Eskatutako id-a duen liburua lortu"
   [id]
-  (let [ema (sql/query @konfig/db-kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data, iruzkin_kopurua from liburuak where id=?" id])]
-    (if (empty? ema)
-      [:ez-dago]
-      [:ok {:liburua (eremuak-irakurrita (first ema))}])))
+  (if-let [lib (lortu-liburua @konfig/db-kon id)]
+    [:ok {:liburua (->> lib eremuak-irakurrita
+                        (iruzkin-kopurua-gehitu @konfig/db-kon)
+                        (gogokoak-gehitu @konfig/db-kon))}]
+    [:ez-dago]))
 
 (defn aldatu!
   "id bat eta edukia emanda liburua aldatu"
