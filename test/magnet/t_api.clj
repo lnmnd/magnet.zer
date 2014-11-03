@@ -13,8 +13,7 @@
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
-                    (do (def aurrizkia "http://localhost:3001/v1/")
-                        (zer-hasi 3001)
+                    (do (zer-hasi 3001)
                         (reset! konfig/db-kon test-kon)
                         (db-hasieratu))
                     :after
@@ -71,7 +70,7 @@
                 :muga 10
                 :guztira 0
                 :erabiltzaileak []})
-      (let [egoera (api-deia :get (str aurrizkia "erabiltzaileak/ezdago") :egoera)]
+      (let [egoera (api-deia :get "erabiltzaileak/ezdago" :egoera)]
         egoera => 404))
 
 (fact "Erabiltzaile okerra" :erabiltzaileak
@@ -263,7 +262,7 @@
           egoera => 401)))
 
 (fact "Ez dagoen erabiltzailea ezabatzen saiatu" :erabiltzaileak
-      (let [egoera (api-deia :delete (str aurrizkia "erabiltzaileak/era1") :egoera)]
+      (let [egoera (api-deia :delete "erabiltzaileak/era1" :egoera)]
         egoera => 404))
 
 (fact "Erabiltzaile bat ezabatu" :erabiltzaileak
