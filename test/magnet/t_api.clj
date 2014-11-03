@@ -520,9 +520,12 @@
 (fact "Iruzkina gehitu" :iruzkinak
       (let [[token id] (gehitu-liburua "era" "1234")]
         (let [{ir :iruzkina} (api-deia :post (str "liburuak/" id  "/iruzkinak?token=" token) :json
-                                       {:edukia "Hau iruzkin bat da"})]
+                                       {:gurasoak []
+                                        :edukia "Hau iruzkin bat da"})]
           (:liburua ir) => (str id)
           (:erabiltzailea ir) => "era"
+          (:gurasoak ir) => []
+          (:erantzunak ir) => []
           (:edukia ir) => "Hau iruzkin bat da")
         (let [{lib :liburua} (api-deia :get (str "liburuak/" id) :json)]
           (:iruzkin_kopurua lib) => 1)))
@@ -530,35 +533,45 @@
 (fact "Iruzkina gehitu token okerrarekin" :iruzkinak
       (let [[token id] (gehitu-liburua "era" "1234")]
         (api-deia :post (str "liburuak/" id  "/iruzkinak?token=okerra") :egoera
-                  {:edukia "Hau iruzkin bat da"}) => 401))
+                  {:gurasoak []
+                   :edukia "Hau iruzkin bat da"}) => 401))
 
 (fact "Iruzkina aldatu" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (let [{ir :iruzkina} (api-deia :put (str "iruzkinak/" id  "?token=" token) :json
-                                         {:edukia "Eduki berria"})]
+                                         {:gurasoak []
+                                          :edukia "Eduki berria"})]
             (:edukia ir) => "Eduki berria"))))
 
 (fact "Iruzkina aldatu token okerrarekin" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (let [token (saioa-hasi "era2" "4321" "Era2")]
                       (api-deia :put (str "iruzkinak/" id  "?token=" token) :egoera
-                                {:edukia "Eduki berria"}) => 401)
+                                {:gurasoak []
+                                 :edukia "Eduki berria"}) => 401)
           (api-deia :put (str "iruzkinak/" id  "?token=okerra") :egoera
-                    {:edukia "Eduki berria"}) => 401)))
+                    {:gurasoak []
+                     :edukia "Eduki berria"}) => 401)))
 
 (fact "Existitzen ez den iruzkina aldatu" :iruzkinak
       (api-deia :put (str "iruzkinak/999?token=edozer") :egoera
-                {:edukia "Eduki berria"}) => 404)
+                {:gurasoak []
+                 :edukia "Eduki berria"}) => 404)
 
 (fact "Iruzkina lortu" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (let [{ir :iruzkina} (api-deia :get (str "iruzkinak/" id) :json)]
+            (:gurasoak ir) => []
+            (:erantzunak ir) => []
             (:edukia ir) => "Hau iruzkin bat da"))))
 
 (fact "Existitzen ez den iruzkina lortu" :iruzkinak
@@ -567,21 +580,24 @@
 (fact "Iruzkina ezabatu" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (api-deia :delete (str "iruzkinak/" id "?token=" token))
           (api-deia :get (str "iruzkinak/" id) :egoera) => 404)))
 
 (fact "Iruzkina ezabatu token okerrarekin" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (api-deia :delete (str "iruzkinak/" id  "?token=okerra") :egoera) => 401))      
       (let [token (saioa-hasi "era" "1234" "Era")]))
 
 (fact "Iruzkina ezabatu beste token batekin" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
-                                             {:edukia "Hau iruzkin bat da"})]
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})]
           (let [token (saioa-hasi "era2" "4321" "Era2")]
             (api-deia :delete (str "iruzkinak/" id  "?token=" token) :egoera)) => 401)))
 
@@ -590,29 +606,44 @@
 
 (fact "Iruzkinak lortu" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
-        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau iruzkin bat da"})
-        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau beste iruzkin bat da"})
-        (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hirugarrena"}))
-      (let [eran (api-deia :get "iruzkinak" :json)]
-        (:guztira eran) => 3
-        (let [irak (:iruzkinak eran)]
-          (count irak) => 3
-          (:edukia (first irak)) => "Hau iruzkin bat da"
-          (:edukia (second irak)) => "Hau beste iruzkin bat da"
-          (:edukia (nth irak 2)) => "Hirugarrena")))
+        (let [{{id1 :id} :iruzkina}
+              (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                        {:gurasoak []
+                         :edukia "Hau iruzkin bat da"})]
+          (let [{{id2 :id} :iruzkina}
+                (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                          {:gurasoak [id1]
+                           :edukia "Hau beste iruzkin bat da"})]
+            (let [{{id3 :id} :iruzkina}
+                  (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                            {:gurasoak [id1 id2]
+                             :edukia "Hirugarrena"})]
+              (let [eran (api-deia :get "iruzkinak" :json)]
+                (:guztira eran) => 3
+                (let [irak (:iruzkinak eran)]
+                  (count irak) => 3
+                  (:gurasoak (first irak)) => []
+                  (:erantzunak (first irak)) => [id2 id3]
+                  (:edukia (first irak)) => "Hau iruzkin bat da"
+                  (:gurasoak (second irak)) => [id1]
+                  (:erantzunak (second irak)) => [id3]                
+                  (:edukia (second irak)) => "Hau beste iruzkin bat da"
+                  (:gurasoak (nth irak 2)) => [id1 id2]
+                  (:erantzunak (nth irak 2)) => []                                
+                  (:edukia (nth irak 2)) => "Hirugarrena")))))))
 
 (fact "Liburuaren iruzkinak" :iruzkinak
       (let [[token libid] (gehitu-liburua "era2" "4321")]
         (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau beste liburu bat"}))
+                  {:gurasoak []
+                   :edukia "Hau beste liburu bat"}))
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau iruzkin bat da"})
+                  {:gurasoak []
+                   :edukia "Hau iruzkin bat da"})
         (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau beste iruzkin bat da"})
+                  {:gurasoak []
+                   :edukia "Hau beste iruzkin bat da"})
         (let [eran (api-deia :get (str "liburuak/" libid "/iruzkinak") :json)]
           (:guztira eran) => 2
           (let [irak (:iruzkinak eran)]
@@ -623,12 +654,15 @@
 (fact "Erabiltzaile baten iruzkinak" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau iruzkin bat da"})
+                  {:gurasoak []
+                   :edukia "Hau iruzkin bat da"})
         (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                  {:edukia "Hau beste iruzkin bat da"})
+                  {:gurasoak []
+                   :edukia "Hau beste iruzkin bat da"})
         (let [token (saioa-hasi "era2" "4321")]
           (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :ezer
-                    {:edukia "Hau beste erabiltzaile batena"}))
+                    {:gurasoak []
+                     :edukia "Hau beste erabiltzaile batena"}))
         (let [eran (api-deia :get "erabiltzaileak/era/iruzkinak" :json)]
           (:guztira eran) => 2
           (let [irak (:iruzkinak eran)]

@@ -11,11 +11,28 @@
     (do (sql/insert! kon :iruzkinak
                        [:liburua :erabiltzailea :data :edukia]
                        [(:liburua edukia) (:erabiltzailea edukia) (:data edukia) (:edukia edukia)])
-          (assoc edukia :id (:id (first (sql/query kon "select identity() as id")))))))
+        (let [id (:id (first (sql/query kon "select identity() as id")))]
+          (doseq [gur (:gurasoak edukia)]
+            (sql/insert! kon :iruzkin_erantzunak
+                         [:gurasoa :erantzuna]
+                         [gur id]))
+          (assoc edukia :id id)))))
+
+(defn- gurasoak [kon id]
+  (map (fn [x] (:gurasoa x))
+       (sql/query kon ["select gurasoa as gurasoa from iruzkin_erantzunak where erantzuna=?" id])))
+
+(defn- erantzunak [kon id]
+  (map (fn [x] (:erantzuna x))
+       (sql/query kon ["select erantzuna as erantzuna from iruzkin_erantzunak where gurasoa=?" id])))
 
 (defn- lortu-iruzkina
   [kon id]
-  (first (sql/query kon ["select * from iruzkinak where id=?" id])))
+  (if-let [ir (first (sql/query kon ["select * from iruzkinak where id=?" id]))]
+    (assoc ir
+      :gurasoak (gurasoak kon id)
+      :erantzunak (erantzunak kon id))
+    nil))
 
 (defn- aldatu-iruzkina!
   [kon id edukia]
@@ -36,7 +53,8 @@
    [:ok {:iruzkina
          (gehitu-iruzkina! kon (assoc edukia
                                  :liburua id
-                                 :erabiltzailea erabiltzailea))}]
+                                 :erabiltzailea erabiltzailea
+                                 :erantzunak []))}]
    [:baimenik-ez]))
 
 (trafun
@@ -80,11 +98,11 @@
  "Iruzkinen bilduma lortu"
  [desplazamendua muga]
  (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak"]))
-       irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak limit ? offset ?" muga desplazamendua])]
+       idak (sql/query kon ["select id from iruzkinak limit ? offset ?" muga desplazamendua])]
    [:ok {:desplazamendua desplazamendua
          :muga muga
          :guztira guztira
-         :iruzkinak irak}]))
+         :iruzkinak (map (fn [x] (lortu-iruzkina @konfig/db-kon (:id x))) idak)}]))
 
 (trafun
  kon
