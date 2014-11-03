@@ -14,34 +14,28 @@
 (defn- eremuak-irakurrita
   "String gisa gordetako eremuak irakurritako liburua"
   [lib]
-  (assoc lib :egileak (read-string (:egileak lib))
-         :etiketak (read-string (:etiketak lib))))
+  (assoc lib :etiketak (read-string (:etiketak lib))))
 
-(defn- egileak-gehitu
-  [kon lib]
-  (if-let [egilea (->> (sql/query kon ["select egilea from liburu_egileak where liburua=?" (:id lib)])
-                    first
-                    :egilea)]
-    (assoc lib :egileak (conj (:egileak egilea)))
-    lib))
+(defn- egileak [kon id]
+  (map (fn [x] (:egilea x))
+       (sql/query kon ["select egilea from liburu_egileak where liburua=?" id])))
 
-(defn- iruzkin-kopurua
-  [kon lib]
+(defn- iruzkin-kopurua [kon id]
   (->>
-   (sql/query kon ["select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?" (:id lib)])
+   (sql/query kon ["select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?" id])
    first
    :iruzkin_kopurua))
 
-(defn- gogokoak
-  [kon lib]
+(defn- gogokoak [kon id]
   (->>
-   (sql/query kon ["select count(liburua) as gogoko_kopurua from gogokoak where liburua=?" (:id lib)])
+   (sql/query kon ["select count(liburua) as gogoko_kopurua from gogokoak where liburua=?" id])
    first
    :gogoko_kopurua))
 
 (defn- lortu-liburua [kon id]
-  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, egileak, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id]))]
+  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, etiketak, azala, igotze_data from liburuak where id=?" id]))]
     (assoc lib
+      :egileak (egileak kon id)
       :iruzkin_kopurua (iruzkin-kopurua kon id)
       :gogoko_kopurua (gogokoak kon id))
     nil))
@@ -55,22 +49,24 @@
                                    "" (:argitaletxea edukia))
                    :generoa (if (nil? (:generoa edukia))
                               "" (:generoa edukia))
-                   :egileak (prn-str (:egileak edukia))
                    :etiketak (prn-str (:etiketak edukia))
                    :azala "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
                    :data (oraingo-data)
                    :iruzkin_kopurua 0
                    :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
-                       [:erabiltzailea :magnet :titulua :egileak :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data]
-                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:egileak edukia) (:hizkuntza edukia)
+                       [:erabiltzailea :magnet :titulua :hizkuntza :sinopsia :argitaletxea :urtea :generoa :etiketak :azala :igotze_data]
+                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia) (:etiketak edukia)
                         (:azala edukia) (:data edukia)])
-          {:liburua (->> (sql/query kon "select identity() as id")
-                         first
-                         :id
-                         (assoc edukia :id)
-                         eremuak-irakurrita)}))))
+          (let [id (:id (first (sql/query kon "select identity() as id")))]
+            (doseq [egi (:egileak edukia)]
+              (sql/insert! kon :liburu_egileak
+                           [:liburua :egilea]
+                           [id egi]))
+            {:liburua (->> id
+                           (assoc edukia :id)
+                           eremuak-irakurrita)})))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
@@ -79,7 +75,6 @@
                   "" (:generoa edukia))]
     (sql/update! @konfig/db-kon :liburuak
                  {:titulua (:titulua edukia)
-                  :egileak (prn-str (:egileak edukia))
                   :hizkuntza (:hizkuntza edukia)
                   :sinopsia (:sinopsia edukia)
                   :argitaletxea argitaletxea
@@ -88,6 +83,7 @@
                   :etiketak (prn-str (:etiketak edukia))
                   :azala (:azala edukia)}
                  ["id=?" id])
+    ; TODO egileak
     (lortu id)))
 
 (defn gehitu! [token edukia]
