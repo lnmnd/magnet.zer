@@ -43,6 +43,11 @@
                          [:edukia "varchar(255)"])
    "alter table iruzkinak add foreign key (liburua) references liburuak(id)"
    "alter table iruzkinak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   (sql/create-table-ddl :iruzkin_erantzunak
+                         [:gurasoa "bigint"]
+                         [:erantzuna "bigint"])
+   "alter table iruzkin_erantzunak add foreign key (gurasoa) references iruzkinak(id)"
+   "alter table iruzkin_erantzunak add foreign key (erantzuna) references iruzkinak(id)"      
    (sql/create-table-ddl :gogokoak
                          [:erabiltzailea "varchar(255)"]
                          [:liburua "bigint"])
@@ -57,7 +62,7 @@
 
 (defn db-garbitu []
   "Taulak ezabatu"
-  (ezabatu-taulak :erabiltzaileak :liburuak :liburu_egileak :iruzkinak :gogokoak))
+  (ezabatu-taulak :erabiltzaileak :liburuak :liburu_egileak :iruzkinak :iruzkin_erantzunak :gogokoak))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
