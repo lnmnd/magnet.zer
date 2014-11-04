@@ -68,7 +68,6 @@
                            [id eti]))
             {:liburua (assoc edukia :id id)})))))
 
-(declare lortu)
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
                         "" (:argitaletxea edukia))
@@ -83,7 +82,7 @@
                   :generoa generoa
                   :azala (:azala edukia)}
                  ["id=?" id])
-    (lortu id)))
+    (lortu-liburua @konfig/db-kon id)))
 
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
@@ -108,7 +107,7 @@
         [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
-            (liburua-aldatu! id (assoc edukia :erabiltzailea era))
+            [:ok {:liburua (liburua-aldatu! id (assoc edukia :erabiltzailea era))}] 
             [:baimenik-ez])
           [:baimenik-ez])))
     [:ezin-prozesatu]))
