@@ -30,16 +30,21 @@
        (let [[egoera# datuak#] ~edukia]
          (json-erantzuna (if datuak# datuak# {}) (egoera-zenbakia egoera#)))))
 
+(defmacro orriztatu
+  "Funtzioari desplazamendua eta muga parametroak gehitzen dizkio."
+  [fn qparam & param]
+  `(let [muga# (if (contains? ~qparam "muga")
+                 (read-string (~qparam "muga"))
+                 konfig/muga)
+         desp# (if (contains? ~qparam "desplazamendua")
+                 (read-string (~qparam "desplazamendua"))
+                 0)]
+     (~fn desp# (if (> muga# 0) muga# 0) ~@param)))
+
 (defroutes app-routes
   (api-erantzuna GET "erabiltzaileak" eskaera
-                 (let [{query-params :query-params} eskaera
-                       muga (if (contains? query-params "muga")
-                              (read-string (query-params "muga"))
-                              konfig/muga)
-                       desplazamendua (if (contains? query-params "desplazamendua")
-                                        (read-string (query-params "desplazamendua"))
-                                        0)]
-                   (erak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))
+                 (let [{query-params :query-params} eskaera]
+                   (orriztatu erak/lortu-bilduma query-params)))
   (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
                  (erak/lortu erabiltzailea))
   (api-erantzuna POST "erabiltzaileak" eskaera
@@ -64,14 +69,8 @@
 
   ; liburuak
   (api-erantzuna GET "liburuak" eskaera
-                 (let [{query-params :query-params} eskaera
-                       muga (if (contains? query-params "muga")
-                              (read-string (query-params "muga"))
-                              konfig/muga)
-                       desplazamendua (if (contains? query-params "desplazamendua")
-                                        (read-string (query-params "desplazamendua"))
-                                        0)]
-                   (liburuak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))  
+                 (let [{query-params :query-params} eskaera]
+                   (orriztatu liburuak/lortu-bilduma query-params)))  
   (api-erantzuna GET "liburuak/:id" {{id :id} :params}
                  (liburuak/lortu id))
   (api-erantzuna POST "liburuak" eskaera
@@ -106,35 +105,17 @@
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
                      (iruzkinak/ezabatu! token id)))
-  (api-erantzuna GET "iruzkinak" eskaera
-                 (let [{query-params :query-params} eskaera
-                       muga (if (contains? query-params "muga")
-                              (read-string (query-params "muga"))
-                              konfig/muga)
-                       desplazamendua (if (contains? query-params "desplazamendua")
-                                        (read-string (query-params "desplazamendua"))
-                                        0)]
-                   (iruzkinak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))
+    (api-erantzuna GET "iruzkinak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                   (orriztatu iruzkinak/lortu-bilduma query-params)))
     (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
                    (let [id (:id (:params eskaera))
-                         {query-params :query-params} eskaera
-                         muga (if (contains? query-params "muga")
-                                (read-string (query-params "muga"))
-                                konfig/muga)
-                         desplazamendua (if (contains? query-params "desplazamendua")
-                                          (read-string (query-params "desplazamendua"))
-                                          0)]
-                     (iruzkinak/lortu-liburuarenak id desplazamendua (if (> muga 0) muga 0))))
+                         {query-params :query-params} eskaera]
+                     (orriztatu iruzkinak/lortu-liburuarenak query-params id)))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/iruzkinak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
-                         {query-params :query-params} eskaera
-                         muga (if (contains? query-params "muga")
-                                (read-string (query-params "muga"))
-                                konfig/muga)
-                         desplazamendua (if (contains? query-params "desplazamendua")
-                                          (read-string (query-params "desplazamendua"))
-                                          0)]
-                     (iruzkinak/lortu-erabiltzailearenak erabiltzailea desplazamendua (if (> muga 0) muga 0))))    
+                         {query-params :query-params} eskaera]
+                     (orriztatu iruzkinak/lortu-erabiltzailearenak query-params erabiltzailea)))    
   
   (route/resources "/")
   (route/not-found "Not Found"))

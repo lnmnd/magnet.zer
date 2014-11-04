@@ -101,7 +101,7 @@
 
 (defn lortu-liburuarenak
   "Liburu baten iruzkinak lortzen ditu."
-  [id desplazamendua muga]
+  [desplazamendua muga id]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where liburua=?" id]))
           irak (sql/query kon (orriztatu ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where liburua=?" id] desplazamendua muga))]
@@ -112,7 +112,7 @@
 
 (defn lortu-erabiltzailearenak
   "Erabiltzaile baten iruzkinak lortzen ditu."
-  [era desplazamendua muga]
+  [desplazamendua muga era]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where erabiltzailea=?" era]))
           irak (sql/query kon (orriztatu ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where erabiltzailea=?" era] desplazamendua muga))]
