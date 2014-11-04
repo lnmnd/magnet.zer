@@ -138,11 +138,11 @@
   [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak"]))
-          liburuak (sql/query kon (orriztatu ["select * from liburuak"] desplazamendua muga))]
+          idak (sql/query kon (orriztatu ["select id from liburuak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :liburuak liburuak}])))
+            :liburuak (liburuak idak)}])))
 
 (defn lortu-erabiltzailearenak
   "Erabiltzaile baten liburuen bilduma lortzen du."
