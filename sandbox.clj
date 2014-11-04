@@ -64,7 +64,7 @@
   (with-open [in (io/input-stream f)]
     (->> in
          slurp-bytes
-         b64/encoden
+         b64/encode
          (map char)
          (apply str))))
 (lortu-base64 "project.clj")
