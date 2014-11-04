@@ -152,6 +152,9 @@
                      (orriztatu erak/gogoko-erabiltzaileak query-params id)))
 
     ; hainbat
+    (api-erantzuna GET "egileak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/egileak query-params)))    
     (api-erantzuna GET "argitaletxeak" eskaera
                    (let [{query-params :query-params} eskaera]
                      (orriztatu hainbat/argitaletxeak query-params)))
