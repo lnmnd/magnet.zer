@@ -42,6 +42,12 @@
        (let [[egoera# datuak#] ~edukia]
          (json-erantzuna (if datuak# datuak# (egoera-gorputza egoera#)) (egoera-zenbakia egoera#)))))
 
+(defmacro ^:private hainbat-erantzuna
+  [hel fun]
+  `(api-erantzuna GET ~hel eskaera#
+                  (let [qp# (:query-params eskaera#)]
+                    (orriztatu ~fun qp#))))
+
 (defmacro orriztatu
   "Funtzioari desplazamendua eta muga parametroak gehitzen dizkio."
   [fn qparam & param]
@@ -152,24 +158,12 @@
                      (orriztatu erak/gogoko-erabiltzaileak query-params id)))
 
     ; hainbat
-    (api-erantzuna GET "egileak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/egileak query-params)))    
-    (api-erantzuna GET "argitaletxeak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/argitaletxeak query-params)))
-    (api-erantzuna GET "generoak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/generoak query-params)))
-    (api-erantzuna GET "etiketak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/etiketak query-params)))
-    (api-erantzuna GET "urteak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/urteak query-params)))
-    (api-erantzuna GET "hizkuntzak" eskaera
-                   (let [{query-params :query-params} eskaera]
-                     (orriztatu hainbat/hizkuntzak query-params)))    
+    (hainbat-erantzuna "egileak" hainbat/egileak)
+    (hainbat-erantzuna "argitaletxeak"  hainbat/argitaletxeak)
+    (hainbat-erantzuna "generoak"  hainbat/generoak)
+    (hainbat-erantzuna "etiketak"  hainbat/etiketak)
+    (hainbat-erantzuna "urteak" hainbat/urteak)
+    (hainbat-erantzuna "hizkuntzak" hainbat/hizkuntzak)
     
   (route/resources "/")
   (route/not-found "Not Found"))
