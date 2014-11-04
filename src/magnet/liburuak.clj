@@ -154,3 +154,15 @@
             :muga muga
             :guztira guztira
             :liburuak (liburuak idak)}])))
+
+(defn gehitu-gogokoa!
+  "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
+  [era id]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (if-let [lib (lortu-liburua kon id)]
+      (do
+        (sql/insert! kon :gogokoak
+                     [:erabiltzailea :liburua]
+                     [era id])    
+        [:ok {:gogoko_liburua lib}])
+      [:ezin-prozesatu])))

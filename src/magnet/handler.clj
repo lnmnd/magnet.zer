@@ -131,7 +131,12 @@
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
                      (orriztatu iruzkinak/lortu-erabiltzailearenak query-params erabiltzailea)))    
-  
+
+    ; gogokoak
+    (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
+                   (let [erabiltzailea (:erabiltzailea (:params eskaera))
+                         {id :id} (json/parse-string (slurp (:body eskaera)) true)]
+                     (liburuak/gehitu-gogokoa! erabiltzailea id)))
   (route/resources "/")
   (route/not-found "Not Found"))
 

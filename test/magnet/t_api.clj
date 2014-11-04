@@ -711,3 +711,15 @@
             (count irak) => 2
             (:edukia (first irak)) => "Hau iruzkin bat da"
             (:edukia (second irak)) => "Hau beste iruzkin bat da"))))
+
+(fact "Gogokoa gehitu" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (let [{lib :gogoko_liburua} (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :json
+                                              {:id libid})]
+          (:id lib) => libid
+          (:erabiltzailea lib) => "era")))
+
+(fact "Existitzen ez den gogokoa gehitu" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :egoera
+                                              {:id 999}) => 422))
