@@ -8,7 +8,8 @@
             [magnet.erabiltzaileak :as erak]
             [magnet.saioak :as saioak]
             [magnet.liburuak :as liburuak]
-            [magnet.iruzkinak :as iruzkinak]))
+            [magnet.iruzkinak :as iruzkinak]
+            [magnet.hainbat :as hainbat]))
 
 (defn- json-erantzuna
   "Datuak JSON formatuan itzultzen ditu. Egoera aukeran, 200 lehenetsia."
@@ -149,6 +150,12 @@
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
                      (orriztatu erak/gogoko-erabiltzaileak query-params id)))
+
+    ; hainbat
+    (api-erantzuna GET "argitaletxeak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/argitaletxeak query-params)))
+    
   (route/resources "/")
   (route/not-found "Not Found"))
 

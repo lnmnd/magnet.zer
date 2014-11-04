@@ -783,3 +783,25 @@
         (:guztira eran) => 1
         (count erak) => 1
         (:erabiltzailea (first erak)) => "era"))
+
+(fact "Argitaletxe guztiak" :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :argitaletxea "etxe1"
+                   :urtea "2009"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            _ (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak?token=" token) :json (assoc param
+                                                                    :titulua "tit2"
+                                                                    :argitaletxea "etxe2"))
+            eran (api-deia :get "argitaletxeak" :json)
+            argit (:argitaletxeak eran)]
+        (:guztira eran) => 2
+        (count argit) => 2
+        (first argit) => "etxe1"
+        (second argit) => "etxe2"))
