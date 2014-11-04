@@ -137,6 +137,10 @@
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
                      (liburuak/gehitu-gogokoa! erabiltzailea id)))
+    (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
+                   (let [erabiltzailea (:erabiltzailea (:params eskaera))
+                         {query-params :query-params} eskaera]
+                     (orriztatu liburuak/lortu-gogokoak query-params erabiltzailea)))
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -166,3 +166,14 @@
                      [era id])    
         [:ok {:gogoko_liburua lib}])
       [:ezin-prozesatu])))
+
+(defn lortu-gogokoak
+  "Erabiltzailearen gogoko liburuak itzultzen ditu"
+  [desp muga era]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from gogokoak where erabiltzailea=?" era]))
+          idak (sql/query kon (orriztatu ["select liburua as id from gogokoak where erabiltzailea=?" era] desp muga))]
+      [:ok {:desplazamendua desp
+            :muga muga
+            :guztira guztira
+            :liburuak (liburuak idak)}])))

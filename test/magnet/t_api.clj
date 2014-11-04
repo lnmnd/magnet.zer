@@ -723,3 +723,17 @@
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :egoera
                                               {:id 999}) => 422))
+
+(fact "Gogokoak lortu" :gogokoak
+      (let [[token lib1id] (gehitu-liburua "era" "1234")
+            _ (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :ezer
+                        {:id lib1id})
+            [token lib2id] (gehitu-liburua "era" "1234")
+            _ (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :ezer
+                        {:id lib2id})
+            eran (api-deia :get "erabiltzaileak/era/gogoko_liburuak" :json)
+            libuk (:liburuak eran)]
+        (:guztira eran) => 2
+        (count libuk) => 2
+        (:id (first libuk)) => lib1id
+        (:id (second libuk)) => lib2id))
