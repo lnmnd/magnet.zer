@@ -194,4 +194,4 @@
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :liburuak (liburuak idak)}])))
+            :gogoko_liburuak (liburuak idak)}])))
