@@ -23,12 +23,23 @@
            :ez-dago 404
            :ezin-prozesatu 422}))
 
+(defn- egoera-gorputza [egoera]
+  (egoera {:baimenik-ez
+           {:mezua "Baimenik ez"
+            :deskribapena "Baimenik ez, kautotzea beharrezkoa"}
+           :ez-dago
+           {:mezua "Ez dago"
+            :deskribapena "Baliabidea ez da aurkitu"}
+           :ezin-prozesatu
+           {:mezua "Ezin prozesatu"
+            :deskribapena "Eskaerak sintaxi egokia du baina errore semantikoak ditu"}}))
+
 (defmacro ^:private api-erantzuna
   "Metodo, url, parametro eta edukia emanik erantzuna osatzen du"
   [metodoa url params edukia]
   `(~metodoa ~(str "/v1/" url) ~params
        (let [[egoera# datuak#] ~edukia]
-         (json-erantzuna (if datuak# datuak# {}) (egoera-zenbakia egoera#)))))
+         (json-erantzuna (if datuak# datuak# (egoera-gorputza egoera#)) (egoera-zenbakia egoera#)))))
 
 (defmacro orriztatu
   "Funtzioari desplazamendua eta muga parametroak gehitzen dizkio."
