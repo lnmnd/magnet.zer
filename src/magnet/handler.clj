@@ -70,7 +70,11 @@
   ; liburuak
   (api-erantzuna GET "liburuak" eskaera
                  (let [{query-params :query-params} eskaera]
-                   (orriztatu liburuak/lortu-bilduma query-params)))  
+                   (orriztatu liburuak/lortu-bilduma query-params)))
+  (api-erantzuna GET "erabiltzaileak/:erabiltzailea/liburuak" eskaera
+                 (let [{era :erabiltzailea} (:params eskaera)
+                       {query-params :query-params} eskaera]
+                   (orriztatu liburuak/lortu-erabiltzailearenak query-params era)))  
   (api-erantzuna GET "liburuak/:id" {{id :id} :params}
                  (liburuak/lortu id))
   (api-erantzuna POST "liburuak" eskaera

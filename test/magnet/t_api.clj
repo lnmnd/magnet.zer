@@ -309,6 +309,8 @@
         (let [egoera (api-deia :delete (str "erabiltzaileak/era1?token=" token) :egoera)]
           egoera => 401)))
 
+; LIBURUAK
+; --------
 (fact "Liburua gehitu" :liburuak
   (let [token (saioa-hasi "era" "1234" "Era")]
     (let [param {:epub "base64"
@@ -513,6 +515,28 @@
       (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Beste liburu bat"))
       (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Hirugarrena"))
       (let [eran (api-deia :get "liburuak" :json)]
+        (:guztira eran) => 3
+        (let [liburuak (:liburuak eran)]
+          (count liburuak) => 3
+          (:titulua (first liburuak)) => "Kaixo mundua"
+          (:titulua (second liburuak)) => "Beste liburu bat"
+          (:titulua (liburuak 2)) => "Hirugarrena")))))
+
+(fact "Erabiltzaile baten liburuak lortu" :liburuak
+  (let [token (saioa-hasi "era" "1234" "Era")]
+    (let [param {:epub "base64"
+                 :titulua "Kaixo mundua"
+                 :egileak ["Joxe" "Patxi"]
+                 :hizkuntza "euskara"                 
+                 :sinopsia "Duela urte asko..."
+                 :urtea "2009"
+                 :etiketak ["kaixo" "joxe" "zaharra"]
+                 :azala "base64"}]
+      (api-deia :post (str "liburuak?token=" token) :ezer param)
+      (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Beste liburu bat"))
+      (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Hirugarrena"))
+      (let [eran (api-deia :get "erabiltzaileak/era/liburuak" :json)]
+        (println eran)
         (:guztira eran) => 3
         (let [liburuak (:liburuak eran)]
           (count liburuak) => 3

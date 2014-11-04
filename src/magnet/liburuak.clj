@@ -40,6 +40,9 @@
       :gogoko_kopurua (gogokoak kon id))
     nil))
 
+(defn- liburuak [idak]
+  (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
+
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [edukia (assoc edukia
@@ -140,3 +143,14 @@
             :muga muga
             :guztira guztira
             :liburuak liburuak}])))
+
+(defn lortu-erabiltzailearenak
+  "Erabiltzaile baten liburuen bilduma lortzen du."
+  [desp muga era]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak where erabiltzailea=?" era]))
+          idak (sql/query kon (orriztatu ["select id from liburuak where erabiltzailea=?" era] desp muga))]
+      [:ok {:desplazamendua desp
+            :muga muga
+            :guztira guztira
+            :liburuak (liburuak idak)}])))
