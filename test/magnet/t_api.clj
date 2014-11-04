@@ -761,3 +761,16 @@
 (fact "Gogokoak ezabatu existitu ez" :gogokoak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (api-deia :delete (str "erabiltzaileak/era/gogoko_liburuak/" 999 "?token=" token) :egoera) => 422))
+
+(fact "Gogoko erabiltzaileak" :gogokoak
+      (let [[token lib1id] (gehitu-liburua "era" "1234")
+            _ (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :ezer
+                        {:id lib1id})
+            [token lib2id] (gehitu-liburua "era" "1234")
+            _ (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :ezer
+                        {:id lib2id})
+            eran (api-deia :get (str "liburuak/" lib1id "/gogoko_erabiltzaileak") :json)
+            erak (:gogoko_erabiltzaileak eran)]
+        (:guztira eran) => 1
+        (count erak) => 1
+        (:erabiltzailea (first erak)) => "era"))

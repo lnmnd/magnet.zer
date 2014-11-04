@@ -38,6 +38,9 @@
                 :deskribapena (:deskribapena edukia)}
                ["erabiltzailea=?" erabiltzailea]))
 
+(defn- erabiltzaileak [idak]
+  (map (fn [x] (lortu-erabiltzailea @konfig/db-kon (:id x))) idak))
+
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
@@ -86,3 +89,14 @@
             [:ok])
         [:baimenik-ez])
       [:ez-dago])))
+
+(defn gogoko-erabiltzaileak
+  "Liburu bat gogoko duten erabiltzaileak lortzen ditu."
+  [desp muga id]
+  (sql/with-db-transaction [kon @konfig/db-kon]
+    (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from gogokoak where liburua=?" id]))
+          idak (sql/query kon (orriztatu ["select erabiltzailea as id from gogokoak where liburua=?" id] desp muga))]
+      [:ok {:desplazamendua desp
+            :muga muga
+            :guztira guztira
+            :gogoko_erabiltzaileak (erabiltzaileak idak)}])))

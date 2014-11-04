@@ -145,6 +145,10 @@
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
                      (orriztatu liburuak/lortu-gogokoak query-params erabiltzailea)))
+    (api-erantzuna GET "liburuak/:id/gogoko_erabiltzaileak" eskaera
+                   (let [id (:id (:params eskaera))
+                         {query-params :query-params} eskaera]
+                     (orriztatu erak/gogoko-erabiltzaileak query-params id)))
   (route/resources "/")
   (route/not-found "Not Found"))
 
