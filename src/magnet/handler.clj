@@ -134,9 +134,9 @@
 
     ; gogokoak
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
-                   (let [erabiltzailea (:erabiltzailea (:params eskaera))
+                   (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu-gogokoa! erabiltzailea id)))
+                     (liburuak/gehitu-gogokoa! token id)))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]

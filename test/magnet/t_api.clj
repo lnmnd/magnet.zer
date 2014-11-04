@@ -714,15 +714,20 @@
 
 (fact "Gogokoa gehitu" :gogokoak
       (let [[token libid] (gehitu-liburua "era" "1234")]
-        (let [{lib :gogoko_liburua} (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :json
+        (let [{lib :gogoko_liburua} (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :json
                                               {:id libid})]
           (:id lib) => libid
           (:erabiltzailea lib) => "era")))
 
 (fact "Existitzen ez den gogokoa gehitu" :gogokoak
       (let [[token libid] (gehitu-liburua "era" "1234")]
-        (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=") :egoera
-                                              {:id 999}) => 422))
+        (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :egoera
+                  {:id 999}) => 422))
+
+(fact "Gogokoa gehitu token okerrarekin" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post "erabiltzaileak/era/gogoko_liburuak?token=okerra" :egoera
+                  {:id libid}) => 401))
 
 (fact "Gogokoak lortu" :gogokoak
       (let [[token lib1id] (gehitu-liburua "era" "1234")

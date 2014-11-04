@@ -157,14 +157,18 @@
 
 (defn gehitu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
-  [era id]
+  [token id]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if-let [lib (lortu-liburua kon id)]
-      (do
-        (sql/insert! kon :gogokoak
-                     [:erabiltzailea :liburua]
-                     [era id])    
-        [:ok {:gogoko_liburua lib}])
+      (if-let [era (:erabiltzailea (lortu-saioa token))]
+        (if (= era (:erabiltzailea lib))
+          (do
+            (sql/insert! kon :gogokoak
+                         [:erabiltzailea :liburua]
+                         [era id])    
+            [:ok {:gogoko_liburua lib}])
+          [:baimenik-ez])
+        [:baimenik-ez])
       [:ezin-prozesatu])))
 
 (defn lortu-gogokoak
