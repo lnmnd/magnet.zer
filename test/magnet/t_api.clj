@@ -227,12 +227,21 @@
     (contains? saioa :iraungitze_data) => true
     (:erabiltzailea saioa) => "era1"
     ; saioa amaitu
-    (api-deia :delete (str "saioak/" (:token saioa)))
-    (let [egoera (api-deia :get (str "saioak/" (:token saioa)) :egoera)]
-      egoera => 404)))
+    (api-deia :delete (str "saioak/" (:token saioa)))))
 
-; TODO erabiltzailea ez da existitzen
-; TODO pasahitz okerra
+(fact "Saioa hasi erabiltzailerik ez" :saioak
+      (api-deia :post "saioak" :egoera
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"}) => 422)
+
+(fact "Saioa hasi pasahitz okerra" :saioak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "4321"
+                 :izena "Era"})      
+      (api-deia :post "saioak" :egoera
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"}) => 422)
 
 ; ERABILTZAILEAK: token
 ; ---------------------
