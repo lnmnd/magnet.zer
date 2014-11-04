@@ -7,24 +7,23 @@
 (defn- balioak [xs]
   (map (fn [x] (:x x)) xs))
 
-(defn egileak
-  "Egileen zerrenda itzultzen du."
-  [desp muga]
+(defn- datuak
+  "Taulatik eremuaren balio ezberdinak lortzen ditu."
+  [eran desp muga eremua taula]
   (sql/with-db-transaction [kon @konfig/db-kon]
-    (let [{guztira :guztira} (first (sql/query kon ["select count(distinct egilea) as guztira from liburu_egileak"]))
-          xs (sql/query kon (orriztatu ["select distinct egilea as x from liburu_egileak"] desp muga))]
+    (let [{guztira :guztira} (first (sql/query kon [(str "select count(distinct " eremua ") as guztira from " taula)]))
+          xs (sql/query kon (orriztatu [(str "select distinct " eremua " as x from " taula)] desp muga))]
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :egileak (balioak xs)}])))
+            eran (balioak xs)}])))
+
+(defn egileak
+  "Egileen zerrenda itzultzen du."
+  [desp muga]
+  (datuak :egileak desp muga "egilea" "liburu_egileak"))
 
 (defn argitaletxeak
   "Argitaletxeen zerrenda itzultzen du."
   [desp muga]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (let [{guztira :guztira} (first (sql/query kon ["select count(distinct argitaletxea) as guztira from liburuak"]))
-          xs (sql/query kon (orriztatu ["select distinct argitaletxea as x from liburuak"] desp muga))]
-      [:ok {:desplazamendua desp
-            :muga muga
-            :guztira guztira
-            :argitaletxeak (balioak xs)}])))
+  (datuak :argitaletxeak desp muga "argitaletxea" "liburuak"))
