@@ -825,3 +825,81 @@
         (count argit) => 2
         (first argit) => "etxe1"
         (second argit) => "etxe2"))
+
+(fact "Genero guztiak" :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :argitaletxea "etxe1"
+                   :urtea "2009"
+                   :generoa "gen1"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            _ (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak?token=" token) :json (assoc param
+                                                                    :generoa "gen2"))
+            eran (api-deia :get "generoak" :json)
+            xs (:generoak eran)]
+        (:guztira eran) => 2
+        (count xs) => 2
+        (set xs) => #{"gen1" "gen2"}))
+
+(fact "Etiketa guztiak" :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :urtea "2009"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            _ (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak?token=" token) :json (assoc param
+                                                                    :etiketak ["eti"]))
+            eran (api-deia :get "etiketak" :json)
+            xs (:etiketak eran)]
+        (:guztira eran) => 4
+        (count xs) => 4
+        (set xs) => #{"kaixo" "joxe" "zaharra" "eti"}))
+
+(fact "Urte guztiak" :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :urtea "2009"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            _ (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak?token=" token) :json (assoc param
+                                                                    :urtea "2014"))
+            eran (api-deia :get "urteak" :json)
+            xs (:urteak eran)]
+        (:guztira eran) => 2
+        (count xs) => 2
+        (set xs) => #{"2009" "2014"}))
+
+(fact "Hizkuntza guztiak" :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :urtea "2009"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            _ (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak?token=" token) :json (assoc param
+                                                                    :hizkuntza "ainuera"))
+            eran (api-deia :get "hizkuntzak" :json)
+            xs (:hizkuntzak eran)]
+        (:guztira eran) => 2
+        (count xs) => 2
+        (set xs) => #{"euskara" "ainuera"}))

@@ -27,3 +27,23 @@
   "Argitaletxeen zerrenda itzultzen du."
   [desp muga]
   (datuak :argitaletxeak desp muga "argitaletxea" "liburuak"))
+
+(defn generoak
+  "Generoen zerrenda itzultzen du."
+  [desp muga]
+  (datuak :generoak desp muga "generoa" "liburuak"))
+
+(defn etiketak
+  "Etiketen zerrenda itzultzen du."
+  [desp muga]
+  (datuak :etiketak desp muga "etiketa" "liburu_etiketak"))
+
+(defn urteak
+  "Urteen zerrenda itzultzen du."
+  [desp muga]
+  (datuak :urteak desp muga "urtea" "liburuak"))
+
+(defn hizkuntzak
+  "Hizkuntzen zerrenda itzultzen du."
+  [desp muga]
+  (datuak :hizkuntzak desp muga "hizkuntza" "liburuak"))

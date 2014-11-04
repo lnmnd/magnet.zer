@@ -158,6 +158,18 @@
     (api-erantzuna GET "argitaletxeak" eskaera
                    (let [{query-params :query-params} eskaera]
                      (orriztatu hainbat/argitaletxeak query-params)))
+    (api-erantzuna GET "generoak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/generoak query-params)))
+    (api-erantzuna GET "etiketak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/etiketak query-params)))
+    (api-erantzuna GET "urteak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/urteak query-params)))
+    (api-erantzuna GET "hizkuntzak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu hainbat/hizkuntzak query-params)))    
     
   (route/resources "/")
   (route/not-found "Not Found"))
