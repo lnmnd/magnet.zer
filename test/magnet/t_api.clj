@@ -823,8 +823,7 @@
             argit (:argitaletxeak eran)]
         (:guztira eran) => 2
         (count argit) => 2
-        (first argit) => "etxe1"
-        (second argit) => "etxe2"))
+        (set argit) => #{"etxe1" "etxe2"}))
 
 (fact "Genero guztiak" :hainbat
       (let [token (saioa-hasi "era" "1234")
