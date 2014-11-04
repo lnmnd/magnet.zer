@@ -66,10 +66,10 @@
   (ezabatu-taulak :erabiltzaileak :liburuak :liburu_egileak :liburu_etiketak :iruzkinak :iruzkin_erantzunak :gogokoak))
 
 (defn oraingo-data
-  "Oraingo UTC data itzultzen du \"basic-date-time-no-ms\" formatuarekin.
+  "Oraingo UTC data itzultzen du \"date-time-no-ms\" formatuarekin.
    Formatuak ikusteko: (clj-time.format/show-formatters)"
   []
-  (let [formatua (time-format/formatters :basic-date-time-no-ms)
+  (let [formatua (time-format/formatters :date-time-no-ms)
         orain (time/now)]
     (time-format/unparse formatua orain)))
 
