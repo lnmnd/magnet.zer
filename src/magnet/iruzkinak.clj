@@ -1,7 +1,7 @@
 (ns magnet.iruzkinak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
-            [magnet.lagun :refer [oraingo-data]]
+            [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
 
@@ -93,7 +93,7 @@
   [desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak"]))
-          idak (sql/query kon ["select id from iruzkinak limit ? offset ?" muga desplazamendua])]
+          idak (sql/query kon (orriztatu ["select id from iruzkinak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
@@ -104,7 +104,7 @@
   [id desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where liburua=?" id]))
-          irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where liburua=? limit ? offset ?" id muga desplazamendua])]
+          irak (sql/query kon (orriztatu ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where liburua=?" id] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
@@ -115,7 +115,7 @@
   [era desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where erabiltzailea=?" era]))
-          irak (sql/query kon ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where erabiltzailea=? limit ? offset ?" era muga desplazamendua])]
+          irak (sql/query kon (orriztatu ["select id, liburua, erabiltzailea, data, edukia from iruzkinak where erabiltzailea=?" era] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira

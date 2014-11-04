@@ -1,7 +1,7 @@
 (ns magnet.liburuak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
-            [magnet.lagun :refer [oraingo-data]]
+            [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
 
@@ -136,7 +136,7 @@
   [desplazamendua muga]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak"]))
-          liburuak (sql/query kon ["select * from liburuak limit ? offset ?" muga desplazamendua])]
+          liburuak (sql/query kon (orriztatu ["select * from liburuak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira

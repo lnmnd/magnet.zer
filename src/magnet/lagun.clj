@@ -74,3 +74,11 @@
   (let [formatua (time-format/formatters :basic-date-time-no-ms)
         orain (time/now)]
     (time-format/unparse formatua orain)))
+
+(defn orriztatu
+  "Kontsulta, desplazamendua eta muga emanda kontsulta berria sortzen du muga kontutan edukita."
+  [kon desp muga]
+  (if (= muga 0)
+    kon
+    (concat [(str (first kon) " limit ? offset ?")]
+            (concat (rest kon) [muga desp]))))

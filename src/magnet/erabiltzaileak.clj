@@ -2,7 +2,7 @@
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.saioak :refer [lortu-saioa]]
-            [magnet.lagun :refer [oraingo-data]]
+            [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.konfig :as konfig]))
 
 (defn- baliozko-erabiltzailea?
@@ -41,11 +41,7 @@
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
-          query-oinarri "select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"
-          query (if (= muga 0)
-                  [query-oinarri]
-                  [(str query-oinarri " desc limit ? offset ?") muga desplazamendua])
-          erabiltzaileak (sql/query kon query)]
+          erabiltzaileak (sql/query kon (orriztatu ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
