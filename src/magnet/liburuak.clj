@@ -171,6 +171,20 @@
         [:baimenik-ez])
       [:ezin-prozesatu])))
 
+(defn ezabatu-gogokoa!
+  "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
+  [token id]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (if-let [lib (lortu-liburua kon id)]
+      (if-let [era (:erabiltzailea (lortu-saioa token))]
+        (if (= era (:erabiltzailea lib))
+          (do
+            (sql/delete! kon :gogokoak ["liburua=?" id])
+            [:ok])
+          [:baimenik-ez])
+        [:baimenik-ez])
+      [:ezin-prozesatu])))
+
 (defn lortu-gogokoak
   "Erabiltzailearen gogoko liburuak itzultzen ditu"
   [desp muga era]

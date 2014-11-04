@@ -742,3 +742,22 @@
         (count libuk) => 2
         (:id (first libuk)) => lib1id
         (:id (second libuk)) => lib2id))
+
+(fact "Gogokoak ezabatu" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :ezer
+                  {:id libid})
+        (:guztira (api-deia :get "erabiltzaileak/era/gogoko_liburuak" :json)) => 1
+        (api-deia :delete (str "erabiltzaileak/era/gogoko_liburuak/" libid "?token=" token))
+        (:guztira (api-deia :get "erabiltzaileak/era/gogoko_liburuak" :json)) => 0))
+
+(fact "Gogokoak ezabatu token okerra" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :ezer
+                  {:id libid})
+        (:guztira (api-deia :get "erabiltzaileak/era/gogoko_liburuak" :json)) => 1
+        (api-deia :delete (str "erabiltzaileak/era/gogoko_liburuak/" libid "?token=okerra") :egoera) => 401))
+
+(fact "Gogokoak ezabatu existitu ez" :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (api-deia :delete (str "erabiltzaileak/era/gogoko_liburuak/" 999 "?token=" token) :egoera) => 422))

@@ -137,6 +137,10 @@
                    (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
                      (liburuak/gehitu-gogokoa! token id)))
+    (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea/gogoko_liburuak/:id" eskaera
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))]
+                     (liburuak/ezabatu-gogokoa! token id)))    
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
