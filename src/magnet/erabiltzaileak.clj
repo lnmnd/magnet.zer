@@ -41,7 +41,11 @@
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
-          erabiltzaileak (sql/query kon ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak desc limit ? offset ?" muga desplazamendua])]
+          query-oinarri "select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"
+          query (if (= muga 0)
+                  [query-oinarri]
+                  [(str query-oinarri " desc limit ? offset ?") muga desplazamendua])
+          erabiltzaileak (sql/query kon query)]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira

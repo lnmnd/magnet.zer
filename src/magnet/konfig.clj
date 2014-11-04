@@ -6,4 +6,4 @@
 (def db-kon (atom db-kon-lehenetsia))
 
 ; bildumen muga
-(def muga 10)
+(def muga 25)

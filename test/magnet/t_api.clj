@@ -67,7 +67,7 @@
 (fact "Hutsa" :erabiltzaileak
       (let [eran (get-json "erabiltzaileak")]
        eran => {:desplazamendua 0
-                :muga 10
+                :muga 25
                 :guztira 0
                 :erabiltzaileak []})
       (let [egoera (api-deia :get "erabiltzaileak/ezdago" :egoera)]
@@ -166,9 +166,28 @@
         (let [era2 (second (:erabiltzaileak eran))]
           (:erabiltzailea era2) => "era2")))
 
-(fact "Mugaren gehienezko balioa pasa" :erabiltzaileak
-      (let [eran (get-json "erabiltzaileak?muga=666")]
-        (:muga eran) => 100))
+(fact "Muga 0" :erabiltzaileak
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era1"
+                 :pasahitza "1234"
+                 :izena "era1"})
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era2"
+                 :pasahitza "1234"
+                 :izena "era2"})
+      (api-deia :post "erabiltzaileak" :ezer
+                {:erabiltzailea "era3"
+                 :pasahitza "1234"
+                 :izena "era3"})            
+      (let [eran (get-json "erabiltzaileak?muga=0")]
+        (:guztira eran) => 3
+        (:muga eran) => 0
+        (let [era1 (first (:erabiltzaileak eran))]
+          (:erabiltzailea era1) => "era1")
+        (let [era2 (second (:erabiltzaileak eran))]
+          (:erabiltzailea era2) => "era2")
+        (let [era3 (nth (:erabiltzaileak eran) 2)]
+          (:erabiltzailea era3) => "era3")))
 
 (fact "Desplazamendua gehitu" :erabiltzaileak
       (api-deia :post "erabiltzaileak" :ezer

@@ -39,7 +39,7 @@
                        desplazamendua (if (contains? query-params "desplazamendua")
                                         (read-string (query-params "desplazamendua"))
                                         0)]
-                   (erak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))
+                   (erak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))
   (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
                  (erak/lortu erabiltzailea))
   (api-erantzuna POST "erabiltzaileak" eskaera
@@ -71,7 +71,7 @@
                        desplazamendua (if (contains? query-params "desplazamendua")
                                         (read-string (query-params "desplazamendua"))
                                         0)]
-                   (liburuak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))  
+                   (liburuak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))  
   (api-erantzuna GET "liburuak/:id" {{id :id} :params}
                  (liburuak/lortu id))
   (api-erantzuna POST "liburuak" eskaera
@@ -114,7 +114,7 @@
                        desplazamendua (if (contains? query-params "desplazamendua")
                                         (read-string (query-params "desplazamendua"))
                                         0)]
-                   (iruzkinak/lortu-bilduma desplazamendua (if (<= muga 100) muga 100))))
+                   (iruzkinak/lortu-bilduma desplazamendua (if (> muga 0) muga 0))))
     (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera
@@ -124,7 +124,7 @@
                          desplazamendua (if (contains? query-params "desplazamendua")
                                           (read-string (query-params "desplazamendua"))
                                           0)]
-                     (iruzkinak/lortu-liburuarenak id desplazamendua (if (<= muga 100) muga 100))))
+                     (iruzkinak/lortu-liburuarenak id desplazamendua (if (> muga 0) muga 0))))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/iruzkinak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera
@@ -134,7 +134,7 @@
                          desplazamendua (if (contains? query-params "desplazamendua")
                                           (read-string (query-params "desplazamendua"))
                                           0)]
-                     (iruzkinak/lortu-erabiltzailearenak erabiltzailea desplazamendua (if (<= muga 100) muga 100))))    
+                     (iruzkinak/lortu-erabiltzailearenak erabiltzailea desplazamendua (if (> muga 0) muga 0))))    
   
   (route/resources "/")
   (route/not-found "Not Found"))
