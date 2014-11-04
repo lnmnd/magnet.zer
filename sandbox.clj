@@ -49,3 +49,30 @@
 (iruzk/lortu (:id ir1))
 (iruzk/lortu-bilduma 0 10)
 
+; base64
+(require '[clojure.data.codec.base64 :as b64]
+         '[clojure.java.io :as io])
+
+(defn slurp-bytes
+  "Slurp the bytes from a slurpable thing"
+  [x]
+  (with-open [out (java.io.ByteArrayOutputStream.)]
+    (clojure.java.io/copy (clojure.java.io/input-stream x) out)
+    (.toByteArray out)))
+
+(defn lortu-base64 [f]
+  (with-open [in (io/input-stream f)]
+    (->> in
+         slurp-bytes
+         b64/encoden
+         (map char)
+         (apply str))))
+(lortu-base64 "project.clj")
+
+(defn gorde-base64! [base f]
+  (with-open [out (io/output-stream f)]
+    (->> (lortu-base64 base)
+         .getBytes
+         b64/decode
+         (.write out))))
+(gorde-base64! "project.clj" "t.clj")
