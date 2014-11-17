@@ -1,9 +1,21 @@
 (ns magnet.liburuak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
+            [clojure.data.codec.base64 :as b64]
+            [clojure.java.io :as io]
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
+
+(defn- azala-sortu!
+  "Azala base64 formatuan eta fitxategiaren izena emanda azala sortzen du."
+  [base64 fitx]
+  (with-open [out (io/output-stream fitx)]
+    (->> base64
+         .getBytes
+         b64/decode
+         (.write out))))
+
 
 (defn- baliozko-liburu-eskaera
   "Liburuak beharrezko eremu guztiak dituen edo ez"
@@ -51,7 +63,6 @@
                                    "" (:argitaletxea edukia))
                    :generoa (if (nil? (:generoa edukia))
                               "" (:generoa edukia))
-                   :azala "TODO-azala-fitxategia-sortu-eta-helbidea-hemen-jarri"
                    :data (oraingo-data)
                    :iruzkin_kopurua 0
                    :gogoko_kopurua 0)]
@@ -59,8 +70,11 @@
                        [:erabiltzailea :magnet :titulua :hizkuntza :sinopsia :argitaletxea :urtea :generoa :azala :igotze_data]
                        [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
-                        (:azala edukia) (:data edukia)])
-          (let [id (:id (first (sql/query kon "select identity() as id")))]
+                        "aldatuko-da" (:data edukia)])
+          ; TODO kokapenak beste nonbait ezarri
+          (let [id (:id (first (sql/query kon "select identity() as id")))
+                azal-fitx (str "resources/public/img/" id ".jpg")
+                azal-url (str "http://localhost:3000/img/" id ".jpg")]
             (doseq [egi (:egileak edukia)]
               (sql/insert! kon :liburu_egileak
                            [:liburua :egilea]
@@ -69,7 +83,11 @@
               (sql/insert! kon :liburu_etiketak
                            [:liburua :etiketa]
                            [id eti]))
-            {:liburua (assoc edukia :id id)})))))
+            (azala-sortu! (:azala edukia) azal-fitx)
+            (sql/update! kon :liburuak
+                         {:azala azal-url}
+                         ["id=?" id])
+            {:liburua (assoc edukia :id id :azala azal-url)})))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
