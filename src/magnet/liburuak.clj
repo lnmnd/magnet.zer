@@ -73,6 +73,7 @@
                         "aldatuko-da" (:data edukia)])
           ; TODO kokapenak beste nonbait ezarri
           (let [id (:id (first (sql/query kon "select identity() as id")))
+                epub-fitx (str "resources/private/torrent/" id ".epub")
                 azal-fitx (str "resources/public/img/" id ".jpg")
                 azal-url (str "http://localhost:3000/img/" id ".jpg")]
             (doseq [egi (:egileak edukia)]
@@ -83,6 +84,7 @@
               (sql/insert! kon :liburu_etiketak
                            [:liburua :etiketa]
                            [id eti]))
+            (fitx-sortu! (:epub edukia) epub-fitx)
             (fitx-sortu! (:azala edukia) azal-fitx)
             (sql/update! kon :liburuak
                          {:azala azal-url}
