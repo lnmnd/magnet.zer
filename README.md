@@ -39,3 +39,13 @@ Fitxategiak aldatu ahala probak exekutatzeko:
 > $ lein doc
 
 doc katalogoan dokumentazioa sortzen du.
+
+## JAR fitxategia sortu
+> $ lein ring uberjar
+
+*target* katalogoan 2 JAR egongo dira, *standalone* duenak dependentzi guztiak ditu.
+
+Exekutatzeko:
+> $ java -jar sortutakoa.jar [portua]
+
+Portu zenbakia aukerazkoa da, 8080 lehenetsia izanik.
