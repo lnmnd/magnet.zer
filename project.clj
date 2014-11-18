@@ -17,6 +17,7 @@
             [cider/cider-nrepl "0.7.0"]
             [codox "0.8.10"]]
   :source-paths ["src/clj"]
+  :java-source-paths ["src/java"]
   
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
