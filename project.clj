@@ -16,6 +16,7 @@
             [lein-ring "0.8.11"]
             [cider/cider-nrepl "0.7.0"]
             [codox "0.8.10"]]
+  :source-paths ["src/clj"]
   
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
