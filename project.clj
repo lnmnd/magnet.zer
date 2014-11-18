@@ -15,12 +15,14 @@
   :plugins [[lein-midje "3.1.3"]
             [lein-ring "0.8.11"]
             [cider/cider-nrepl "0.7.0"]
-            [codox "0.8.10"]]  
-  :ring {:handler magnet.handler/app}
-  :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
-          :src-linenum-anchor-prefix "L"}
+            [codox "0.8.10"]]
+  
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [org.clojure/tools.namespace "0.2.7"]
                         [ring-mock "0.1.5"]
-                        [midje "1.6.3"]]}})
+                        [midje "1.6.3"]]
+         :ring {:handler magnet.handler/app}
+         :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
+                 :src-linenum-anchor-prefix "L"}}
+   :uberjar {:aot :all}})
