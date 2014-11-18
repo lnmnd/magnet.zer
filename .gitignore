@@ -13,5 +13,5 @@ pom.xml.asc
 /jdbc:h2:magnet.trace.db
 /jdbc:h2:test.h2.db
 /jdbc:h2:test.trace.db
-/resources/private/torrent/*
+/resources/private/torrent/*.torrent
 /resources/public/img/*.jpg
