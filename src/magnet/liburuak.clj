@@ -7,8 +7,8 @@
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig]))
 
-(defn- azala-sortu!
-  "Azala base64 formatuan eta fitxategiaren izena emanda azala sortzen du."
+(defn- fitx-sortu!
+  "Edukia base64 formatuan eta fitxategiaren izena emanda fitxategia sortzen du."
   [base64 fitx]
   (with-open [out (io/output-stream fitx)]
     (->> base64
@@ -83,7 +83,7 @@
               (sql/insert! kon :liburu_etiketak
                            [:liburua :etiketa]
                            [id eti]))
-            (azala-sortu! (:azala edukia) azal-fitx)
+            (fitx-sortu! (:azala edukia) azal-fitx)
             (sql/update! kon :liburuak
                          {:azala azal-url}
                          ["id=?" id])
