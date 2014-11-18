@@ -5,7 +5,8 @@
             [clojure.java.io :as io]
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
-            [magnet.konfig :as konfig]))
+            [magnet.konfig :as konfig])
+  (:import [com.magnet Torrent]))
 
 (defn- fitx-sortu!
   "Edukia base64 formatuan eta fitxategiaren izena emanda fitxategia sortzen du."
@@ -16,6 +17,15 @@
          b64/decode
          (.write out))))
 
+(defn- torrent-sortu!
+  "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
+  [epub-fitx torrent-fitx]
+  (let [t (Torrent. (java.io.File. epub-fitx))]
+    (.trackerraGehitu t "udp://tracker.istole.it:6969")
+    (.trackerraGehitu t "udp://tracker.ccc.de:80")
+    (.sortu t)
+    (.gorde t (java.io.File. torrent-fitx))
+    (.lortuMagnetLotura t)))
 
 (defn- baliozko-liburu-eskaera
   "Liburuak beharrezko eremu guztiak dituen edo ez"
@@ -58,7 +68,6 @@
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
     (let [edukia (assoc edukia
-                   :magnet "magnet:?xt=urn:btih:TODO"
                    :argitaletxea (if (nil? (:argitaletxea edukia))
                                    "" (:argitaletxea edukia))
                    :generoa (if (nil? (:generoa edukia))
@@ -68,12 +77,13 @@
                    :gogoko_kopurua 0)]
       (do (sql/insert! kon :liburuak
                        [:erabiltzailea :magnet :titulua :hizkuntza :sinopsia :argitaletxea :urtea :generoa :azala :igotze_data]
-                       [(:erabiltzailea edukia) (:magnet edukia) (:titulua edukia) (:hizkuntza edukia)
+                       [(:erabiltzailea edukia) "aldatuko-da" (:titulua edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         "aldatuko-da" (:data edukia)])
           ; TODO kokapenak beste nonbait ezarri
           (let [id (:id (first (sql/query kon "select identity() as id")))
                 epub-fitx (str "resources/private/torrent/" id ".epub")
+                torrent-fitx (str "resources/private/torrent/" id ".epub.torrent")                
                 azal-fitx (str "resources/public/img/" id ".jpg")
                 azal-url (str "http://localhost:3000/img/" id ".jpg")]
             (doseq [egi (:egileak edukia)]
@@ -85,11 +95,15 @@
                            [:liburua :etiketa]
                            [id eti]))
             (fitx-sortu! (:epub edukia) epub-fitx)
-            (fitx-sortu! (:azala edukia) azal-fitx)
-            (sql/update! kon :liburuak
-                         {:azala azal-url}
-                         ["id=?" id])
-            {:liburua (assoc edukia :id id :azala azal-url)})))))
+            (let [magnet (torrent-sortu! epub-fitx torrent-fitx)]
+              (sql/update! kon :liburuak
+                           {:magnet magnet}
+                           ["id=?" id])            
+              (fitx-sortu! (:azala edukia) azal-fitx)
+              (sql/update! kon :liburuak
+                           {:azala azal-url}
+                           ["id=?" id])
+              {:liburua (assoc edukia :id id :magnet magnet :azala azal-url)}))))))
 
 (defn liburua-aldatu! [id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
