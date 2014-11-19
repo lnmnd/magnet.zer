@@ -7,12 +7,12 @@
 (defn sortu!
   "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
   [epub-fitx torrent-fitx]
-  (doto (Torrent. (File. epub-fitx))
-    (.trackerraGehitu "udp://tracker.istole.it:6969")
-    (.trackerraGehitu "udp://tracker.ccc.de:80")
-    (.sortu)
-    (.gorde (File. torrent-fitx))
-    (.lortuMagnetLotura)))
+  (.lortuMagnetLotura
+   (doto (Torrent. (File. epub-fitx))
+     (.trackerraGehitu "udp://tracker.istole.it:6969")
+     (.trackerraGehitu "udp://tracker.ccc.de:80")
+     (.sortu)
+     (.gorde (File. torrent-fitx)))))
 
 (defn partekatu!*
   "Torrenta partekatzen du.
