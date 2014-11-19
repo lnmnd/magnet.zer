@@ -7,3 +7,8 @@
 
 ; bildumen muga
 (def muga 25)
+
+(def epub-karpeta "resources/private/torrent/")
+(def torrent-karpeta "resources/private/torrent/")
+(def irudi-karpeta "resources/public/img/")
+(def irudi-url "http://localhost:3000/img/")

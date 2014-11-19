@@ -1,7 +1,8 @@
 (ns magnet.handler.main
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [magnet.torrent :as torrent]
-            [magnet.handler :refer [app]])
+            [magnet.handler :refer [app]]
+            [magnet.konfig :as konfig])
   (:gen-class))
 
 (defonce zerbitzaria (atom nil))
@@ -23,4 +24,4 @@
 
 (defn -main [& [port]]
   (zer-hasi (if port (Integer/parseInt port) 8080))
-  (torrent/katalogoko-torrentak-partekatu! "resources/private/torrent/"))
+  (torrent/katalogoko-torrentak-partekatu! konfig/torrent-karpeta))
