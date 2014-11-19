@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/lnmnd/magnet.zer.svg?branch=master)](https://travis-ci.org/lnmnd/magnet.zer)
 
+## Dependentziak
+JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
+
 ## Zerbitzaria martxa jarri
 
 REPL bidez:
