@@ -545,7 +545,6 @@
       (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Beste liburu bat"))
       (api-deia :post (str "liburuak?token=" token) :ezer (assoc param :titulua "Hirugarrena"))
       (let [eran (api-deia :get "erabiltzaileak/era/liburuak" :json)]
-        (println eran)
         (:guztira eran) => 3
         (let [liburuak (:liburuak eran)]
           (count liburuak) => 3
