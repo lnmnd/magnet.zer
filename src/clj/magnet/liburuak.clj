@@ -5,10 +5,8 @@
             [clojure.java.io :as io]
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
-            [magnet.konfig :as konfig])
-  (:import [com.magnet Torrent])
-  (:import [java.net InetAddress])
-  (:import [com.turn.ttorrent.client SharedTorrent Client]))
+            [magnet.torrent :as torrent]
+            [magnet.konfig :as konfig]))
 
 (defn- fitx-sortu!
   "Edukia base64 formatuan eta fitxategiaren izena emanda fitxategia sortzen du."
@@ -18,25 +16,6 @@
          .getBytes
          b64/decode
          (.write out))))
-
-(defn- torrent-sortu!
-  "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
-  [epub-fitx torrent-fitx]
-  (let [t (Torrent. (java.io.File. epub-fitx))]
-    (.trackerraGehitu t "udp://tracker.istole.it:6969")
-    (.trackerraGehitu t "udp://tracker.ccc.de:80")
-    (.sortu t)
-    (.gorde t (java.io.File. torrent-fitx))
-    (.lortuMagnetLotura t)))
-
-(defn- partekatu!
-  "Torrenta partekatzen du."
-  [torrent katalogoa]
-  (let [b (byte-array [0 0 0 0])
-        helbidea (InetAddress/getByAddress b)
-        torrent (SharedTorrent/fromFile (java.io.File. torrent) (java.io.File. katalogoa))
-        bez (Client. helbidea torrent)]
-    (.share bez)))
 
 (defn- baliozko-liburu-eskaera
   "Liburuak beharrezko eremu guztiak dituen edo ez"
@@ -106,11 +85,11 @@
                            [:liburua :etiketa]
                            [id eti]))
             (fitx-sortu! (:epub edukia) epub-fitx)
-            (let [magnet (torrent-sortu! epub-fitx torrent-fitx)]
+            (let [magnet (torrent/sortu! epub-fitx torrent-fitx)]
               (sql/update! kon :liburuak
                            {:magnet magnet}
                            ["id=?" id])
-              (partekatu! torrent-fitx "resources/private/torrent")
+              (torrent/partekatu! torrent-fitx "resources/private/torrent")
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}
