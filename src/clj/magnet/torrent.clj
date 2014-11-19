@@ -14,14 +14,21 @@
     (.gorde (File. torrent-fitx))
     (.lortuMagnetLotura)))
 
-(defn partekatu!
-  "Torrenta partekatzen du."
+(defn partekatu!*
+  "Torrenta partekatzen du.
+   Sarrera gisa java.io.File jasotzen du."
   [torrent katalogoa]
   (let [b (byte-array [0 0 0 0])
         helbidea (InetAddress/getByAddress b)
-        torrent (SharedTorrent/fromFile (File. torrent) (File. katalogoa))
+        torrent (SharedTorrent/fromFile torrent katalogoa)
         bez (Client. helbidea torrent)]
     (.share bez)))
+
+(defn partekatu!
+  "Torrenta partekatzen du.
+  Sarrera gisa string-ak jasotzen ditu."
+  [torrent katalogoa]
+  (partekatu!* (File. torrent) (File. katalogoa)))
 
 (defn- torrenta-da?
   [fitx]
@@ -31,8 +38,9 @@
 (defn katalogoko-torrentak-partekatu!
   "Katalogoan dauden torrentak partekatzen ditu."
   [katalogoa]
-  (let [f (File. katalogoa)
-        fitxk (.listFiles f)]
+  (let [dir (File. katalogoa)
+        fitxk (.listFiles dir)]
     (doseq [f fitxk]
       (when (torrenta-da? f)
-        (partekatu! (str katalogoa (.getName f)) katalogoa)))))
+        (partekatu!* f dir)))))
+
