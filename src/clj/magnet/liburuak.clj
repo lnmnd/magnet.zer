@@ -20,8 +20,11 @@
 (defn- baliozko-liburu-eskaera
   "Liburuak beharrezko eremu guztiak dituen edo ez"
   [lib]
-  (every? #(contains? lib %)
-          [:epub :titulua :egileak :hizkuntza :sinopsia :urtea :etiketak :azala]))
+  (and 
+   (every? #(contains? lib %)
+           [:epub :titulua :egileak :hizkuntza :sinopsia :urtea :etiketak :azala])
+   (not (= "" (:epub lib)))
+   (not (= "" (:azala lib)))))
 
 (defn- egileak [kon id]
   (map (fn [x] (:egilea x))
