@@ -11,15 +11,28 @@
                :subprotocol "h2"
                :subname "jdbc:h2:test"})
 
+(def test-epub-karpeta "test-resources/private/torrent/")
+(def test-torrent-karpeta "test-resources/private/torrent/")
+(def test-irudi-karpeta "test-resources/public/img/")
+(def test-irudi-url "http://localhost:3001/img/")
+
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
                     (do (zer-hasi 3001)
                         (reset! konfig/db-kon test-kon)
+                        (reset! konfig/epub-karpeta test-epub-karpeta)
+                        (reset! konfig/torrent-karpeta test-torrent-karpeta)
+                        (reset! konfig/irudi-karpeta test-irudi-karpeta)
+                        (reset! konfig/irudi-url test-irudi-url)
                         (db-hasieratu))
                     :after
                     (do (zer-geratu)
                         (db-garbitu)
-                        (reset! konfig/db-kon konfig/db-kon-lehenetsia))))
+                        (reset! konfig/db-kon konfig/db-kon-lehenetsia)
+                        (reset! konfig/epub-karpeta konfig/epub-karpeta-lehenetsia)
+                        (reset! konfig/torrent-karpeta konfig/torrent-karpeta-lehenetsia)
+                        (reset! konfig/irudi-karpeta konfig/irudi-karpeta-lehenetsia)
+                        (reset! konfig/irudi-url konfig/irudi-url-lehenetsia))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"

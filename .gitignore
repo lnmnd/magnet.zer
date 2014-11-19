@@ -16,3 +16,6 @@ pom.xml.asc
 /resources/private/torrent/*.epub
 /resources/private/torrent/*.torrent
 /resources/public/img/*.jpg
+/test-resources/private/torrent/*.epub
+/test-resources/private/torrent/*.torrent
+/test-resources/public/img/*.jpg
