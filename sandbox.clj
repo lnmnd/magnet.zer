@@ -76,3 +76,12 @@
          b64/decode
          (.write out))))
 (gorde-base64! "project.clj" "t.clj")
+
+(import '[java.net InetAddress])
+(import '[com.turn.ttorrent.client SharedTorrent Client])
+(def b (byte-array [0 0 0 0]))
+(def helbidea (InetAddress/getByAddress b))
+(def torrent (SharedTorrent/fromFile (java.io.File. "t.epub.torrent") (java.io.File. ".")))
+(def bez (Client. helbidea torrent))
+(.share bez)
+(.stop bez)
