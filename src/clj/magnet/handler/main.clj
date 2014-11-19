@@ -1,5 +1,6 @@
 (ns magnet.handler.main
   (:require [ring.adapter.jetty :refer [run-jetty]]
+            [magnet.torrent :as torrent]
             [magnet.handler :refer [app]])
   (:gen-class))
 
@@ -21,4 +22,5 @@
     (swap! zerbitzaria (fn [_] nil))))
 
 (defn -main [& [port]]
-  (zer-hasi (if port (Integer/parseInt port) 8080)))
+  (zer-hasi (if port (Integer/parseInt port) 8080))
+  (torrent/katalogoko-torrentak-partekatu! "resources/private/torrent/"))

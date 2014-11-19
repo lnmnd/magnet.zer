@@ -1,4 +1,5 @@
 (ns magnet.torrent
+  (:import [java.io File])
   (:import [com.magnet Torrent])
   (:import [java.net InetAddress])
   (:import [com.turn.ttorrent.client SharedTorrent Client]))
@@ -21,3 +22,17 @@
         torrent (SharedTorrent/fromFile (java.io.File. torrent) (java.io.File. katalogoa))
         bez (Client. helbidea torrent)]
     (.share bez)))
+
+(defn- torrenta-da?
+  [fitx]
+  (let [iz (.getName fitx)]
+    (not (= -1 (.lastIndexOf iz ".epub.torrent")))))
+
+(defn katalogoko-torrentak-partekatu!
+  "Katalogoan dauden torrentak partekatzen ditu."
+  [katalogoa]
+  (let [f (File. katalogoa)
+        fitxk (.listFiles f)]
+    (doseq [f fitxk]
+      (when (torrenta-da? f)
+        (partekatu! (str katalogoa (.getName f)) katalogoa)))))
