@@ -24,4 +24,4 @@
 
 (defn -main [& [port]]
   (zer-hasi (if port (Integer/parseInt port) 8080))
-  (torrent/katalogoko-torrentak-partekatu! konfig/torrent-karpeta))
+  (torrent/katalogoko-torrentak-partekatu! @konfig/torrent-karpeta))

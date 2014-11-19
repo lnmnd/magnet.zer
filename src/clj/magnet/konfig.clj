@@ -8,7 +8,11 @@
 ; bildumen muga
 (def muga 25)
 
-(def epub-karpeta "resources/private/torrent/")
-(def torrent-karpeta "resources/private/torrent/")
-(def irudi-karpeta "resources/public/img/")
-(def irudi-url "http://localhost:3000/img/")
+(def epub-karpeta-lehenetsia "resources/private/torrent/")
+(def epub-karpeta (atom epub-karpeta-lehenetsia))
+(def torrent-karpeta-lehenetsia "resources/private/torrent/")
+(def torrent-karpeta (atom torrent-karpeta-lehenetsia))
+(def irudi-karpeta-lehenetsia "resources/public/img/")
+(def irudi-karpeta (atom irudi-karpeta-lehenetsia))
+(def irudi-url-lehenetsia "http://localhost:3000/img/")
+(def irudi-url (atom irudi-url-lehenetsia))

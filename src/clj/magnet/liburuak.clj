@@ -72,10 +72,10 @@
                         "aldatuko-da" (:data edukia)])
           ; TODO kokapenak beste nonbait ezarri
           (let [id (:id (first (sql/query kon "select identity() as id")))
-                epub-fitx (str konfig/epub-karpeta id ".epub")
-                torrent-fitx (str konfig/torrent-karpeta id ".epub.torrent")                
-                azal-fitx (str konfig/irudi-karpeta id ".jpg")
-                azal-url (str konfig/irudi-url id ".jpg")]
+                epub-fitx (str @konfig/epub-karpeta id ".epub")
+                torrent-fitx (str @konfig/torrent-karpeta id ".epub.torrent")                
+                azal-fitx (str @konfig/irudi-karpeta id ".jpg")
+                azal-url (str @konfig/irudi-url id ".jpg")]
             (doseq [egi (:egileak edukia)]
               (sql/insert! kon :liburu_egileak
                            [:liburua :egilea]
@@ -89,7 +89,7 @@
               (sql/update! kon :liburuak
                            {:magnet magnet}
                            ["id=?" id])
-              (torrent/partekatu! torrent-fitx konfig/torrent-karpeta)
+              (torrent/partekatu! torrent-fitx @konfig/torrent-karpeta)
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}
