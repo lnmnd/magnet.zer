@@ -6,7 +6,9 @@
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.konfig :as konfig])
-  (:import [com.magnet Torrent]))
+  (:import [com.magnet Torrent])
+  (:import [java.net InetAddress])
+  (:import [com.turn.ttorrent.client SharedTorrent Client]))
 
 (defn- fitx-sortu!
   "Edukia base64 formatuan eta fitxategiaren izena emanda fitxategia sortzen du."
@@ -26,6 +28,15 @@
     (.sortu t)
     (.gorde t (java.io.File. torrent-fitx))
     (.lortuMagnetLotura t)))
+
+(defn- partekatu!
+  "Torrenta partekatzen du."
+  [torrent katalogoa]
+  (let [b (byte-array [0 0 0 0])
+        helbidea (InetAddress/getByAddress b)
+        torrent (SharedTorrent/fromFile (java.io.File. torrent) (java.io.File. katalogoa))
+        bez (Client. helbidea torrent)]
+    (.share bez)))
 
 (defn- baliozko-liburu-eskaera
   "Liburuak beharrezko eremu guztiak dituen edo ez"
@@ -98,7 +109,8 @@
             (let [magnet (torrent-sortu! epub-fitx torrent-fitx)]
               (sql/update! kon :liburuak
                            {:magnet magnet}
-                           ["id=?" id])            
+                           ["id=?" id])
+              (partekatu! torrent-fitx "resources/private/torrent")
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}
