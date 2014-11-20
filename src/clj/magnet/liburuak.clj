@@ -73,7 +73,6 @@
                        [(:erabiltzailea edukia) "aldatuko-da" (:titulua edukia) (:hizkuntza edukia)
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         "aldatuko-da" (:data edukia)])
-          ; TODO kokapenak beste nonbait ezarri
           (let [id (:id (first (sql/query kon "select identity() as id")))
                 epub-fitx (str @konfig/epub-karpeta id ".epub")
                 torrent-fitx (str @konfig/torrent-karpeta id ".epub.torrent")                
