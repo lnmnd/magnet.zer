@@ -15,7 +15,6 @@
                  [com.turn/ttorrent "1.4"]]
   :plugins [[lein-midje "3.1.3"]
             [lein-ring "0.8.11"]
-            [cider/cider-nrepl "0.7.0"]
             [codox "0.8.10"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
