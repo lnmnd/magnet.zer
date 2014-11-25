@@ -11,6 +11,7 @@
                :subprotocol "h2"
                :subname "jdbc:h2:test"})
 
+(def test-partekatu false)
 (def test-epub-karpeta "test-resources/private/torrent/")
 (def test-torrent-karpeta "test-resources/private/torrent/")
 (def test-irudi-karpeta "test-resources/public/img/")
@@ -20,6 +21,7 @@
 (background (before :facts
                     (do (zer-hasi 3001)
                         (reset! konfig/db-kon test-kon)
+                        (reset! konfig/partekatu test-partekatu)                        
                         (reset! konfig/epub-karpeta test-epub-karpeta)
                         (reset! konfig/torrent-karpeta test-torrent-karpeta)
                         (reset! konfig/irudi-karpeta test-irudi-karpeta)
@@ -29,6 +31,7 @@
                     (do (zer-geratu)
                         (db-garbitu)
                         (reset! konfig/db-kon konfig/db-kon-lehenetsia)
+                        (reset! konfig/partekatu konfig/partekatu-lehenetsia)
                         (reset! konfig/epub-karpeta konfig/epub-karpeta-lehenetsia)
                         (reset! konfig/torrent-karpeta konfig/torrent-karpeta-lehenetsia)
                         (reset! konfig/irudi-karpeta konfig/irudi-karpeta-lehenetsia)

@@ -91,7 +91,8 @@
               (sql/update! kon :liburuak
                            {:magnet magnet}
                            ["id=?" id])
-              (torrent/partekatu! torrent-fitx @konfig/torrent-karpeta)
+              (when @konfig/partekatu
+                (torrent/partekatu! torrent-fitx @konfig/torrent-karpeta))
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}

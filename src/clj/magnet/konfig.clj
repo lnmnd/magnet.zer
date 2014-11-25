@@ -8,6 +8,8 @@
 ; bildumen muga
 (def muga 25)
 
+(def partekatu-lehenetsia true)
+(def partekatu (atom partekatu-lehentsia))
 (def epub-karpeta-lehenetsia "resources/private/torrent/")
 (def epub-karpeta (atom epub-karpeta-lehenetsia))
 (def torrent-karpeta-lehenetsia "resources/private/torrent/")
