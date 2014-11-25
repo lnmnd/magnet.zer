@@ -9,7 +9,7 @@
 (def muga 25)
 
 (def partekatu-lehenetsia true)
-(def partekatu (atom partekatu-lehentsia))
+(def partekatu (atom partekatu-lehenetsia))
 (def epub-karpeta-lehenetsia "resources/private/torrent/")
 (def epub-karpeta (atom epub-karpeta-lehenetsia))
 (def torrent-karpeta-lehenetsia "resources/private/torrent/")
