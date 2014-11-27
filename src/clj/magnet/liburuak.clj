@@ -185,13 +185,10 @@
   (sql/with-db-connection [kon @konfig/db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
-        (if (= era (:erabiltzailea lib))
-          (do
-            (sql/insert! kon :gogokoak
+        (do (sql/insert! kon :gogokoak
                          [:erabiltzailea :liburua]
                          [era id])    
-            [:ok {:gogoko_liburua lib}])
-          [:baimenik-ez])
+            [:ok {:gogoko_liburua lib}])        
         [:baimenik-ez])
       [:ezin-prozesatu])))
 

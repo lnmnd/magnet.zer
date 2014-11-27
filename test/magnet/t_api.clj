@@ -760,6 +760,14 @@
           (:id lib) => libid
           (:erabiltzailea lib) => "era")))
 
+(fact "Gogokoak gehitu: beste baten liburua" :gogokoak
+      (let [[_ libid] (gehitu-liburua "era2" "4321")
+            token (saioa-hasi "era" "1234")
+            {lib :gogoko_liburua} (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :json
+                                            {:id libid})]
+        (:id lib) => libid
+        (:erabiltzailea lib) => "era2"))
+
 (fact "Existitzen ez den gogokoa gehitu" :gogokoak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :egoera
