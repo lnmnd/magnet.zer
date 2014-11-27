@@ -651,6 +651,23 @@
           (api-deia :delete (str "iruzkinak/" id "?token=" token))
           (api-deia :get (str "iruzkinak/" id) :egoera) => 404)))
 
+(fact "Iruzkinaren guraso/erantzunak ezabatu" :iruzkinak
+      (let [[token libid] (gehitu-liburua "era" "1234")]
+        (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                             {:gurasoak []
+                                              :edukia "Hau iruzkin bat da"})
+              {{eran-id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                  {:gurasoak [id]
+                                                   :edukia "Hau erantzun bat da"})
+              {{eran-eran-id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json
+                                                       {:gurasoak [eran-id]
+                                                        :edukia "Hau erantzunaren erantzuna da"})              
+              _ (api-deia :delete (str "iruzkinak/" id "?token=" token))
+              _ (api-deia :delete (str "iruzkinak/" eran-eran-id "?token=" token))              
+              {eran :iruzkina} (api-deia :get (str "iruzkinak/" eran-id) :json)]
+          (:gurasoak eran) => []
+          (:erantzunak eran) => [])))
+
 (fact "Iruzkina ezabatu token okerrarekin" :iruzkinak
       (let [[token libid] (gehitu-liburua "era" "1234")]
         (let [{{id :id} :iruzkina} (api-deia :post (str "liburuak/" libid  "/iruzkinak?token=" token) :json

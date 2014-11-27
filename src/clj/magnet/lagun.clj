@@ -47,8 +47,8 @@
    (sql/create-table-ddl :iruzkin_erantzunak
                          [:gurasoa "bigint"]
                          [:erantzuna "bigint"])
-   "alter table iruzkin_erantzunak add foreign key (gurasoa) references iruzkinak(id)"
-   "alter table iruzkin_erantzunak add foreign key (erantzuna) references iruzkinak(id)"      
+   "alter table iruzkin_erantzunak add foreign key (gurasoa) references iruzkinak(id) on delete cascade"
+   "alter table iruzkin_erantzunak add foreign key (erantzuna) references iruzkinak(id) on delete cascade"      
    (sql/create-table-ddl :gogokoak
                          [:erabiltzailea "varchar(255)"]
                          [:liburua "bigint"])
