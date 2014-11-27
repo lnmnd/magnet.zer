@@ -55,8 +55,8 @@
       :gogoko_kopurua (gogokoak kon id))
     nil))
 
-(defn- liburuak [kon idak]
-  (map (fn [x] (lortu-liburua kon (:id x))) idak))
+(defn- liburuak [idak]
+  (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
 
 (defn- liburua-gehitu! [edukia]
   (sql/with-db-connection [kon @konfig/db-kon]
@@ -166,7 +166,7 @@
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :liburuak (liburuak kon idak)}])))
+            :liburuak (liburuak idak)}])))
 
 (defn lortu-erabiltzailearenak
   "Erabiltzaile baten liburuen bilduma lortzen du."
@@ -177,7 +177,7 @@
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :liburuak (liburuak kon idak)}])))
+            :liburuak (liburuak idak)}])))
 
 (defn gehitu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
@@ -218,4 +218,4 @@
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :gogoko_liburuak (liburuak kon idak)}])))
+            :gogoko_liburuak (liburuak idak)}])))
