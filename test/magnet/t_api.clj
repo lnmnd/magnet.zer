@@ -961,3 +961,12 @@
         (:guztira etiketak) => 0
         (:guztira iruzkinak) => 0
         (:guztira gogokoak) => 0))
+
+(fact "Erabiltzaile bat eta berekin lotutako datuak ezabatu" :liburuak :iruzkinak :gogokoak
+      (let [[token libid] (gehitu-liburua "era" "1234")
+            {{irid :id} :iruzkina} (api-deia :post (str "liburuak/iruzkinak" libid "?token=" token) :ezer
+                                             {:gurasoak []
+                                              :edukia "Nire iruzkina"})
+            _ (api-deia :delete (str "erabiltzaileak/era?token=" token))]
+        (api-deia :get (str "liburuak/" libid) :egoera) => 404
+        (api-deia :get (str "iruzkinak/" irid) :egoera) => 404))

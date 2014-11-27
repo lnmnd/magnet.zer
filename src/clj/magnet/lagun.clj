@@ -27,7 +27,7 @@
                          [:generoa "varchar(255)"]
                          [:azala "varchar(255)"]
                          [:igotze_data "varchar(255)"])
-   "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   "alter table liburuak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea) on delete cascade"
    (sql/create-table-ddl :liburu_egileak
                          [:liburua "bigint"]
                          [:egilea "varchar(255)"])
@@ -43,7 +43,7 @@
                          [:data "varchar(255)"]
                          [:edukia "varchar(255)"])
    "alter table iruzkinak add foreign key (liburua) references liburuak(id) on delete cascade"
-   "alter table iruzkinak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   "alter table iruzkinak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea) on delete cascade"
    (sql/create-table-ddl :iruzkin_erantzunak
                          [:gurasoa "bigint"]
                          [:erantzuna "bigint"])
@@ -52,7 +52,7 @@
    (sql/create-table-ddl :gogokoak
                          [:erabiltzailea "varchar(255)"]
                          [:liburua "bigint"])
-   "alter table gogokoak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
+   "alter table gogokoak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea) on delete cascade"
    "alter table gogokoak add foreign key (liburua) references liburuak(id) on delete cascade"))
 
 (defmacro ^:private ezabatu-taulak
