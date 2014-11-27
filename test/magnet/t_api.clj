@@ -917,3 +917,30 @@
         (:guztira eran) => 2
         (count xs) => 2
         (set xs) => #{"euskara" "ainuera"}))
+
+(fact "Liburu bat eta berekin lotutako datuak ezabatu" :liburuak :iruzkinak :hainbat
+      (let [token (saioa-hasi "era" "1234")
+            param {:epub "base64"
+                   :titulua "Kaixo mundua"
+                   :egileak ["Joxe" "Patxi"]
+                   :hizkuntza "euskara"                 
+                   :sinopsia "Duela urte asko..."
+                   :argitaletxea "etxe1"
+                   :urtea "2009"
+                   :etiketak ["kaixo" "joxe" "zaharra"]
+                   :azala "base64"}
+            {{id :id} :liburua} (api-deia :post (str "liburuak?token=" token) :json param)
+            _ (api-deia :post (str "liburuak/" id  "/iruzkinak?token=" token) :ezer
+                        {:gurasoak []
+                         :edukia "Hau iruzkin bat da"})
+            _ (api-deia :post (str "erabiltzaileak/era/gogoko_liburuak?token=" token) :json
+                        {:id id})            
+            _ (api-deia :delete (str "liburuak/" id "?token=" token))
+            egileak (api-deia :get "egileak" :json)
+            etiketak (api-deia :get "etiketak" :json)
+            iruzkinak (api-deia :get "iruzkinak" :json)
+            gogokoak (api-deia :get "erabiltzaileak/era/gogoko_liburuak" :json)]
+        (:guztira egileak) => 0
+        (:guztira etiketak) => 0
+        (:guztira iruzkinak) => 0
+        (:guztira gogokoak) => 0))

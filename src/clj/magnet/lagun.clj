@@ -31,18 +31,18 @@
    (sql/create-table-ddl :liburu_egileak
                          [:liburua "bigint"]
                          [:egilea "varchar(255)"])
-   "alter table liburu_egileak add foreign key (liburua) references liburuak(id)"   
+   "alter table liburu_egileak add foreign key (liburua) references liburuak(id) on delete cascade"   
    (sql/create-table-ddl :liburu_etiketak
                          [:liburua "bigint"]
                          [:etiketa "varchar(255)"])
-   "alter table liburu_etiketak add foreign key (liburua) references liburuak(id)"
+   "alter table liburu_etiketak add foreign key (liburua) references liburuak(id) on delete cascade"
    (sql/create-table-ddl :iruzkinak
                          [:id "bigint auto_increment"]
                          [:liburua "bigint"]
                          [:erabiltzailea "varchar(255)"]
                          [:data "varchar(255)"]
                          [:edukia "varchar(255)"])
-   "alter table iruzkinak add foreign key (liburua) references liburuak(id)"
+   "alter table iruzkinak add foreign key (liburua) references liburuak(id) on delete cascade"
    "alter table iruzkinak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
    (sql/create-table-ddl :iruzkin_erantzunak
                          [:gurasoa "bigint"]
@@ -53,7 +53,7 @@
                          [:erabiltzailea "varchar(255)"]
                          [:liburua "bigint"])
    "alter table gogokoak add foreign key (erabiltzailea) references erabiltzaileak(erabiltzailea)"
-   "alter table gogokoak add foreign key (liburua) references liburuak(id)"))
+   "alter table gogokoak add foreign key (liburua) references liburuak(id) on delete cascade"))
 
 (defmacro ^:private ezabatu-taulak
   [& taulak]

@@ -152,11 +152,7 @@
         [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
-            (do (sql/delete! kon :iruzkinak ["liburua=?" id])
-                ; TODO iruzkin_erantzunak
-                (sql/delete! kon :liburu_egileak ["liburua=?" id])
-                (sql/delete! kon :liburu_etiketak ["liburua=?" id])                
-                (sql/delete! kon :liburuak ["id=?" id])
+            (do (sql/delete! kon :liburuak ["id=?" id])
                 [:ok])            
             [:baimenik-ez])
           [:baimenik-ez])))))
