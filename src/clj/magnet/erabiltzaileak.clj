@@ -38,8 +38,8 @@
                 :deskribapena (:deskribapena edukia)}
                ["erabiltzailea=?" erabiltzailea]))
 
-(defn- erabiltzaileak [idak]
-  (map (fn [x] (lortu-erabiltzailea @konfig/db-kon (:id x))) idak))
+(defn- erabiltzaileak [kon idak]
+  (map (fn [x] (lortu-erabiltzailea kon (:id x))) idak))
 
 (defn lortu-bilduma [desplazamendua muga]
   (sql/with-db-transaction [kon @konfig/db-kon]
@@ -52,7 +52,7 @@
 
 (defn lortu [erabiltzailea]
   (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
+    (if-let [era (lortu-erabiltzailea kon erabiltzailea)]
       [:ok {:erabiltzailea era}]
       [:ez-dago])))
 
@@ -99,4 +99,4 @@
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :gogoko_erabiltzaileak (erabiltzaileak idak)}])))
+            :gogoko_erabiltzaileak (erabiltzaileak kon idak)}])))
