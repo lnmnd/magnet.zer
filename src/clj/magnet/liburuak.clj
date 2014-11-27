@@ -192,17 +192,24 @@
         [:baimenik-ez])
       [:ezin-prozesatu])))
 
+(defn- lortu-gogokoa [kon era id]
+  (if-let [gog (first (sql/query kon ["select erabiltzailea, liburua from gogokoak where erabiltzailea=? and liburua=?" era id]))]
+    gog
+    nil))
+
 (defn ezabatu-gogokoa!
-  "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
+  "Liburua erabiltzailearen gogokoen zerrendatik kentzen du."
   [token id]
   (sql/with-db-connection [kon @konfig/db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
-        (if (= era (:erabiltzailea lib))
-          (do
-            (sql/delete! kon :gogokoak ["liburua=?" id])
-            [:ok])
-          [:baimenik-ez])
+        (if-let [gog (lortu-gogokoa @konfig/db-kon era id)]
+          (if (= era (:erabiltzailea gog))
+            (do
+              (sql/delete! kon :gogokoak ["liburua=?" id])
+              [:ok])
+            [:baimenik-ez])          
+          [:ez-dago])
         [:baimenik-ez])
       [:ezin-prozesatu])))
 
