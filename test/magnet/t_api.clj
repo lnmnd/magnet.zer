@@ -935,7 +935,7 @@
         (count xs) => 2
         (set xs) => #{"euskara" "ainuera"}))
 
-(fact "Liburu bat eta berekin lotutako datuak ezabatu" :liburuak :iruzkinak :hainbat
+(fact "Liburu bat eta berekin lotutako datuak ezabatu" :liburuak :iruzkinak :gogokoak :hainbat
       (let [token (saioa-hasi "era" "1234")
             param {:epub "base64"
                    :titulua "Kaixo mundua"
