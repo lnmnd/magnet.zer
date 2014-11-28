@@ -19,7 +19,7 @@
 (defn- gehitu-erabiltzailea! [kon edukia]
   (sql/insert! kon :erabiltzaileak
                [:erabiltzailea :pasahitza :izena :deskribapena :sortze_data]
-               [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sotze_data edukia)]))
+               [(:erabiltzailea edukia) (pasahitz-hash (:pasahitza edukia)) (:izena edukia) (:deskribapena edukia) (:sortze_data edukia)]))
 
 (defn- badago? [kon era]
   (not (empty? (sql/query kon ["select erabiltzailea from erabiltzaileak where erabiltzailea=?" era]))))
@@ -57,13 +57,13 @@
       [:ez-dago])))
 
 (defn gehitu! [edukia]
-  (let [edukia (assoc edukia :sortze_data (oraingo-data))]
-    (if (baliozko-erabiltzailea? edukia)
+  (let [era (assoc edukia :sortze_data (oraingo-data))]
+    (if (baliozko-erabiltzailea? era)
       (sql/with-db-transaction [kon @konfig/db-kon]
-        (if (badago? kon (:erabiltzailea edukia))
+        (if (badago? kon (:erabiltzailea era))
           [:ezin-prozesatu]
-          (do (gehitu-erabiltzailea! kon edukia)
-              [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])))
+          (do (gehitu-erabiltzailea! kon era)
+              [:ok {:erabiltzailea (dissoc era :pasahitza)}])))
       [:ezin-prozesatu])))
 
 (defn aldatu! [token erabiltzailea edukia]
