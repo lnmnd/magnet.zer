@@ -4,13 +4,14 @@
             [magnet.lagun :refer [oraingo-data]]
             [magnet.konfig :as konfig]))
 
-; TODO iraungitze_data pasatzean modu automatikoan kendu
 (def ^{:private true} saioak (atom {}))
 
 (defn- gehitu-saioa!
   "Saioa saioen zerrendan sartzen du."
   [saioa]
-  (swap! saioak conj {(:token saioa) saioa}))
+  (swap! saioak conj {(:token saioa) saioa})
+  (future (Thread/sleep (* konfig/saio-iraungitze-denbora 1000))
+          (swap! saioak :dissoc (:token saioa))))
 
 (defmacro ^:private zerrendatu [s]
   (into [] (re-seq #"[A-Z,0-9]" s)))

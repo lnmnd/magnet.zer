@@ -8,6 +8,9 @@
 ; bildumen muga
 (def muga 25)
 
+; denbora segunduetan
+(def saio-iraungitze-denbora (* 60 60)) ; 1 h
+
 (def partekatu-lehenetsia true)
 (def partekatu (atom partekatu-lehenetsia))
 (def epub-karpeta-lehenetsia "resources/private/torrent/")
