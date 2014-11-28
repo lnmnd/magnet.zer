@@ -10,13 +10,13 @@
   (let [ir (assoc edukia :data (oraingo-data))]
     (do (sql/insert! kon :iruzkinak
                      [:liburua :erabiltzailea :data :edukia]
-                     [(:liburua edukia) (:erabiltzailea edukia) (:data edukia) (:edukia edukia)])
+                     [(:liburua ir) (:erabiltzailea ir) (:data ir) (:edukia ir)])
         (let [id (:id (first (sql/query kon "select identity() as id")))]
-          (doseq [gur (:gurasoak edukia)]
+          (doseq [gur (:gurasoak ir)]
             (sql/insert! kon :iruzkin_erantzunak
                          [:gurasoa :erantzuna]
                          [gur id]))
-          (assoc edukia :id id)))))
+          (assoc ir :id id)))))
 
 (defn- gurasoak [kon id]
   (map (fn [x] (:gurasoa x))
