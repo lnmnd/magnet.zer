@@ -1,6 +1,7 @@
 (ns magnet.lagun
   (:require [clojure.java.jdbc :as sql]
             [clj-time.core :as time]
+            [clj-time.coerce :as coerce]
             [clj-time.format :as time-format]
             [magnet.konfig :as konfig]))
 
@@ -72,6 +73,16 @@
   (let [formatua (time-format/formatters :date-time-no-ms)
         orain (time/now)]
     (time-format/unparse formatua orain)))
+
+(defn segunduak-gehitu
+  "\"date-time-no-ms\" formatuko datari segunduak gehitzen dizkio."
+  [data seg]
+  (let [formatua (time-format/formatters :date-time-no-ms)
+        ms (coerce/to-long (time-format/parse formatua data))]
+    (->> ms
+         (+ (* 1000 seg))
+         coerce/from-long
+         (time-format/unparse formatua))))
 
 (defn orriztatu
   "Kontsulta, desplazamendua eta muga emanda kontsulta berria sortzen du muga kontutan edukita."

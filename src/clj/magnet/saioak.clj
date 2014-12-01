@@ -1,7 +1,7 @@
 (ns magnet.saioak
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [check-password]]
-            [magnet.lagun :refer [oraingo-data]]
+            [magnet.lagun :refer [oraingo-data segunduak-gehitu]]
             [magnet.konfig :as konfig]))
 
 (def ^{:private true} saioak (atom {}))
@@ -37,10 +37,11 @@
   "Erabiltzailea eta pasahitza zuzenak badira saioa hasten du."
   [erabiltzailea pasahitza]
   (if (erabiltzaile-zuzena? erabiltzailea pasahitza)
-    (let [saioa {:erabiltzailea erabiltzailea
+    (let [orain (oraingo-data)
+          saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
-                 :saio_hasiera (oraingo-data)
-                 :iraungitze_data "TODO"}]
+                 :saio_hasiera orain
+                 :iraungitze_data (segunduak-gehitu orain konfig/saio-iraungitze-denbora)}]
       (gehitu-saioa! saioa)
       [:ok saioa]) 
     [:ezin-prozesatu]))
