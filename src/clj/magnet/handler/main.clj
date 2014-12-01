@@ -23,6 +23,6 @@
     (swap! zerbitzaria (fn [_] nil))))
 
 (defn -main [& [port]]
-  (zer-hasi (if port (Integer/parseInt port) 8080))
+  (zer-hasi (if port (Integer/parseInt port) 3000))
   (when @konfig/partekatu
     (torrent/katalogoko-torrentak-partekatu! @konfig/torrent-karpeta)))
