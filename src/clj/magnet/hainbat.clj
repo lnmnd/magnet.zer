@@ -25,6 +25,7 @@
              (map hainbat-fun))))
 
 (hainbat-erantzunak
+ tituluak "titulua" "liburuak"
  egileak "egilea" "liburu_egileak"
  argitaletxeak  "argitaletxea" "liburuak"
  generoak "generoa" "liburuak"

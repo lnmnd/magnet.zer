@@ -158,6 +158,7 @@
                      (orriztatu erak/gogoko-erabiltzaileak query-params id)))
 
     ; hainbat
+    (hainbat-erantzuna "tituluak" hainbat/tituluak)
     (hainbat-erantzuna "egileak" hainbat/egileak)
     (hainbat-erantzuna "argitaletxeak"  hainbat/argitaletxeak)
     (hainbat-erantzuna "generoak"  hainbat/generoak)
