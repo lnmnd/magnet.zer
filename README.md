@@ -7,32 +7,38 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
 ## Zerbitzaria martxa jarri
 
-REPL bidez:
+### REPL bidez
+Hasteko:
 > => (magnet.handler.main/zer-hasi 3000)
 
 Geratzeko:
 > => (magnet.handler.main/zer-geratu)
 
-Komando lerrotik:
+### Komando lerrotik
+Hasteko:
 > $ lein ring server-headless
 
 http://localhost:3000 helbidean egongo da.
 
+=lein ring= bidez hasita ez da aurrez gehitutako torrentak partekatzen hasten.
+
+Geratzeko prozesua amaitu, Ctl+C erabiliz adibidez.
+
 ## Probak
 
-REPL barnetik:
+### REPL barnetik
 > => (use 'midje.repl)
 
 Proba denak exekutatu:
 > => (load-facts)
 
-Etiketa jakin bat dutenak
+Etiketa jakin bat dutenak:
 > => (load-facts :saioak)
 
 Fitxategiak aldatu ahala probak exekutatzeko:
 > => (autotest)
 
-Komando lerrotik:
+### Komando lerrotik
 > $ lein midje
 	    
 Fitxategiak aldatu ahala probak exekutatzeko:
@@ -51,4 +57,4 @@ doc katalogoan dokumentazioa sortzen du.
 Exekutatzeko:
 > $ java -jar sortutakoa.jar [portua]
 
-Portu zenbakia aukerazkoa da, 8080 lehenetsia izanik.
+Portu zenbakia aukerazkoa da, 3000 lehenetsia izanik.
