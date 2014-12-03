@@ -26,7 +26,6 @@ public class Torrent {
         fitxategia = fitx;
         trackerrak = new Vector<String>();
         magnetLotura = null;
-        trackerraGehitu("udp://tracker.publicbt.com:80");
     }
 
     public void trackerraGehitu(String tracker) {
