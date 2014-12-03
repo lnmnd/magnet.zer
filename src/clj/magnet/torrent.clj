@@ -19,7 +19,8 @@
 
 (defn partekatu!*
   "Torrenta partekatzen du.
-   Sarrera gisa java.io.File jasotzen du."
+   Sarrera gisa java.io.File jasotzen du.
+   TODO kendu? ez da erabiltzen"
   [torrent katalogoa]
   (let [b (byte-array [0 0 0 0])
         helbidea (InetAddress/getByAddress b)
@@ -46,5 +47,5 @@
         fitxk (.listFiles dir)]
     (doseq [f fitxk]
       (when (torrenta-da? f)
-        (partekatu!* f dir)))))
+        (partekatu! (.getPath f) (.getPath dir))))))
 
