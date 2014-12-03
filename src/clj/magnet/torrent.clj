@@ -1,4 +1,5 @@
 (ns magnet.torrent
+  (:require [clojure.java.shell :refer [sh]])
   (:import [java.io File])
   (:import [com.magnet Torrent])
   (:import [java.net InetAddress])
@@ -30,7 +31,8 @@
   "Torrenta partekatzen du.
   Sarrera gisa string-ak jasotzen ditu."
   [torrent katalogoa]
-  (partekatu!* (File. torrent) (File. katalogoa)))
+  (let [path (str (.getCanonicalPath (java.io.File. ".")) "/")]
+    (sh "transmission-remote" "--add" (str path torrent) "-w" (str path katalogoa))))
 
 (defn- torrenta-da?
   [fitx]
