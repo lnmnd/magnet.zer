@@ -36,7 +36,7 @@
 
 (defn- aldatu-iruzkina!
   [kon id edukia]
-  (sql/update! @konfig/db-kon :iruzkinak
+  (sql/update! kon :iruzkinak
                {:edukia (:edukia edukia)}
                ["id=?" id]))
 
