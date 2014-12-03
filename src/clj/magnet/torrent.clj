@@ -19,7 +19,7 @@
   "Torrenta partekatzen du.
   Sarrera gisa string-ak jasotzen ditu."
   [torrent katalogoa]
-  (let [path (str (.getCanonicalPath (java.io.File. ".")) "/")]
+  (let [path (str (.getCanonicalPath (File. ".")) "/")]
     (sh "transmission-remote" "--add" (str path torrent) "-w" (str path katalogoa))))
 
 (defn- torrenta-da?
