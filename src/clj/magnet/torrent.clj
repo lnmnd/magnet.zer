@@ -1,9 +1,7 @@
 (ns magnet.torrent
   (:require [clojure.java.shell :refer [sh]])
   (:import [java.io File])
-  (:import [com.magnet Torrent])
-  (:import [java.net InetAddress])
-  (:import [com.turn.ttorrent.client SharedTorrent Client]))
+  (:import [com.magnet Torrent]))
 
 (defn sortu!
   "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
@@ -16,17 +14,6 @@
      #_(.trackerraGehitu "udp://tracker.ccc.de:80")
      (.sortu)
      (.gorde (File. torrent-fitx)))))
-
-(defn partekatu!*
-  "Torrenta partekatzen du.
-   Sarrera gisa java.io.File jasotzen du.
-   TODO kendu? ez da erabiltzen"
-  [torrent katalogoa]
-  (let [b (byte-array [0 0 0 0])
-        helbidea (InetAddress/getByAddress b)
-        torrent (SharedTorrent/fromFile torrent katalogoa)
-        bez (Client. helbidea torrent)]
-    (.share bez)))
 
 (defn partekatu!
   "Torrenta partekatzen du.
