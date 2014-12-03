@@ -10,9 +10,9 @@
   (.lortuMagnetLotura
    (doto (Torrent. (File. epub-fitx))
      (.trackerraGehitu "udp://pi:6969")
-     (.trackerraGehitu "udp://tracker.publicbt.com:80")
-     (.trackerraGehitu "udp://tracker.istole.it:6969")
-     (.trackerraGehitu "udp://tracker.ccc.de:80")
+     #_(.trackerraGehitu "udp://tracker.publicbt.com:80")
+     #_(.trackerraGehitu "udp://tracker.istole.it:6969")
+     #_(.trackerraGehitu "udp://tracker.ccc.de:80")
      (.sortu)
      (.gorde (File. torrent-fitx)))))
 
