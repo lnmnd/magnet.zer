@@ -39,10 +39,10 @@
                ["erabiltzailea=?" erabiltzailea]))
 
 (defn- erabiltzaileak [idak]
-  (map (fn [x] (lortu-erabiltzailea @konfig/db-kon (:id x))) idak))
+  (map #(lortu-erabiltzailea @konfig/db-kon (:id %)) idak))
 
 (defn lortu-bilduma [desplazamendua muga]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon (orriztatu ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
@@ -51,8 +51,8 @@
             :erabiltzaileak erabiltzaileak}])))
 
 (defn lortu [erabiltzailea]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (if-let [era (lortu-erabiltzailea @konfig/db-kon erabiltzailea)]
+  (sql/with-db-connection [kon @konfig/db-kon]
+    (if-let [era (lortu-erabiltzailea kon erabiltzailea)]
       [:ok {:erabiltzailea era}]
       [:ez-dago])))
 
@@ -93,7 +93,7 @@
 (defn gogoko-erabiltzaileak
   "Liburu bat gogoko duten erabiltzaileak lortzen ditu."
   [desp muga id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  (sql/with-db-connection [kon @konfig/db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from gogokoak where liburua=?" id]))
           idak (sql/query kon (orriztatu ["select erabiltzailea as id from gogokoak where liburua=?" id] desp muga))]
       [:ok {:desplazamendua desp

@@ -9,7 +9,7 @@
 
 (defn- hainbat-fun [[izena eremua taula]]
   `(defn ~izena [desp# muga#]
-     (sql/with-db-transaction [kon# @konfig/db-kon]
+     (sql/with-db-connection [kon# @konfig/db-kon]
        (let [{guztira# :guztira} (first (sql/query kon# [(str "select count(distinct " ~eremua ") as guztira from " ~taula)]))
              xs# (sql/query kon# (orriztatu [(str "select distinct " ~eremua " as x from " ~taula)] desp# muga#))
              gakoa# (keyword (str ~eremua "k"))]

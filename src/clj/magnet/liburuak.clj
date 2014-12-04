@@ -59,7 +59,7 @@
   (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
 
 (defn- liburua-gehitu! [edukia]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-transaction [kon @konfig/db-kon]
     (let [edukia (assoc edukia
                    :argitaletxea (if (nil? (:argitaletxea edukia))
                                    "" (:argitaletxea edukia))
@@ -104,16 +104,17 @@
                         "" (:argitaletxea edukia))
         generoa (if (nil? (:generoa edukia))
                   "" (:generoa edukia))]
-    (sql/update! @konfig/db-kon :liburuak
-                 {:titulua (:titulua edukia)
-                  :hizkuntza (:hizkuntza edukia)
-                  :sinopsia (:sinopsia edukia)
-                  :argitaletxea argitaletxea
-                  :urtea (:urtea edukia)
-                  :generoa generoa
-                  :azala (:azala edukia)}
-                 ["id=?" id])
-    (lortu-liburua @konfig/db-kon id)))
+    (sql/with-db-transaction [kon @konfig/db-kon]
+      (sql/update! kon :liburuak
+                   {:titulua (:titulua edukia)
+                    :hizkuntza (:hizkuntza edukia)
+                    :sinopsia (:sinopsia edukia)
+                    :argitaletxea argitaletxea
+                    :urtea (:urtea edukia)
+                    :generoa generoa
+                    :azala (:azala edukia)}
+                   ["id=?" id])
+      (lortu-liburua kon id))))
 
 (defn gehitu! [token edukia]
   (if (baliozko-liburu-eskaera edukia)
@@ -182,7 +183,7 @@
 (defn gehitu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
   [token id]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-transaction [kon @konfig/db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
         (do (sql/insert! kon :gogokoak
@@ -200,10 +201,10 @@
 (defn ezabatu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendatik kentzen du."
   [token id]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  (sql/with-db-transaction [kon @konfig/db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
-        (if-let [gog (lortu-gogokoa @konfig/db-kon era id)]
+        (if-let [gog (lortu-gogokoa kon era id)]
           (if (= era (:erabiltzailea gog))
             (do
               (sql/delete! kon :gogokoak ["liburua=?" id])
