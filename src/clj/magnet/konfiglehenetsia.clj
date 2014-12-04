@@ -13,3 +13,7 @@
 (def torrent-karpeta "resources/private/torrent/")
 (def irudi-karpeta "resources/public/img/")
 (def irudi-url "http://localhost:3000/img/")
+(def trackerrak ["udp://pi:6969"
+                 "udp://tracker.publicbt.com:80"
+                 "udp://tracker.istole.it:6969"
+                 "udp://tracker.ccc.de:80"])

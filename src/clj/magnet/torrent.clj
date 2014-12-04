@@ -1,19 +1,18 @@
 (ns magnet.torrent
-  (:require [clojure.java.shell :refer [sh]])
+  (:require [clojure.java.shell :refer [sh]]
+            [magnet.konfig :as konfig])
   (:import [java.io File])
   (:import [com.magnet Torrent]))
 
 (defn sortu!
   "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
   [epub-fitx torrent-fitx]
-  (.lortuMagnetLotura
-   (doto (Torrent. (File. epub-fitx))
-     (.trackerraGehitu "udp://pi:6969")
-     #_(.trackerraGehitu "udp://tracker.publicbt.com:80")
-     #_(.trackerraGehitu "udp://tracker.istole.it:6969")
-     #_(.trackerraGehitu "udp://tracker.ccc.de:80")
-     (.sortu)
-     (.gorde (File. torrent-fitx)))))
+  (let [tor (Torrent. (File. epub-fitx))]
+    (doseq [tra @konfig/trackerrak]
+      (.trackerraGehitu tor tra))
+    (.sortu tor)
+    (.gorde tor (File. torrent-fitx))
+    (.lortuMagnetLotura tor)))
 
 (defn partekatu!
   "Torrenta partekatzen du.

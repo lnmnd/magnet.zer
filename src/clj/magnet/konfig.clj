@@ -14,3 +14,4 @@
 (def torrent-karpeta (atom l/torrent-karpeta))
 (def irudi-karpeta (atom l/irudi-karpeta))
 (def irudi-url (atom l/irudi-url))
+(def trackerrak (atom l/trackerrak))
