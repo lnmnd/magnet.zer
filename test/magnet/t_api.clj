@@ -4,7 +4,8 @@
             [clj-json.core :as json]
             [magnet.handler.main :refer [zer-hasi zer-geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
-            [magnet.konfig :as konfig]))
+            [magnet.konfig :as konfig]
+            [magnet.konfiglehenetsia :as lkonfig]))
 
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"
@@ -30,12 +31,12 @@
                     :after
                     (do (zer-geratu)
                         (db-garbitu)
-                        (reset! konfig/db-kon konfig/db-kon-lehenetsia)
-                        (reset! konfig/partekatu konfig/partekatu-lehenetsia)
-                        (reset! konfig/epub-karpeta konfig/epub-karpeta-lehenetsia)
-                        (reset! konfig/torrent-karpeta konfig/torrent-karpeta-lehenetsia)
-                        (reset! konfig/irudi-karpeta konfig/irudi-karpeta-lehenetsia)
-                        (reset! konfig/irudi-url konfig/irudi-url-lehenetsia))))
+                        (reset! konfig/db-kon lkonfig/db-kon)
+                        (reset! konfig/partekatu lkonfig/partekatu)
+                        (reset! konfig/epub-karpeta lkonfig/epub-karpeta)
+                        (reset! konfig/torrent-karpeta lkonfig/torrent-karpeta)
+                        (reset! konfig/irudi-karpeta lkonfig/irudi-karpeta)
+                        (reset! konfig/irudi-url lkonfig/irudi-url))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"
