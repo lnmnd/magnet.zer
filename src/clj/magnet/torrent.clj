@@ -1,6 +1,5 @@
 (ns magnet.torrent
-  (:require [clojure.java.shell :refer [sh]]
-            [magnet.konfig :as konfig])
+  (:require [magnet.konfig :as konfig])
   (:import [java.io File])
   (:import [com.magnet Torrent]))
 
@@ -19,7 +18,7 @@
   Sarrera gisa string-ak jasotzen ditu."
   [torrent katalogoa]
   (let [path (str (.getCanonicalPath (File. ".")) "/")]
-    (sh "transmission-remote" "--add" (str path torrent) "-w" (str path katalogoa))))
+    (@konfig/torrent-gehitze-programa (str path torrent) (str path katalogoa))))
 
 (defn- torrenta-da?
   [fitx]

@@ -1,4 +1,5 @@
-(ns magnet.konfiglehenetsia)
+(ns magnet.konfiglehenetsia
+  (:require [clojure.java.shell :refer [sh]]))
 
 (def db-kon {:classname "org.h2.Driver"
              :subprotocol "h2"
@@ -17,3 +18,5 @@
                  "udp://tracker.publicbt.com:80"
                  "udp://tracker.istole.it:6969"
                  "udp://tracker.ccc.de:80"])
+(def torrent-gehitze-programa (fn [torrent katalogoa]
+                                (sh "transmission-remote" "--add" torrent "-w" katalogoa)))
