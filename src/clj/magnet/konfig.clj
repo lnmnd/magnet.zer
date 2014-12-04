@@ -6,10 +6,12 @@
 (def db-kon (atom db-kon-lehenetsia))
 
 ; bildumen muga
-(def muga 25)
+(def muga-lehenetsia 25)
+(def muga (atom muga-lehenetsia))
 
 ; denbora segunduetan
-(def saio-iraungitze-denbora (* 60 60)) ; 1 h
+(def saio-iraungitze-denbora-lehenetsia (* 60 60)) ; 1 h
+(def saio-iraungitze-denbora (atom saio-iraungitze-denbora-lehenetsia))
 
 (def partekatu-lehenetsia true)
 (def partekatu (atom partekatu-lehenetsia))

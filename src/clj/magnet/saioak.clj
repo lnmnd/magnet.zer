@@ -10,7 +10,7 @@
   "Saioa saioen zerrendan sartzen du."
   [saioa]
   (swap! saioak conj {(:token saioa) saioa})
-  (future (Thread/sleep (* konfig/saio-iraungitze-denbora 1000))
+  (future (Thread/sleep (* @konfig/saio-iraungitze-denbora 1000))
           (swap! saioak :dissoc (:token saioa))))
 
 (defmacro ^:private zerrendatu [s]
@@ -41,7 +41,7 @@
           saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
                  :saio_hasiera orain
-                 :iraungitze_data (segunduak-gehitu orain konfig/saio-iraungitze-denbora)}]
+                 :iraungitze_data (segunduak-gehitu orain @konfig/saio-iraungitze-denbora)}]
       (gehitu-saioa! saioa)
       [:ok saioa]) 
     [:ezin-prozesatu]))

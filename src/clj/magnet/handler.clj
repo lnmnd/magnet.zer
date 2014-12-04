@@ -53,7 +53,7 @@
   [fn qparam & param]
   `(let [muga# (if (contains? ~qparam "muga")
                  (read-string (~qparam "muga"))
-                 konfig/muga)
+                 @konfig/muga)
          desp# (if (contains? ~qparam "desplazamendua")
                  (read-string (~qparam "desplazamendua"))
                  0)]
