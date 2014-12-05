@@ -9,10 +9,12 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
 ### REPL bidez
 Hasteko:
-> => (magnet.handler.main/zer-hasi 3000)
+> => (use 'magnet.handler.main)
+> => (def zer (sortu 3000))
+> => (hasi zer)
 
 Geratzeko:
-> => (magnet.handler.main/zer-geratu)
+> => (geratu zer)
 
 ### Komando lerrotik
 Hasteko:

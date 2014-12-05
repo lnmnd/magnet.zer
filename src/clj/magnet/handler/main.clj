@@ -5,24 +5,30 @@
             [magnet.konfig :as konfig])
   (:gen-class))
 
-(defonce zerbitzaria (atom nil))
-
-(defn zer-hasi
-  "Zerbitzaria abiarazi"
+(defn sortu
+  "Zerbitzaria sortzen du."
   [portua]
-  (when-not @zerbitzaria
-    (println "Zerbitzaria" portua " portuan abiarazten")
-    (swap! zerbitzaria (fn [_] (run-jetty #'app {:port portua :join? false})))))
+  {:portua portua
+   :jetty (atom nil)})
 
-(defn zer-geratu
-  "Zerbitzaria geratu"
-  []
-  (when @zerbitzaria
+(defn hasi
+  "Zerbitzaria abiarazten du."
+  [zer]
+  (when-not @(:jetty zer)
+    (println "Zerbitzaria" (:portua zer) " portuan abiarazten")
+    (swap! (:jetty zer) (fn [_] (run-jetty #'app {:port (:portua zer) :join? false})))))
+
+(defn geratu
+  "Zerbitzaria geratzen du."
+  [zer]
+  (when @(:jetty zer)
     (println "Zerbitzaria geratzen")
-    (.stop @zerbitzaria)
-    (swap! zerbitzaria (fn [_] nil))))
+    (.stop @(:jetty zer))
+    (swap! (:jetty zer) (fn [_] nil))))
 
 (defn -main [& [port]]
-  (zer-hasi (if port (Integer/parseInt port) 3000))
+  (-> (if port (Integer/parseInt port) 3000)
+      sortu
+      hasi)
   (when @konfig/partekatu
     (torrent/katalogoko-torrentak-partekatu! @konfig/torrent-karpeta)))

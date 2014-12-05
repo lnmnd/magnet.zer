@@ -2,7 +2,7 @@
   (:use midje.sweet)
   (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
-            [magnet.handler.main :refer [zer-hasi zer-geratu]]
+            [magnet.handler.main :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
             [magnet.konfig :as konfig]
             [magnet.konfiglehenetsia :as lkonfig]))
@@ -18,9 +18,11 @@
 (def test-irudi-karpeta "test-resources/public/img/")
 (def test-irudi-url "http://localhost:3001/img/")
 
+(defonce zerbitzaria (sortu 3001))
+
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
-                    (do (zer-hasi 3001)
+                    (do (hasi zerbitzaria)
                         (reset! konfig/db-kon test-kon)
                         (reset! konfig/partekatu test-partekatu)                        
                         (reset! konfig/epub-karpeta test-epub-karpeta)
@@ -29,7 +31,7 @@
                         (reset! konfig/irudi-url test-irudi-url)
                         (db-hasieratu))
                     :after
-                    (do (zer-geratu)
+                    (do (geratu zerbitzaria)
                         (db-garbitu)
                         (reset! konfig/db-kon lkonfig/db-kon)
                         (reset! konfig/partekatu lkonfig/partekatu)
