@@ -6,7 +6,7 @@
   {:classname \"org.h2.Driver
    :subprotocol \"h2\"
    :subname \"jdbc:h2:magnet\"}"}
-  db-kon (atom l/db-kon))db-kon
+  db-kon (atom l/db-kon))
 
 (def ^{:doc "Bilduma batean agertuko diren elementu kopurua."}
   muga (atom l/muga))
