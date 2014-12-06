@@ -20,6 +20,9 @@ Geratzeko:
 Hasteko:
 > $ lein ring server-headless
 
+Edo:
+> $ lein run
+
 http://localhost:3000 helbidean egongo da.
 
 =lein ring= bidez hasita ez da aurrez gehitutako torrentak partekatzen hasten.
