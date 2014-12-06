@@ -1,4 +1,4 @@
-(ns magnet.main
+(ns magnet.handler.main
   (:require [magnet.zer :refer [sortu hasi]])
   (:gen-class))
 
