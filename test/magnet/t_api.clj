@@ -2,7 +2,7 @@
   (:use midje.sweet)
   (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
-            [magnet.handler.main :refer [sortu hasi geratu]]
+            [magnet.zer :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
             [magnet.konfig :as konfig]
             [magnet.konfiglehenetsia :as lkonfig]))
