@@ -1,4 +1,4 @@
-(ns magnet.handler.main
+(ns magnet.main
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [magnet.torrent :as torrent]
             [magnet.handler :refer [app]]

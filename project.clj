@@ -17,7 +17,7 @@
             [codox "0.8.10"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
-  :main magnet.handler.main/-main
+  :main magnet.main/-main
   
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]

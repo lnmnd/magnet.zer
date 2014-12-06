@@ -9,7 +9,7 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
 ### REPL bidez
 Hasteko:
-> => (use 'magnet.handler.main)
+> => (use 'magnet.main)
 > => (def zer (sortu 3000))
 > => (hasi zer)
 
