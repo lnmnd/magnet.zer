@@ -16,7 +16,9 @@
   [zer]
   (when-not @(:jetty zer)
     (println "Zerbitzaria" (:portua zer) " portuan abiarazten")
-    (swap! (:jetty zer) (fn [_] (run-jetty #'app {:port (:portua zer) :join? false})))))
+    (swap! (:jetty zer) (fn [_] (run-jetty #'app {:port (:portua zer) :join? false})))
+    (when @konfig/partekatu
+      (torrent/katalogoko-torrentak-partekatu! @konfig/torrent-karpeta))))
 
 (defn geratu
   "Zerbitzaria geratzen du."
@@ -29,6 +31,4 @@
 (defn -main [& [port]]
   (-> (if port (Integer/parseInt port) 3000)
       sortu
-      hasi)
-  (when @konfig/partekatu
-    (torrent/katalogoko-torrentak-partekatu! @konfig/torrent-karpeta)))
+      hasi))
