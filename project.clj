@@ -18,6 +18,7 @@
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
   :main magnet.handler.main/-main
+  :repl-options {:init-ns magnet.user}
   
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
