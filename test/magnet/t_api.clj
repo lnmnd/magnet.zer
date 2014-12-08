@@ -17,7 +17,6 @@
                :subprotocol "h2"
                :subname "jdbc:h2:test"})
 
-(def test-partekatu false)
 (def test-epub-karpeta "test-resources/private/torrent/")
 (def test-torrent-karpeta "test-resources/private/torrent/")
 (def test-irudi-karpeta "test-resources/public/img/")
@@ -28,7 +27,6 @@
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
                     (do (reset! konfig/db-kon test-kon)
-                        (reset! konfig/partekatu test-partekatu)                        
                         (reset! konfig/epub-karpeta test-epub-karpeta)
                         (reset! konfig/torrent-karpeta test-torrent-karpeta)
                         (reset! konfig/irudi-karpeta test-irudi-karpeta)
@@ -39,7 +37,6 @@
                     (do (geratu zerbitzaria)
                         (db-garbitu)
                         (reset! konfig/db-kon lkonfig/db-kon)
-                        (reset! konfig/partekatu lkonfig/partekatu)
                         (reset! konfig/epub-karpeta lkonfig/epub-karpeta)
                         (reset! konfig/torrent-karpeta lkonfig/torrent-karpeta)
                         (reset! konfig/irudi-karpeta lkonfig/irudi-karpeta)
