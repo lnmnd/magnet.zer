@@ -1,3 +1,12 @@
 (ns magnet.user
-  (:require [magnet.handler :refer [app]]
-            [magnet.zer :refer [sortu hasi geratu]]))
+  (:require [magnet.zer :as z]
+            [magnet.handler :refer [handler-sortu]]
+            [magnet.konfiglehenetsia :refer [konfig]]))
+
+(defonce zer (z/sortu konfig (handler-sortu konfig)))
+
+(defn hasi []
+  (z/hasi zer))
+
+(defn geratu []
+  (z/geratu zer))

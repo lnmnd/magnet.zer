@@ -5,8 +5,7 @@
             [clojure.java.io :as io]
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
-            [magnet.torrent :as torrent]
-            [magnet.konfig :as konfig]))
+            [magnet.torrent :as torrent]))
 
 (defn- fitx-sortu!
   "Edukia base64 formatuan eta fitxategiaren izena emanda fitxategia sortzen du."
@@ -55,11 +54,11 @@
       :gogoko_kopurua (gogokoak kon id))
     nil))
 
-(defn- liburuak [idak]
-  (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
+(defn- liburuak [db-kon idak]
+  (map (fn [x] (lortu-liburua db-kon (:id x))) idak))
 
-(defn- liburua-gehitu! [edukia]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+(defn- liburua-gehitu! [db-kon partekatu kokapenak torrent-gehitze-programa trackerrak edukia]
+  (sql/with-db-transaction [kon db-kon]
     (let [edukia (assoc edukia
                    :argitaletxea (if (nil? (:argitaletxea edukia))
                                    "" (:argitaletxea edukia))
@@ -74,10 +73,10 @@
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         "aldatuko-da" (:data edukia)])
           (let [id (:id (first (sql/query kon "select identity() as id")))
-                epub-fitx (str @konfig/epub-karpeta id ".epub")
-                torrent-fitx (str @konfig/torrent-karpeta id ".epub.torrent")                
-                azal-fitx (str @konfig/irudi-karpeta id ".jpg")
-                azal-url (str @konfig/irudi-url id ".jpg")]
+                epub-fitx (str (:epub-karpeta kokapenak) id ".epub")
+                torrent-fitx (str (:torrent-karpeta kokapenak) id ".epub.torrent")                
+                azal-fitx (str (:irudi-karpeta kokapenak) id ".jpg")
+                azal-url (str (:irudi-url kokapenak) id ".jpg")]
             (doseq [egi (:egileak edukia)]
               (sql/insert! kon :liburu_egileak
                            [:liburua :egilea]
@@ -87,24 +86,24 @@
                            [:liburua :etiketa]
                            [id eti]))
             (fitx-sortu! (:epub edukia) epub-fitx)
-            (let [magnet (torrent/sortu! epub-fitx torrent-fitx)]
+            (let [magnet (torrent/sortu! trackerrak epub-fitx torrent-fitx)]
               (sql/update! kon :liburuak
                            {:magnet magnet}
                            ["id=?" id])
-              (when @konfig/partekatu
-                (torrent/partekatu! torrent-fitx @konfig/torrent-karpeta))
+              (when partekatu
+                (torrent/partekatu! torrent-gehitze-programa torrent-fitx (:torrent-karpeta kokapenak)))
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}
                            ["id=?" id])
               {:liburua (assoc edukia :id id :magnet magnet :azala azal-url)}))))))
 
-(defn liburua-aldatu! [id edukia]
+(defn liburua-aldatu! [db-kon id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
                         "" (:argitaletxea edukia))
         generoa (if (nil? (:generoa edukia))
                   "" (:generoa edukia))]
-    (sql/with-db-transaction [kon @konfig/db-kon]
+    (sql/with-db-transaction [kon db-kon]
       (sql/update! kon :liburuak
                    {:titulua (:titulua edukia)
                     :hizkuntza (:hizkuntza edukia)
@@ -116,39 +115,39 @@
                    ["id=?" id])
       (lortu-liburua kon id))))
 
-(defn gehitu! [token edukia]
+(defn gehitu! [db-kon partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      [:ok (liburua-gehitu! (assoc edukia :erabiltzailea erabiltzailea))]
+      [:ok (liburua-gehitu! db-kon partekatu kokapenak torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]
       [:baimenik-ez])
     [:ezin-prozesatu]))
 
 (defn lortu
   "Eskatutako id-a duen liburua lortu"
-  [id]
-  (if-let [lib (lortu-liburua @konfig/db-kon id)]
+  [db-kon id]
+  (if-let [lib (lortu-liburua db-kon id)]
     [:ok {:liburua lib}]
     [:ez-dago]))
 
 (defn aldatu!
   "id bat eta edukia emanda liburua aldatu"
-  [token id edukia]
+  [db-kon token id edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (let [[egoera lib] (lortu id)]
+    (let [[egoera lib] (lortu db-kon id)]
       (if (= egoera :ez-dago)
         [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
-            [:ok {:liburua (liburua-aldatu! id (assoc edukia :erabiltzailea era))}] 
+            [:ok {:liburua (liburua-aldatu! db-kon id (assoc edukia :erabiltzailea era))}] 
             [:baimenik-ez])
           [:baimenik-ez])))
     [:ezin-prozesatu]))
 
 (defn ezabatu!
   "id bat emanda liburua ezabatu"
-  [token id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
-    (let [[egoera lib] (lortu id)]
+  [db-kon token id]
+  (sql/with-db-transaction [kon db-kon]
+    (let [[egoera lib] (lortu db-kon id)]
       (if (= egoera :ez-dago)
         [:ez-dago]
         (if-let [era (:erabiltzailea (lortu-saioa token))]
@@ -160,30 +159,30 @@
 
 (defn lortu-bilduma
   "Liburuen bilduma lortzen du."
-  [desplazamendua muga]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desplazamendua muga db-kon]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak"]))
           idak (sql/query kon (orriztatu ["select id from liburuak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :liburuak (liburuak idak)}])))
+            :liburuak (liburuak db-kon idak)}])))
 
 (defn lortu-erabiltzailearenak
   "Erabiltzaile baten liburuen bilduma lortzen du."
-  [desp muga era]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desp muga db-kon era]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from liburuak where erabiltzailea=?" era]))
           idak (sql/query kon (orriztatu ["select id from liburuak where erabiltzailea=?" era] desp muga))]
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :liburuak (liburuak idak)}])))
+            :liburuak (liburuak db-kon idak)}])))
 
 (defn gehitu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
-  [token id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token id]
+  (sql/with-db-transaction [kon db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
         (do (sql/insert! kon :gogokoak
@@ -200,8 +199,8 @@
 
 (defn ezabatu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendatik kentzen du."
-  [token id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token id]
+  (sql/with-db-transaction [kon db-kon]
     (if-let [lib (lortu-liburua kon id)]
       (if-let [era (:erabiltzailea (lortu-saioa token))]
         (if-let [gog (lortu-gogokoa kon era id)]
@@ -216,11 +215,11 @@
 
 (defn lortu-gogokoak
   "Erabiltzailearen gogoko liburuak itzultzen ditu"
-  [desp muga era]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desp muga db-kon era]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from gogokoak where erabiltzailea=?" era]))
           idak (sql/query kon (orriztatu ["select liburua as id from gogokoak where erabiltzailea=?" era] desp muga))]
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :gogoko_liburuak (liburuak idak)}])))
+            :gogoko_liburuak (liburuak db-kon idak)}])))

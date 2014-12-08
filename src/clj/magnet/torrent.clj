@@ -1,13 +1,12 @@
 (ns magnet.torrent
-  (:require [magnet.konfig :as konfig])
   (:import [java.io File])
   (:import [com.magnet Torrent]))
 
 (defn sortu!
   "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
-  [epub-fitx torrent-fitx]
+  [trackerrak epub-fitx torrent-fitx]
   (let [tor (Torrent. (File. epub-fitx))]
-    (doseq [tra @konfig/trackerrak]
+    (doseq [tra trackerrak]
       (.trackerraGehitu tor tra))
     (.sortu tor)
     (.gorde tor (File. torrent-fitx))
@@ -16,9 +15,9 @@
 (defn partekatu!
   "Torrenta partekatzen du.
   Sarrera gisa string-ak jasotzen ditu."
-  [torrent katalogoa]
+  [torrent-gehitze-programa torrent katalogoa]
   (let [path (str (.getCanonicalPath (File. ".")) "/")]
-    (@konfig/torrent-gehitze-programa (str path torrent) (str path katalogoa))))
+    (torrent-gehitze-programa (str path torrent) (str path katalogoa))))
 
 (defn- torrenta-da?
   [fitx]
@@ -27,10 +26,10 @@
 
 (defn katalogoko-torrentak-partekatu!
   "Katalogoan dauden torrentak partekatzen ditu."
-  [katalogoa]
+  [torrent-gehitze-programa katalogoa]
   (let [dir (File. katalogoa)
         fitxk (.listFiles dir)]
     (doseq [f fitxk]
       (when (torrenta-da? f)
-        (partekatu! (.getPath f) (.getPath dir))))))
+        (partekatu! torrent-gehitze-programa (.getPath f) (.getPath dir))))))
 

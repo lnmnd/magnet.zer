@@ -2,44 +2,32 @@
   (:use midje.sweet)
   (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
-            [magnet.handler :refer [app]]
+            [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
-            [magnet.konfig :as konfig]
             [magnet.konfiglehenetsia :as lkonfig]))
 
-; Probetarako DB konfigurazioa
-(def test-kon {:classname "org.h2.Driver"
-               :subprotocol "h2"
-               :subname "jdbc:h2:test"})
+(def test-konfig
+  (assoc lkonfig/konfig
+    :portua 3001
+    :db-kon {:classname "org.h2.Driver"
+             :subprotocol "h2"
+             :subname "jdbc:h2:test"}    
+    :partekatu false
+    :kokapenak {:epub-karpeta "test-resources/private/torrent/"
+                :torrent-karpeta "test-resources/private/torrent/"
+                :irudi-karpeta "test-resources/public/img/"
+                :irudi-url "http://localhost:3001/img/"}))
 
-(def test-partekatu false)
-(def test-epub-karpeta "test-resources/private/torrent/")
-(def test-torrent-karpeta "test-resources/private/torrent/")
-(def test-irudi-karpeta "test-resources/public/img/")
-(def test-irudi-url "http://localhost:3001/img/")
-
-(defonce zerbitzaria (sortu 3001 app))
+(defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig)))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
-                    (do (reset! konfig/db-kon test-kon)
-                        (reset! konfig/partekatu test-partekatu)                        
-                        (reset! konfig/epub-karpeta test-epub-karpeta)
-                        (reset! konfig/torrent-karpeta test-torrent-karpeta)
-                        (reset! konfig/irudi-karpeta test-irudi-karpeta)
-                        (reset! konfig/irudi-url test-irudi-url)
-                        (db-hasieratu)
+                    (do (db-hasieratu (:db-kon test-konfig))
                         (hasi zerbitzaria))
                     :after
                     (do (geratu zerbitzaria)
-                        (db-garbitu)
-                        (reset! konfig/db-kon lkonfig/db-kon)
-                        (reset! konfig/partekatu lkonfig/partekatu)
-                        (reset! konfig/epub-karpeta lkonfig/epub-karpeta)
-                        (reset! konfig/torrent-karpeta lkonfig/torrent-karpeta)
-                        (reset! konfig/irudi-karpeta lkonfig/irudi-karpeta)
-                        (reset! konfig/irudi-url lkonfig/irudi-url))))
+                        (db-garbitu (:db-kon test-konfig)))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"

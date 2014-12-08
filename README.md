@@ -9,31 +9,32 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
 ### REPL bidez
 Hasteko:
-> => (def zer (sortu 3000 app))
-> => (hasi zer)
+> => (hasi)
 
 Geratzeko:
-> => (geratu zer)
+> => (geratu)
+
+Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
+> => (def zer (z/sortu konfig (handler-sortu konfig)))
+> => (z/hasi zer)
+> => (z/geratu zer)
+
+Beste zerbitzari bat sortzea posible da konfigurazio ezberdina erabiliz:
+> => (def zer2 (z/sortu (assoc konfig :portua 3001) (handler-sortu konfig)))
+> => (z/hasi zer2) ; 3001 portuak hasiko da
 
 ### Komando lerrotik
-Hasteko:
-> $ lein ring server-headless
-
-Edo:
 > $ lein run
 
 http://localhost:3000 helbidean egongo da.
-
-=lein ring= bidez hasita ez da aurrez gehitutako torrentak partekatzen hasten.
 
 Geratzeko prozesua amaitu, Ctl+C erabiliz adibidez.
 
 ## Probak
 
 ### REPL barnetik
-> => (use 'midje.repl)
-
 Proba denak exekutatu:
+> => (use 'midje.repl)
 > => (load-facts)
 
 Etiketa jakin bat dutenak:
@@ -47,6 +48,8 @@ Fitxategiak aldatu ahala probak exekutatzeko:
 	    
 Fitxategiak aldatu ahala probak exekutatzeko:
 > $ lein midje :autotest
+
+Proba guztiak exekutatzea nahiko makala da (2 m eta 50 s inguru 2x1400MHz-ko CPUarekin).
 
 ## Kodearen dokumentazioa
 > $ lein doc
