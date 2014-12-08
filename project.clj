@@ -22,7 +22,6 @@
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [org.clojure/tools.namespace "0.2.7"]
-                        [ring-mock "0.1.5"]
                         [midje "1.6.3"]]
          :ring {:handler magnet.handler/app}
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
