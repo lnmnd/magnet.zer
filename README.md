@@ -9,11 +9,19 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
 ### REPL bidez
 Hasteko:
-> => (def zer (sortu konfig (handler-sortu konfig)))
-> => (hasi zer)
+> => (hasi)
 
 Geratzeko:
-> => (geratu zer)
+> => (geratu)
+
+Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
+> => (def zer (z/sortu konfig (handler-sortu konfig)))
+> => (z/hasi zer)
+> => (z/geratu zer)
+
+Beste zerbitzari bat sortzea posible da konfigurazio ezberdina erabiliz:
+> => (def zer2 (z/sortu (assoc konfig :portua 3001) (handler-sortu konfig)))
+> => (z/hasi zer2) ; 3001 portuak hasiko da
 
 ### Komando lerrotik
 > $ lein run
