@@ -1,8 +1,7 @@
 (ns magnet.saioak
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [check-password]]
-            [magnet.lagun :refer [oraingo-data segunduak-gehitu]]
-            [magnet.konfig :as konfig]))
+            [magnet.lagun :refer [oraingo-data segunduak-gehitu]]))
 
 (def ^{:private true} saioak (atom {}))
 
@@ -28,15 +27,15 @@
 
 (defn- erabiltzaile-zuzena?
   "true erabiltzailea eta pasahitza zuzenak badira."
-  [erabiltzailea pasahitza]
-  (if-let [{pasahitz_hash :pasahitza} (first (sql/query @konfig/db-kon ["select pasahitza from erabiltzaileak where erabiltzailea=?" erabiltzailea]))]
+  [db-kon erabiltzailea pasahitza]
+  (if-let [{pasahitz_hash :pasahitza} (first (sql/query db-kon ["select pasahitza from erabiltzaileak where erabiltzailea=?" erabiltzailea]))]
     (check-password pasahitza pasahitz_hash)
     false))
 
 (defn hasi!
   "Erabiltzailea eta pasahitza zuzenak badira saioa hasten du."
-  [saio-iraungitze-denbora erabiltzailea pasahitza]
-  (if (erabiltzaile-zuzena? erabiltzailea pasahitza)
+  [db-kon saio-iraungitze-denbora erabiltzailea pasahitza]
+  (if (erabiltzaile-zuzena? db-kon erabiltzailea pasahitza)
     (let [orain (oraingo-data)
           saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
