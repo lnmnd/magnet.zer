@@ -4,7 +4,6 @@
             [compojure.route :as route]
             [ring.middleware.cors :refer [wrap-cors]]
             [clj-json.core :as json]
-            [magnet.konfig :as konfig]
             [magnet.erabiltzaileak :as erak]
             [magnet.saioak :as saioak]
             [magnet.liburuak :as liburuak]
@@ -43,17 +42,17 @@
          (json-erantzuna (if datuak# datuak# (egoera-gorputza egoera#)) (egoera-zenbakia egoera#)))))
 
 (defmacro ^:private hainbat-erantzuna
-  [db-kon hel fun]
+  [muga db-kon hel fun]
   `(api-erantzuna GET ~hel eskaera#
                   (let [qp# (:query-params eskaera#)]
-                    (orriztatu ~fun qp# ~db-kon))))
+                    (orriztatu ~muga ~fun qp# ~db-kon))))
 
 (defmacro orriztatu
   "Funtzioari desplazamendua eta muga parametroak gehitzen dizkio."
-  [fn qparam & param]
+  [mug fn qparam & param]
   `(let [muga# (if (contains? ~qparam "muga")
                  (read-string (~qparam "muga"))
-                 @konfig/muga)
+                 ~mug)
          desp# (if (contains? ~qparam "desplazamendua")
                  (read-string (~qparam "desplazamendua"))
                  0)]
@@ -63,7 +62,7 @@
   (routes
     (api-erantzuna GET "erabiltzaileak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu erak/lortu-bilduma query-params (:db-kon konfig))))
+                     (orriztatu (:muga konfig) erak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
                    (erak/lortu (:db-kon konfig) erabiltzailea))
     (api-erantzuna POST "erabiltzaileak" eskaera
@@ -89,11 +88,11 @@
                                         ; liburuak
     (api-erantzuna GET "liburuak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-bilduma query-params (:db-kon konfig))))
+                     (orriztatu (:muga konfig) liburuak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/liburuak" eskaera
                    (let [{era :erabiltzailea} (:params eskaera)
                          {query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-erabiltzailearenak query-params (:db-kon konfig) era)))  
+                     (orriztatu (:muga konfig) liburuak/lortu-erabiltzailearenak query-params (:db-kon konfig) era)))  
     (api-erantzuna GET "liburuak/:id" {{id :id} :params}
                    (liburuak/lortu (:db-kon konfig) id))
     (api-erantzuna POST "liburuak" eskaera
@@ -130,15 +129,15 @@
                      (iruzkinak/ezabatu! (:db-kon konfig) token id)))
     (api-erantzuna GET "iruzkinak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-bilduma query-params (:db-kon konfig))))
+                     (orriztatu (:muga konfig) iruzkinak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-liburuarenak query-params (:db-kon konfig) id)))
+                     (orriztatu (:muga konfig) iruzkinak/lortu-liburuarenak query-params (:db-kon konfig) id)))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/iruzkinak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-erabiltzailearenak query-params (:db-kon konfig) erabiltzailea)))    
+                     (orriztatu (:muga konfig) iruzkinak/lortu-erabiltzailearenak query-params (:db-kon konfig) erabiltzailea)))    
 
                                         ; gogokoak
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
@@ -152,20 +151,20 @@
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-gogokoak query-params (:db-kon konfig) erabiltzailea)))
+                     (orriztatu (:muga konfig) liburuak/lortu-gogokoak query-params (:db-kon konfig) erabiltzailea)))
     (api-erantzuna GET "liburuak/:id/gogoko_erabiltzaileak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu erak/gogoko-erabiltzaileak query-params (:db-kon konfig) id)))
+                     (orriztatu (:muga konfig) erak/gogoko-erabiltzaileak query-params (:db-kon konfig) id)))
 
                                         ; hainbat
-    (hainbat-erantzuna (:db-kon konfig) "tituluak" hainbat/tituluak)
-    (hainbat-erantzuna (:db-kon konfig) "egileak" hainbat/egileak)
-    (hainbat-erantzuna (:db-kon konfig) "argitaletxeak"  hainbat/argitaletxeak)
-    (hainbat-erantzuna (:db-kon konfig) "generoak"  hainbat/generoak)
-    (hainbat-erantzuna (:db-kon konfig) "etiketak"  hainbat/etiketak)
-    (hainbat-erantzuna (:db-kon konfig) "urteak" hainbat/urteak)
-    (hainbat-erantzuna (:db-kon konfig) "hizkuntzak" hainbat/hizkuntzak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "tituluak" hainbat/tituluak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "egileak" hainbat/egileak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "argitaletxeak"  hainbat/argitaletxeak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "generoak"  hainbat/generoak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "etiketak"  hainbat/etiketak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "urteak" hainbat/urteak)
+    (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "hizkuntzak" hainbat/hizkuntzak)
     
     (route/resources "/")
     (route/not-found "Not Found")))
