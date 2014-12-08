@@ -59,67 +59,68 @@
                  0)]
      (~fn desp# (if (> muga# 0) muga# 0) ~@param)))
 
-(defroutes app-routes
-  (api-erantzuna GET "erabiltzaileak" eskaera
-                 (let [{query-params :query-params} eskaera]
-                   (orriztatu erak/lortu-bilduma query-params)))
-  (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-                 (erak/lortu erabiltzailea))
-  (api-erantzuna POST "erabiltzaileak" eskaera
-                 (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (erak/gehitu! edukia)))
-  (api-erantzuna PUT "erabiltzaileak/:erabiltzailea" eskaera
-                 (let [token (:token (:params eskaera))
-                       erabiltzailea (:erabiltzailea (:params eskaera))
-                       edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (erak/aldatu! token erabiltzailea edukia)))
-  (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
-                 (let [token (:token (:params eskaera))
-                       erabiltzailea (:erabiltzailea (:params eskaera))]
-                   (erak/ezabatu! token erabiltzailea)))
+(defn bideak-sortu [konfig]
+  (routes
+    (api-erantzuna GET "erabiltzaileak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu erak/lortu-bilduma query-params)))
+    (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
+                   (erak/lortu erabiltzailea))
+    (api-erantzuna POST "erabiltzaileak" eskaera
+                   (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (erak/gehitu! edukia)))
+    (api-erantzuna PUT "erabiltzaileak/:erabiltzailea" eskaera
+                   (let [token (:token (:params eskaera))
+                         erabiltzailea (:erabiltzailea (:params eskaera))
+                         edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (erak/aldatu! token erabiltzailea edukia)))
+    (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
+                   (let [token (:token (:params eskaera))
+                         erabiltzailea (:erabiltzailea (:params eskaera))]
+                     (erak/ezabatu! token erabiltzailea)))
 
-  ; saioak
-  (api-erantzuna POST "saioak" eskaera
-                 (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (saioak/hasi! (:erabiltzailea edukia) (:pasahitza edukia))))
-  (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
-                 (saioak/amaitu! token))
+                                        ; saioak
+    (api-erantzuna POST "saioak" eskaera
+                   (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (saioak/hasi! (:erabiltzailea edukia) (:pasahitza edukia))))
+    (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
+                   (saioak/amaitu! token))
 
-  ; liburuak
-  (api-erantzuna GET "liburuak" eskaera
-                 (let [{query-params :query-params} eskaera]
-                   (orriztatu liburuak/lortu-bilduma query-params)))
-  (api-erantzuna GET "erabiltzaileak/:erabiltzailea/liburuak" eskaera
-                 (let [{era :erabiltzailea} (:params eskaera)
-                       {query-params :query-params} eskaera]
-                   (orriztatu liburuak/lortu-erabiltzailearenak query-params era)))  
-  (api-erantzuna GET "liburuak/:id" {{id :id} :params}
-                 (liburuak/lortu id))
-  (api-erantzuna POST "liburuak" eskaera
-                 (let [token (:token (:params eskaera))
-                       edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (liburuak/gehitu! token edukia)))
-  (api-erantzuna PUT "liburuak/:id" eskaera
-                 (let [token (:token (:params eskaera))
-                       id (:id (:params eskaera))
-                       edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (liburuak/aldatu! token id edukia)))
-  (api-erantzuna DELETE "liburuak/:id" eskaera
-                 (let [token (:token (:params eskaera))
-                       id (:id (:params eskaera))]
-                   (liburuak/ezabatu! token id)))  
+                                        ; liburuak
+    (api-erantzuna GET "liburuak" eskaera
+                   (let [{query-params :query-params} eskaera]
+                     (orriztatu liburuak/lortu-bilduma query-params)))
+    (api-erantzuna GET "erabiltzaileak/:erabiltzailea/liburuak" eskaera
+                   (let [{era :erabiltzailea} (:params eskaera)
+                         {query-params :query-params} eskaera]
+                     (orriztatu liburuak/lortu-erabiltzailearenak query-params era)))  
+    (api-erantzuna GET "liburuak/:id" {{id :id} :params}
+                   (liburuak/lortu id))
+    (api-erantzuna POST "liburuak" eskaera
+                   (let [token (:token (:params eskaera))
+                         edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (liburuak/gehitu! token edukia)))
+    (api-erantzuna PUT "liburuak/:id" eskaera
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))
+                         edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (liburuak/aldatu! token id edukia)))
+    (api-erantzuna DELETE "liburuak/:id" eskaera
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))]
+                     (liburuak/ezabatu! token id)))  
 
-  ; iruzkinak
-  (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
-                 (let [token (:token (:params eskaera))
-                       id (:id (:params eskaera))
-                       edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (iruzkinak/gehitu! token id edukia)))
+                                        ; iruzkinak
+    (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))
+                         edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (iruzkinak/gehitu! token id edukia)))
     (api-erantzuna PUT "iruzkinak/:id" eskaera
-                 (let [token (:token (:params eskaera))
-                       id (:id (:params eskaera))
-                       edukia (json/parse-string (slurp (:body eskaera)) true)]
-                   (iruzkinak/aldatu! token id edukia)))
+                   (let [token (:token (:params eskaera))
+                         id (:id (:params eskaera))
+                         edukia (json/parse-string (slurp (:body eskaera)) true)]
+                     (iruzkinak/aldatu! token id edukia)))
     (api-erantzuna GET "iruzkinak/:id" eskaera
                    (let [id (:id (:params eskaera))]
                      (iruzkinak/lortu id)))
@@ -129,7 +130,7 @@
                      (iruzkinak/ezabatu! token id)))
     (api-erantzuna GET "iruzkinak" eskaera
                    (let [{query-params :query-params} eskaera]
-                   (orriztatu iruzkinak/lortu-bilduma query-params)))
+                     (orriztatu iruzkinak/lortu-bilduma query-params)))
     (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
@@ -139,7 +140,7 @@
                          {query-params :query-params} eskaera]
                      (orriztatu iruzkinak/lortu-erabiltzailearenak query-params erabiltzailea)))    
 
-    ; gogokoak
+                                        ; gogokoak
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
@@ -157,7 +158,7 @@
                          {query-params :query-params} eskaera]
                      (orriztatu erak/gogoko-erabiltzaileak query-params id)))
 
-    ; hainbat
+                                        ; hainbat
     (hainbat-erantzuna "tituluak" hainbat/tituluak)
     (hainbat-erantzuna "egileak" hainbat/egileak)
     (hainbat-erantzuna "argitaletxeak"  hainbat/argitaletxeak)
@@ -166,11 +167,12 @@
     (hainbat-erantzuna "urteak" hainbat/urteak)
     (hainbat-erantzuna "hizkuntzak" hainbat/hizkuntzak)
     
-  (route/resources "/")
-  (route/not-found "Not Found"))
+    (route/resources "/")
+    (route/not-found "Not Found")))
 
-(def app
-  (-> (handler/site app-routes)
+(defn handler-sortu [konfig]
+  (-> (bideak-sortu konfig)
+      handler/site
       (wrap-cors
        :access-control-allow-headers "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept"
        :access-control-allow-origin #".*"
