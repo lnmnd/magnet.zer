@@ -33,8 +33,6 @@ Geratzeko prozesua amaitu, Ctl+C erabiliz adibidez.
 ## Probak
 
 ### REPL barnetik
-> => (use 'midje.repl)
-
 Proba denak exekutatu:
 > => (load-facts)
 
