@@ -1,15 +1,14 @@
 (ns magnet.hainbat
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
-            [magnet.lagun :refer [orriztatu]]
-            [magnet.konfig :as konfig]))
+            [magnet.lagun :refer [orriztatu]]))
 
 (defn- balioak [xs]
   (map (fn [x] (:x x)) xs))
 
 (defn- hainbat-fun [[izena eremua taula]]
-  `(defn ~izena [desp# muga#]
-     (sql/with-db-connection [kon# @konfig/db-kon]
+  `(defn ~izena [desp# muga# db-kon#]
+     (sql/with-db-connection [kon# db-kon#]
        (let [{guztira# :guztira} (first (sql/query kon# [(str "select count(distinct " ~eremua ") as guztira from " ~taula)]))
              xs# (sql/query kon# (orriztatu [(str "select distinct " ~eremua " as x from " ~taula)] desp# muga#))
              gakoa# (keyword (str ~eremua "k"))]

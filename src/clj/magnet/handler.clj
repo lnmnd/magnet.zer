@@ -43,10 +43,10 @@
          (json-erantzuna (if datuak# datuak# (egoera-gorputza egoera#)) (egoera-zenbakia egoera#)))))
 
 (defmacro ^:private hainbat-erantzuna
-  [hel fun]
+  [db-kon hel fun]
   `(api-erantzuna GET ~hel eskaera#
                   (let [qp# (:query-params eskaera#)]
-                    (orriztatu ~fun qp#))))
+                    (orriztatu ~fun qp# ~db-kon))))
 
 (defmacro orriztatu
   "Funtzioari desplazamendua eta muga parametroak gehitzen dizkio."
@@ -159,13 +159,13 @@
                      (orriztatu erak/gogoko-erabiltzaileak query-params (:db-kon konfig) id)))
 
                                         ; hainbat
-    (hainbat-erantzuna "tituluak" hainbat/tituluak)
-    (hainbat-erantzuna "egileak" hainbat/egileak)
-    (hainbat-erantzuna "argitaletxeak"  hainbat/argitaletxeak)
-    (hainbat-erantzuna "generoak"  hainbat/generoak)
-    (hainbat-erantzuna "etiketak"  hainbat/etiketak)
-    (hainbat-erantzuna "urteak" hainbat/urteak)
-    (hainbat-erantzuna "hizkuntzak" hainbat/hizkuntzak)
+    (hainbat-erantzuna (:db-kon konfig) "tituluak" hainbat/tituluak)
+    (hainbat-erantzuna (:db-kon konfig) "egileak" hainbat/egileak)
+    (hainbat-erantzuna (:db-kon konfig) "argitaletxeak"  hainbat/argitaletxeak)
+    (hainbat-erantzuna (:db-kon konfig) "generoak"  hainbat/generoak)
+    (hainbat-erantzuna (:db-kon konfig) "etiketak"  hainbat/etiketak)
+    (hainbat-erantzuna (:db-kon konfig) "urteak" hainbat/urteak)
+    (hainbat-erantzuna (:db-kon konfig) "hizkuntzak" hainbat/hizkuntzak)
     
     (route/resources "/")
     (route/not-found "Not Found")))
