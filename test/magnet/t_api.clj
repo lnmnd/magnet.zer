@@ -9,13 +9,9 @@
             [magnet.konfiglehenetsia :as lkonfig]))
 
 (def test-konfig
-  {:portua 3001
-   :partekatu false
-   :saio-iraungitze-denbora (* 60 60)
-   :trackerrak ["udp://pi:6969"
-                "udp://tracker.publicbt.com:80"
-                "udp://tracker.istole.it:6969"
-                "udp://tracker.ccc.de:80"]})
+  (assoc lkonfig/konfig
+    :portua 3001
+    :partekatu false))
 
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"
