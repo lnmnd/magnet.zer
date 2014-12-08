@@ -50,6 +50,8 @@ Fitxategiak aldatu ahala probak exekutatzeko:
 Fitxategiak aldatu ahala probak exekutatzeko:
 > $ lein midje :autotest
 
+Proba guztiak exekutatzea nahiko makala da (2 m eta 50 s inguru 2x1400MHz-ko CPUarekin).
+
 ## Kodearen dokumentazioa
 > $ lein doc
 
