@@ -6,7 +6,11 @@
    ;; Saioaren iraungitze denbora, segundutan.
    :saio-iraungitze-denbora (* 60 60) ; 1 h
    ;; Torrentak partekatu nahi diren edo ez.
-   :partekatu true})
+   :partekatu true
+   ;; Torrent fitxategia eta katalogoa emanda torrenta partekatze duen programa.
+   :torrent-gehitze-programa
+   (fn [torrent katalogoa]
+     (sh "transmission-remote" "--add" torrent "-w" katalogoa))})
 
 (def db-kon {:classname "org.h2.Driver"
              :subprotocol "h2"
@@ -22,5 +26,3 @@
                  "udp://tracker.publicbt.com:80"
                  "udp://tracker.istole.it:6969"
                  "udp://tracker.ccc.de:80"])
-(def torrent-gehitze-programa (fn [torrent katalogoa]
-                                (sh "transmission-remote" "--add" torrent "-w" katalogoa)))

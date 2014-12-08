@@ -19,5 +19,3 @@
   Lehenengoa torrentaren tracker gisa ezarriko da.
   Gainontzekoak magnet loturak agertuko dira."}
   trackerrak (atom l/trackerrak))
-(def ^{:doc "Torrent fitxategia eta katalogoa emanda torrenta partekatze duen programa."}
-  torrent-gehitze-programa (atom l/torrent-gehitze-programa))

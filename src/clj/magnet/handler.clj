@@ -99,7 +99,7 @@
     (api-erantzuna POST "liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu! (:partekatu konfig) token edukia)))
+                     (liburuak/gehitu! (:partekatu konfig) (:torrent-gehitze-programa konfig) token edukia)))
     (api-erantzuna PUT "liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
