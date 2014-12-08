@@ -1,6 +1,5 @@
 (ns magnet.user
-  (:require [midje.repl :refer :all]
-            [magnet.zer :as z]
+  (:require [magnet.zer :as z]
             [magnet.handler :refer [handler-sortu]]
             [magnet.konfiglehenetsia :refer [konfig]]))
 
