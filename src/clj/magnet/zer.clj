@@ -16,7 +16,7 @@
     (println ";; Zerbitzaria" (:portua (:konfig zer)) " portuan abiarazten")
     (reset! (:http zer) (run-jetty (:handler zer) {:port (:portua (:konfig zer)) :join? false}))
     (when (:partekatu (:konfig zer))
-      (torrent/katalogoko-torrentak-partekatu! (:torrent-gehitze-programa (:konfig zer)) @magnet.konfig/torrent-karpeta))))
+      (torrent/katalogoko-torrentak-partekatu! (:torrent-gehitze-programa (:konfig zer)) (:torrent-karpeta (:konfig zer))))))
 
 (defn geratu
   "Zerbitzaria geratzen du."

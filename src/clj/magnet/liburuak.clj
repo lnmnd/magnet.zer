@@ -58,7 +58,7 @@
 (defn- liburuak [idak]
   (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
 
-(defn- liburua-gehitu! [partekatu torrent-gehitze-programa trackerrak edukia]
+(defn- liburua-gehitu! [partekatu kokapenak torrent-gehitze-programa trackerrak edukia]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [edukia (assoc edukia
                    :argitaletxea (if (nil? (:argitaletxea edukia))
@@ -74,10 +74,10 @@
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         "aldatuko-da" (:data edukia)])
           (let [id (:id (first (sql/query kon "select identity() as id")))
-                epub-fitx (str @konfig/epub-karpeta id ".epub")
-                torrent-fitx (str @konfig/torrent-karpeta id ".epub.torrent")                
-                azal-fitx (str @konfig/irudi-karpeta id ".jpg")
-                azal-url (str @konfig/irudi-url id ".jpg")]
+                epub-fitx (str (:epub-karpeta kokapenak) id ".epub")
+                torrent-fitx (str (:torrent-karpeta kokapenak) id ".epub.torrent")                
+                azal-fitx (str (:irudi-karpeta kokapenak) id ".jpg")
+                azal-url (str (:irudi-url kokapenak) id ".jpg")]
             (doseq [egi (:egileak edukia)]
               (sql/insert! kon :liburu_egileak
                            [:liburua :egilea]
@@ -92,7 +92,7 @@
                            {:magnet magnet}
                            ["id=?" id])
               (when partekatu
-                (torrent/partekatu! torrent-gehitze-programa torrent-fitx @konfig/torrent-karpeta))
+                (torrent/partekatu! torrent-gehitze-programa torrent-fitx (:torrent-karpeta kokapenak)))
               (fitx-sortu! (:azala edukia) azal-fitx)
               (sql/update! kon :liburuak
                            {:azala azal-url}
@@ -116,10 +116,10 @@
                    ["id=?" id])
       (lortu-liburua kon id))))
 
-(defn gehitu! [partekatu torrent-gehitze-programa trackerrak token edukia]
+(defn gehitu! [partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      [:ok (liburua-gehitu! partekatu torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]
+      [:ok (liburua-gehitu! partekatu kokapenak torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]
       [:baimenik-ez])
     [:ezin-prozesatu]))
 

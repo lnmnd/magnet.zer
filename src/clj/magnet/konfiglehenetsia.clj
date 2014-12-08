@@ -7,6 +7,10 @@
    :saio-iraungitze-denbora (* 60 60) ; 1 h
    ;; Torrentak partekatu nahi diren edo ez.
    :partekatu true
+   :kokapenak {:epub-karpeta "resources/private/torrent/"
+               :torrent-karpeta "resources/private/torrent/"
+               :irudi-karpeta "resources/public/img/"
+               :irudi-url "http://localhost:3000/img/"}   
    ;; Trackerren zerrenda.
    ;; Lehenengoa torrentaren tracker gisa ezarriko da.
    ;; Gainontzekoak magnet loturak agertuko dira.
@@ -24,8 +28,3 @@
              :subname "jdbc:h2:magnet"})
 
 (def muga 25)
-
-(def epub-karpeta "resources/private/torrent/")
-(def torrent-karpeta "resources/private/torrent/")
-(def irudi-karpeta "resources/public/img/")
-(def irudi-url "http://localhost:3000/img/")

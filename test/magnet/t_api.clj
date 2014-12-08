@@ -11,37 +11,28 @@
 (def test-konfig
   (assoc lkonfig/konfig
     :portua 3001
-    :partekatu false))
+    :partekatu false
+    :kokapenak {:epub-karpeta "test-resources/private/torrent/"
+                :torrent-karpeta "test-resources/private/torrent/"
+                :irudi-karpeta "test-resources/public/img/"
+                :irudi-url "http://localhost:3001/img/"}))
 
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"
                :subprotocol "h2"
                :subname "jdbc:h2:test"})
 
-(def test-epub-karpeta "test-resources/private/torrent/")
-(def test-torrent-karpeta "test-resources/private/torrent/")
-(def test-irudi-karpeta "test-resources/public/img/")
-(def test-irudi-url "http://localhost:3001/img/")
-
 (defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig)))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
                     (do (reset! konfig/db-kon test-kon)
-                        (reset! konfig/epub-karpeta test-epub-karpeta)
-                        (reset! konfig/torrent-karpeta test-torrent-karpeta)
-                        (reset! konfig/irudi-karpeta test-irudi-karpeta)
-                        (reset! konfig/irudi-url test-irudi-url)
                         (db-hasieratu)
                         (hasi zerbitzaria))
                     :after
                     (do (geratu zerbitzaria)
                         (db-garbitu)
-                        (reset! konfig/db-kon lkonfig/db-kon)
-                        (reset! konfig/epub-karpeta lkonfig/epub-karpeta)
-                        (reset! konfig/torrent-karpeta lkonfig/torrent-karpeta)
-                        (reset! konfig/irudi-karpeta lkonfig/irudi-karpeta)
-                        (reset! konfig/irudi-url lkonfig/irudi-url))))
+                        (reset! konfig/db-kon lkonfig/db-kon))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"

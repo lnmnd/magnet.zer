@@ -10,8 +10,3 @@
 
 (def ^{:doc "Bilduma batean agertuko diren elementu kopurua."}
   muga (atom l/muga))
-
-(def epub-karpeta (atom l/epub-karpeta))
-(def torrent-karpeta (atom l/torrent-karpeta))
-(def irudi-karpeta (atom l/irudi-karpeta))
-(def irudi-url (atom l/irudi-url))
