@@ -34,6 +34,7 @@ Geratzeko prozesua amaitu, Ctl+C erabiliz adibidez.
 
 ### REPL barnetik
 Proba denak exekutatu:
+> => (use 'midje.repl)
 > => (load-facts)
 
 Etiketa jakin bat dutenak:
