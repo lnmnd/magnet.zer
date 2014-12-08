@@ -14,8 +14,6 @@
 (def ^{:doc "Saioaren iraungitze denbora, segundutan."}
   saio-iraungitze-denbora (atom l/saio-iraungitze-denbora))
 
-(def ^{:doc "Torrentak partekatu nahi diren edo ez."}
-  partekatu (atom l/partekatu))
 (def epub-karpeta (atom l/epub-karpeta))
 (def torrent-karpeta (atom l/torrent-karpeta))
 (def irudi-karpeta (atom l/irudi-karpeta))

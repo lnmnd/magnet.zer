@@ -14,7 +14,6 @@
 
 (def saio-iraungitze-denbora (* 60 60)) ; 1 h
 
-(def partekatu true)
 (def epub-karpeta "resources/private/torrent/")
 (def torrent-karpeta "resources/private/torrent/")
 (def irudi-karpeta "resources/public/img/")
