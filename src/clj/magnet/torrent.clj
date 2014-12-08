@@ -5,9 +5,9 @@
 
 (defn sortu!
   "Torrent fitxategia sortu eta horren magnet lotura itzultzen du."
-  [epub-fitx torrent-fitx]
+  [trackerrak epub-fitx torrent-fitx]
   (let [tor (Torrent. (File. epub-fitx))]
-    (doseq [tra @konfig/trackerrak]
+    (doseq [tra trackerrak]
       (.trackerraGehitu tor tra))
     (.sortu tor)
     (.gorde tor (File. torrent-fitx))

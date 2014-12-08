@@ -58,7 +58,7 @@
 (defn- liburuak [idak]
   (map (fn [x] (lortu-liburua @konfig/db-kon (:id x))) idak))
 
-(defn- liburua-gehitu! [partekatu torrent-gehitze-programa edukia]
+(defn- liburua-gehitu! [partekatu torrent-gehitze-programa trackerrak edukia]
   (sql/with-db-transaction [kon @konfig/db-kon]
     (let [edukia (assoc edukia
                    :argitaletxea (if (nil? (:argitaletxea edukia))
@@ -87,7 +87,7 @@
                            [:liburua :etiketa]
                            [id eti]))
             (fitx-sortu! (:epub edukia) epub-fitx)
-            (let [magnet (torrent/sortu! epub-fitx torrent-fitx)]
+            (let [magnet (torrent/sortu! trackerrak epub-fitx torrent-fitx)]
               (sql/update! kon :liburuak
                            {:magnet magnet}
                            ["id=?" id])
@@ -116,10 +116,10 @@
                    ["id=?" id])
       (lortu-liburua kon id))))
 
-(defn gehitu! [partekatu torrent-gehitze-programa token edukia]
+(defn gehitu! [partekatu torrent-gehitze-programa trackerrak token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
-      [:ok (liburua-gehitu! partekatu torrent-gehitze-programa (assoc edukia :erabiltzailea erabiltzailea))]
+      [:ok (liburua-gehitu! partekatu torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]
       [:baimenik-ez])
     [:ezin-prozesatu]))
 

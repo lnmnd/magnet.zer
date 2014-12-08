@@ -7,6 +7,13 @@
    :saio-iraungitze-denbora (* 60 60) ; 1 h
    ;; Torrentak partekatu nahi diren edo ez.
    :partekatu true
+   ;; Trackerren zerrenda.
+   ;; Lehenengoa torrentaren tracker gisa ezarriko da.
+   ;; Gainontzekoak magnet loturak agertuko dira.
+   :trackerrak ["udp://pi:6969"
+                "udp://tracker.publicbt.com:80"
+                "udp://tracker.istole.it:6969"
+                "udp://tracker.ccc.de:80"]
    ;; Torrent fitxategia eta katalogoa emanda torrenta partekatze duen programa.
    :torrent-gehitze-programa
    (fn [torrent katalogoa]
@@ -22,7 +29,3 @@
 (def torrent-karpeta "resources/private/torrent/")
 (def irudi-karpeta "resources/public/img/")
 (def irudi-url "http://localhost:3000/img/")
-(def trackerrak ["udp://pi:6969"
-                 "udp://tracker.publicbt.com:80"
-                 "udp://tracker.istole.it:6969"
-                 "udp://tracker.ccc.de:80"])

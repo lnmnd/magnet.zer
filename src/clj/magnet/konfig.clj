@@ -15,7 +15,3 @@
 (def torrent-karpeta (atom l/torrent-karpeta))
 (def irudi-karpeta (atom l/irudi-karpeta))
 (def irudi-url (atom l/irudi-url))
-(def  ^{:doc "Trackerren zerrenda.
-  Lehenengoa torrentaren tracker gisa ezarriko da.
-  Gainontzekoak magnet loturak agertuko dira."}
-  trackerrak (atom l/trackerrak))
