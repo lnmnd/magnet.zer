@@ -1,6 +1,6 @@
 (ns magnet.zer
-  (:require [ring.adapter.jetty :refer [run-jetty]]
-            [magnet.torrent :as torrent]))
+  (:require  [org.httpkit.server :refer [run-server]]
+             [magnet.torrent :as torrent]))
 
 (defn sortu
   "Zerbitzaria sortzen du."
@@ -14,7 +14,7 @@
   [zer]
   (when-not @(:http zer)
     (println ";; Zerbitzaria" (:portua (:konfig zer)) " portuan abiarazten")
-    (reset! (:http zer) (run-jetty (:handler zer) {:port (:portua (:konfig zer)) :join? false}))
+    (reset! (:http zer) (run-server (:handler zer) {:port (:portua (:konfig zer)) :join? false}))
     (when (:partekatu (:konfig zer))
       (torrent/katalogoko-torrentak-partekatu! (:torrent-gehitze-programa (:konfig zer)) (:torrent-karpeta (:kokapenak (:konfig zer)))))))
 
@@ -23,5 +23,5 @@
   [zer]
   (when @(:http zer)
     (println ";; Zerbitzaria geratzen")
-    (.stop @(:http zer))
+    (@(:http zer) :timeout 1000)
     (reset! (:http zer) nil)))

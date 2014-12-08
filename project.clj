@@ -2,7 +2,6 @@
   :description "Magnet loturak: zerbitzaria"
   :url "https://github.com/lnmnd/magnet.zer"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [ring/ring-jetty-adapter "1.3.1"]
                  [compojure "1.1.8"]
                  [ring-cors "0.1.4"]
                  [clj-json "0.3.2"]
