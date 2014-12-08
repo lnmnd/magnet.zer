@@ -2,8 +2,7 @@
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.saioak :refer [lortu-saioa]]
-            [magnet.lagun :refer [oraingo-data orriztatu]]
-            [magnet.konfig :as konfig]))
+            [magnet.lagun :refer [oraingo-data orriztatu]]))
 
 (defn- baliozko-erabiltzailea?
   "Erabiltzaileak beharrezko eremu guztiak dituen edo ez"
@@ -38,8 +37,8 @@
                 :deskribapena (:deskribapena edukia)}
                ["erabiltzailea=?" erabiltzailea]))
 
-(defn- erabiltzaileak [idak]
-  (map #(lortu-erabiltzailea @konfig/db-kon (:id %)) idak))
+(defn- erabiltzaileak [db-kon idak]
+  (map #(lortu-erabiltzailea db-kon (:id %)) idak))
 
 (defn lortu-bilduma [desplazamendua muga db-kon]
   (sql/with-db-connection [kon db-kon]
@@ -92,11 +91,11 @@
 
 (defn gogoko-erabiltzaileak
   "Liburu bat gogoko duten erabiltzaileak lortzen ditu."
-  [desp muga id]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desp muga db-kon id]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from gogokoak where liburua=?" id]))
           idak (sql/query kon (orriztatu ["select erabiltzailea as id from gogokoak where liburua=?" id] desp muga))]
       [:ok {:desplazamendua desp
             :muga muga
             :guztira guztira
-            :gogoko_erabiltzaileak (erabiltzaileak idak)}])))
+            :gogoko_erabiltzaileak (erabiltzaileak db-kon idak)}])))
