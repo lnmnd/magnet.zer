@@ -115,30 +115,30 @@
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (iruzkinak/gehitu! token id edukia)))
+                     (iruzkinak/gehitu! (:db-kon konfig) token id edukia)))
     (api-erantzuna PUT "iruzkinak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (iruzkinak/aldatu! token id edukia)))
+                     (iruzkinak/aldatu! (:db-kon konfig) token id edukia)))
     (api-erantzuna GET "iruzkinak/:id" eskaera
                    (let [id (:id (:params eskaera))]
-                     (iruzkinak/lortu id)))
+                     (iruzkinak/lortu (:db-kon konfig) id)))
     (api-erantzuna DELETE "iruzkinak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (iruzkinak/ezabatu! token id)))
+                     (iruzkinak/ezabatu! (:db-kon konfig) token id)))
     (api-erantzuna GET "iruzkinak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-bilduma query-params)))
+                     (orriztatu iruzkinak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "liburuak/:id/iruzkinak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-liburuarenak query-params id)))
+                     (orriztatu iruzkinak/lortu-liburuarenak query-params (:db-kon konfig) id)))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/iruzkinak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu iruzkinak/lortu-erabiltzailearenak query-params erabiltzailea)))    
+                     (orriztatu iruzkinak/lortu-erabiltzailearenak query-params (:db-kon konfig) erabiltzailea)))    
 
                                         ; gogokoak
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera

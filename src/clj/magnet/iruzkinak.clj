@@ -2,8 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
             [magnet.lagun :refer [oraingo-data orriztatu]]
-            [magnet.saioak :refer [lortu-saioa]]
-            [magnet.konfig :as konfig]))
+            [magnet.saioak :refer [lortu-saioa]]))
 
 (defn- gehitu-iruzkina!
   [kon edukia]
@@ -44,13 +43,13 @@
   [kon id]
   (sql/delete! kon :iruzkinak ["id=?" id]))
 
-(defn- iruzkinak [idak]
-  (map (fn [x] (lortu-iruzkina @konfig/db-kon (:id x))) idak))
+(defn- iruzkinak [db-kon idak]
+  (map (fn [x] (lortu-iruzkina db-kon (:id x))) idak))
 
 (defn gehitu!
   "id liburuarekin lotutako iruzkina gehitu."
-  [token id edukia]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token id edukia]
+  (sql/with-db-transaction [kon db-kon]
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
       [:ok {:iruzkina
             (gehitu-iruzkina! kon (assoc edukia
@@ -61,8 +60,8 @@
 
 (defn aldatu!
   "Iruzkinaren edukia aldatzen du."
-  [token id edukia]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token id edukia]
+  (sql/with-db-transaction [kon db-kon]
     (if-let [ir (lortu-iruzkina kon id)]
       (if (= (:erabiltzailea (lortu-saioa token))
              (:erabiltzailea ir))
@@ -73,16 +72,16 @@
 
 (defn lortu
   "id jakineko iruzkina lortzen du."
-  [id]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [db-kon id]
+  (sql/with-db-connection [kon db-kon]
     (if-let [ir (lortu-iruzkina kon id)]
       [:ok {:iruzkina ir}]
       [:ez-dago])))
 
 (defn ezabatu!
   "Iruzkina ezabatzen du."
-  [token id]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token id]
+  (sql/with-db-transaction [kon db-kon]
     (if-let [ir (lortu-iruzkina kon id)]
       (if (= (:erabiltzailea (lortu-saioa token))
              (:erabiltzailea ir))
@@ -93,33 +92,33 @@
 
 (defn lortu-bilduma
   "Iruzkinen bilduma lortu"
-  [desplazamendua muga]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desplazamendua muga db-kon]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak"]))
           idak (sql/query kon (orriztatu ["select id from iruzkinak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :iruzkinak (iruzkinak idak)}])))
+            :iruzkinak (iruzkinak db-kon idak)}])))
 
 (defn lortu-liburuarenak
   "Liburu baten iruzkinak lortzen ditu."
-  [desplazamendua muga id]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desplazamendua muga db-kon id]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where liburua=?" id]))
           idak (sql/query kon (orriztatu ["select id from iruzkinak where liburua=?" id] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :iruzkinak (iruzkinak idak)}])))
+            :iruzkinak (iruzkinak db-kon idak)}])))
 
 (defn lortu-erabiltzailearenak
   "Erabiltzaile baten iruzkinak lortzen ditu."
-  [desplazamendua muga era]
-  (sql/with-db-connection [kon @konfig/db-kon]
+  [desplazamendua muga db-kon era]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from iruzkinak where erabiltzailea=?" era]))
           idak (sql/query kon (orriztatu ["select id from iruzkinak where erabiltzailea=?" era] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
             :muga muga
             :guztira guztira
-            :iruzkinak (iruzkinak idak)}])))
+            :iruzkinak (iruzkinak db-kon idak)}])))
