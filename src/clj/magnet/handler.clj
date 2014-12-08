@@ -89,26 +89,26 @@
                                         ; liburuak
     (api-erantzuna GET "liburuak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-bilduma query-params)))
+                     (orriztatu liburuak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/liburuak" eskaera
                    (let [{era :erabiltzailea} (:params eskaera)
                          {query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-erabiltzailearenak query-params era)))  
+                     (orriztatu liburuak/lortu-erabiltzailearenak query-params (:db-kon konfig) era)))  
     (api-erantzuna GET "liburuak/:id" {{id :id} :params}
-                   (liburuak/lortu id))
+                   (liburuak/lortu (:db-kon konfig) id))
     (api-erantzuna POST "liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu! (:partekatu konfig) (:kokapenak konfig) (:torrent-gehitze-programa konfig) (:trackerrak konfig) token edukia)))
+                     (liburuak/gehitu! (:db-kon konfig) (:partekatu konfig) (:kokapenak konfig) (:torrent-gehitze-programa konfig) (:trackerrak konfig) token edukia)))
     (api-erantzuna PUT "liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/aldatu! token id edukia)))
+                     (liburuak/aldatu! (:db-kon konfig) token id edukia)))
     (api-erantzuna DELETE "liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (liburuak/ezabatu! token id)))  
+                     (liburuak/ezabatu! (:db-kon konfig) token id)))  
 
                                         ; iruzkinak
     (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
@@ -144,19 +144,19 @@
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu-gogokoa! token id)))
+                     (liburuak/gehitu-gogokoa! (:db-kon konfig) token id)))
     (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea/gogoko_liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (liburuak/ezabatu-gogokoa! token id)))    
+                     (liburuak/ezabatu-gogokoa! (:db-kon konfig) token id)))    
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu liburuak/lortu-gogokoak query-params erabiltzailea)))
+                     (orriztatu liburuak/lortu-gogokoak query-params (:db-kon konfig) erabiltzailea)))
     (api-erantzuna GET "liburuak/:id/gogoko_erabiltzaileak" eskaera
                    (let [id (:id (:params eskaera))
                          {query-params :query-params} eskaera]
-                     (orriztatu erak/gogoko-erabiltzaileak query-params id)))
+                     (orriztatu erak/gogoko-erabiltzaileak query-params (:db-kon konfig) id)))
 
                                         ; hainbat
     (hainbat-erantzuna "tituluak" hainbat/tituluak)
