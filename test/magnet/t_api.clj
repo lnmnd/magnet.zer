@@ -9,7 +9,8 @@
             [magnet.konfiglehenetsia :as lkonfig]))
 
 (def test-konfig
-  {:portua 3001})
+  {:portua 3001
+   :partekatu false})
 
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"

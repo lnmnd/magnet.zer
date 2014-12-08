@@ -2,7 +2,10 @@
   (:require [clojure.java.shell :refer [sh]]))
 
 (def konfig
-  {:portua 3000})
+  {:portua 3000
+   ;; Torrentak partekatu nahi diren edo ez.
+   :partekatu true})
+
 (def db-kon {:classname "org.h2.Driver"
              :subprotocol "h2"
              :subname "jdbc:h2:magnet"})

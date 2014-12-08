@@ -15,7 +15,7 @@
   (when-not @(:http zer)
     (println ";; Zerbitzaria" (:portua (:konfig zer)) " portuan abiarazten")
     (reset! (:http zer) (run-jetty (:handler zer) {:port (:portua (:konfig zer)) :join? false}))
-    (when @magnet.konfig/partekatu
+    (when (:partekatu (:konfig zer))
       (torrent/katalogoko-torrentak-partekatu! @magnet.konfig/torrent-karpeta))))
 
 (defn geratu
