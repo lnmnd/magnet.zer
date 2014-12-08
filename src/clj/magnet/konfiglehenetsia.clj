@@ -1,6 +1,8 @@
 (ns magnet.konfiglehenetsia
   (:require [clojure.java.shell :refer [sh]]))
 
+(def konfig
+  {:portua 3000})
 (def db-kon {:classname "org.h2.Driver"
              :subprotocol "h2"
              :subname "jdbc:h2:magnet"})

@@ -8,6 +8,9 @@
             [magnet.konfig :as konfig]
             [magnet.konfiglehenetsia :as lkonfig]))
 
+(def test-konfig
+  {:portua 3001})
+
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"
                :subprotocol "h2"
@@ -19,7 +22,7 @@
 (def test-irudi-karpeta "test-resources/public/img/")
 (def test-irudi-url "http://localhost:3001/img/")
 
-(defonce zerbitzaria (sortu 3001 app))
+(defonce zerbitzaria (sortu test-konfig app))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
