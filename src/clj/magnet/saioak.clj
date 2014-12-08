@@ -8,9 +8,9 @@
 
 (defn- gehitu-saioa!
   "Saioa saioen zerrendan sartzen du."
-  [saioa]
+  [saio-iraungitze-denbora saioa]
   (swap! saioak conj {(:token saioa) saioa})
-  (future (Thread/sleep (* @konfig/saio-iraungitze-denbora 1000))
+  (future (Thread/sleep (* saio-iraungitze-denbora 1000))
           (swap! saioak :dissoc (:token saioa))))
 
 (defmacro ^:private zerrendatu [s]
@@ -35,14 +35,14 @@
 
 (defn hasi!
   "Erabiltzailea eta pasahitza zuzenak badira saioa hasten du."
-  [erabiltzailea pasahitza]
+  [saio-iraungitze-denbora erabiltzailea pasahitza]
   (if (erabiltzaile-zuzena? erabiltzailea pasahitza)
     (let [orain (oraingo-data)
           saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
                  :saio_hasiera orain
-                 :iraungitze_data (segunduak-gehitu orain @konfig/saio-iraungitze-denbora)}]
-      (gehitu-saioa! saioa)
+                 :iraungitze_data (segunduak-gehitu orain saio-iraungitze-denbora)}]
+      (gehitu-saioa! saio-iraungitze-denbora saioa)
       [:ok saioa]) 
     [:ezin-prozesatu]))
 

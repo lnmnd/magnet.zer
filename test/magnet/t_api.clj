@@ -10,7 +10,8 @@
 
 (def test-konfig
   {:portua 3001
-   :partekatu false})
+   :partekatu false
+   :saio-iraungitze-denbora (* 60 60)})
 
 ; Probetarako DB konfigurazioa
 (def test-kon {:classname "org.h2.Driver"

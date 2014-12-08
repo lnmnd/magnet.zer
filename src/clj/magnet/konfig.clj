@@ -11,9 +11,6 @@
 (def ^{:doc "Bilduma batean agertuko diren elementu kopurua."}
   muga (atom l/muga))
 
-(def ^{:doc "Saioaren iraungitze denbora, segundutan."}
-  saio-iraungitze-denbora (atom l/saio-iraungitze-denbora))
-
 (def epub-karpeta (atom l/epub-karpeta))
 (def torrent-karpeta (atom l/torrent-karpeta))
 (def irudi-karpeta (atom l/irudi-karpeta))

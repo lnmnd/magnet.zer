@@ -3,6 +3,8 @@
 
 (def konfig
   {:portua 3000
+   ;; Saioaren iraungitze denbora, segundutan.
+   :saio-iraungitze-denbora (* 60 60) ; 1 h
    ;; Torrentak partekatu nahi diren edo ez.
    :partekatu true})
 
@@ -11,8 +13,6 @@
              :subname "jdbc:h2:magnet"})
 
 (def muga 25)
-
-(def saio-iraungitze-denbora (* 60 60)) ; 1 h
 
 (def epub-karpeta "resources/private/torrent/")
 (def torrent-karpeta "resources/private/torrent/")
