@@ -3,6 +3,11 @@
 
 (def konfig
   {:portua 3000
+   ;; Datubasearen konexio parametroak, dbspec gisa.
+   :db-kon
+   {:classname "org.h2.Driver"
+             :subprotocol "h2"
+             :subname "jdbc:h2:magnet"}
    ;; Saioaren iraungitze denbora, segundutan.
    :saio-iraungitze-denbora (* 60 60) ; 1 h
    ;; Torrentak partekatu nahi diren edo ez.

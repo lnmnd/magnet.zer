@@ -11,6 +11,9 @@
 (def test-konfig
   (assoc lkonfig/konfig
     :portua 3001
+    :db-kon {:classname "org.h2.Driver"
+             :subprotocol "h2"
+             :subname "jdbc:h2:test"}    
     :partekatu false
     :kokapenak {:epub-karpeta "test-resources/private/torrent/"
                 :torrent-karpeta "test-resources/private/torrent/"

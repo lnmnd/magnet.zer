@@ -41,8 +41,8 @@
 (defn- erabiltzaileak [idak]
   (map #(lortu-erabiltzailea @konfig/db-kon (:id %)) idak))
 
-(defn lortu-bilduma [desplazamendua muga]
-  (sql/with-db-connection [kon @konfig/db-kon]
+(defn lortu-bilduma [desplazamendua muga db-kon]
+  (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon (orriztatu ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"] desplazamendua muga))]
       [:ok {:desplazamendua desplazamendua
@@ -50,25 +50,25 @@
             :guztira guztira
             :erabiltzaileak erabiltzaileak}])))
 
-(defn lortu [erabiltzailea]
-  (sql/with-db-connection [kon @konfig/db-kon]
+(defn lortu [db-kon erabiltzailea]
+  (sql/with-db-connection [kon db-kon]
     (if-let [era (lortu-erabiltzailea kon erabiltzailea)]
       [:ok {:erabiltzailea era}]
       [:ez-dago])))
 
-(defn gehitu! [edukia]
+(defn gehitu! [db-kon edukia]
   (let [era (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? era)
-      (sql/with-db-transaction [kon @konfig/db-kon]
+      (sql/with-db-transaction [kon db-kon]
         (if (badago? kon (:erabiltzailea era))
           [:ezin-prozesatu]
           (do (gehitu-erabiltzailea! kon era)
               [:ok {:erabiltzailea (dissoc era :pasahitza)}])))
       [:ezin-prozesatu])))
 
-(defn aldatu! [token erabiltzailea edukia]
+(defn aldatu! [db-kon token erabiltzailea edukia]
   (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
-    (sql/with-db-transaction [kon @konfig/db-kon]
+    (sql/with-db-transaction [kon db-kon]
       (if (badago? kon erabiltzailea)
         (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)
@@ -80,8 +80,8 @@
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
-  [token erabiltzailea]
-  (sql/with-db-transaction [kon @konfig/db-kon]
+  [db-kon token erabiltzailea]
+  (sql/with-db-transaction [kon db-kon]
     (if (badago? kon erabiltzailea)
       (if (= (:erabiltzailea (lortu-saioa token))
                erabiltzailea)

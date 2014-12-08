@@ -63,21 +63,21 @@
   (routes
     (api-erantzuna GET "erabiltzaileak" eskaera
                    (let [{query-params :query-params} eskaera]
-                     (orriztatu erak/lortu-bilduma query-params)))
+                     (orriztatu erak/lortu-bilduma query-params (:db-kon konfig))))
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea" {{erabiltzailea :erabiltzailea} :params}
-                   (erak/lortu erabiltzailea))
+                   (erak/lortu (:db-kon konfig) erabiltzailea))
     (api-erantzuna POST "erabiltzaileak" eskaera
                    (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (erak/gehitu! edukia)))
+                     (erak/gehitu! (:db-kon konfig) edukia)))
     (api-erantzuna PUT "erabiltzaileak/:erabiltzailea" eskaera
                    (let [token (:token (:params eskaera))
                          erabiltzailea (:erabiltzailea (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (erak/aldatu! token erabiltzailea edukia)))
+                     (erak/aldatu! (:db-kon konfig) token erabiltzailea edukia)))
     (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
                    (let [token (:token (:params eskaera))
                          erabiltzailea (:erabiltzailea (:params eskaera))]
-                     (erak/ezabatu! token erabiltzailea)))
+                     (erak/ezabatu! (:db-kon konfig) token erabiltzailea)))
 
                                         ; saioak
     (api-erantzuna POST "saioak" eskaera
