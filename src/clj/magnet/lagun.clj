@@ -2,14 +2,13 @@
   (:require [clojure.java.jdbc :as sql]
             [clj-time.core :as time]
             [clj-time.coerce :as coerce]
-            [clj-time.format :as time-format]
-            [magnet.konfig :as konfig]))
+            [clj-time.format :as time-format]))
 
 (defn db-hasieratu
   "Datubasea hasieratzen du"
-  []
+  [db-kon]
   (sql/db-do-commands
-   @konfig/db-kon
+   db-kon
    (sql/create-table-ddl :erabiltzaileak
                          [:erabiltzailea "varchar(255) primary key"]
                          [:pasahitza "varchar(255)"]
@@ -57,14 +56,14 @@
    "alter table gogokoak add foreign key (liburua) references liburuak(id) on delete cascade"))
 
 (defmacro ^:private ezabatu-taulak
-  [& taulak]
+  [db-kon & taulak]
     (let [aginduak# (map #(sql/drop-table-ddl %) taulak)]
-      `(sql/db-do-commands @konfig/db-kon
+      `(sql/db-do-commands ~db-kon
                            ~@aginduak#)))
 
-(defn db-garbitu []
+(defn db-garbitu [db-kon]
   "Taulak ezabatu"
-  (ezabatu-taulak :erabiltzaileak :liburuak :liburu_egileak :liburu_etiketak :iruzkinak :iruzkin_erantzunak :gogokoak))
+  (ezabatu-taulak db-kon :erabiltzaileak :liburuak :liburu_egileak :liburu_etiketak :iruzkinak :iruzkin_erantzunak :gogokoak))
 
 (defn oraingo-data
   "Oraingo UTC data itzultzen du \"date-time-no-ms\" formatuarekin.

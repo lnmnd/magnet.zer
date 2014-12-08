@@ -5,7 +5,6 @@
             [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
-            [magnet.konfig :as konfig]
             [magnet.konfiglehenetsia :as lkonfig]))
 
 (def test-konfig
@@ -20,22 +19,15 @@
                 :irudi-karpeta "test-resources/public/img/"
                 :irudi-url "http://localhost:3001/img/"}))
 
-; Probetarako DB konfigurazioa
-(def test-kon {:classname "org.h2.Driver"
-               :subprotocol "h2"
-               :subname "jdbc:h2:test"})
-
 (defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig)))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
-                    (do (reset! konfig/db-kon test-kon)
-                        (db-hasieratu)
+                    (do (db-hasieratu (:db-kon test-konfig))
                         (hasi zerbitzaria))
                     :after
                     (do (geratu zerbitzaria)
-                        (db-garbitu)
-                        (reset! konfig/db-kon lkonfig/db-kon))))
+                        (db-garbitu (:db-kon test-konfig)))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"
