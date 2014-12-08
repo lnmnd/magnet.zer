@@ -1,5 +1,4 @@
 (ns magnet.torrent
-  (:require [magnet.konfig :as konfig])
   (:import [java.io File])
   (:import [com.magnet Torrent]))
 
