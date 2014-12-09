@@ -2,6 +2,7 @@
   (:use midje.sweet)
   (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
+            [magnet.saioak :refer [sortu-saioak]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]
@@ -19,7 +20,7 @@
                 :irudi-karpeta "test-resources/public/img/"
                 :irudi-url "http://localhost:3001/img/"}))
 
-(defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig)))
+(defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig (sortu-saioak))))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts

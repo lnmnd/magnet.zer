@@ -58,7 +58,7 @@
                  0)]
      (~fn desp# (if (> muga# 0) muga# 0) ~@param)))
 
-(defn bideak-sortu [konfig]
+(defn bideak-sortu [konfig saioak-osagaia]
   (routes
     (api-erantzuna GET "erabiltzaileak" eskaera
                    (let [{query-params :query-params} eskaera]
@@ -72,18 +72,18 @@
                    (let [token (:token (:params eskaera))
                          erabiltzailea (:erabiltzailea (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (erak/aldatu! (:db-kon konfig) token erabiltzailea edukia)))
+                     (erak/aldatu! saioak-osagaia (:db-kon konfig) token erabiltzailea edukia)))
     (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea" eskaera
                    (let [token (:token (:params eskaera))
                          erabiltzailea (:erabiltzailea (:params eskaera))]
-                     (erak/ezabatu! (:db-kon konfig) token erabiltzailea)))
+                     (erak/ezabatu! saioak-osagaia (:db-kon konfig) token erabiltzailea)))
 
                                         ; saioak
     (api-erantzuna POST "saioak" eskaera
                    (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (saioak/hasi! (:db-kon konfig) (:saio-iraungitze-denbora konfig) (:erabiltzailea edukia) (:pasahitza edukia))))
+                     (saioak/hasi! saioak-osagaia (:db-kon konfig) (:saio-iraungitze-denbora konfig) (:erabiltzailea edukia) (:pasahitza edukia))))
     (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
-                   (saioak/amaitu! token))
+                   (saioak/amaitu! saioak-osagaia token))
 
                                         ; liburuak
     (api-erantzuna GET "liburuak" eskaera
@@ -98,35 +98,35 @@
     (api-erantzuna POST "liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu! (:db-kon konfig) (:partekatu konfig) (:kokapenak konfig) (:torrent-gehitze-programa konfig) (:trackerrak konfig) token edukia)))
+                     (liburuak/gehitu! saioak-osagaia (:db-kon konfig) (:partekatu konfig) (:kokapenak konfig) (:torrent-gehitze-programa konfig) (:trackerrak konfig) token edukia)))
     (api-erantzuna PUT "liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/aldatu! (:db-kon konfig) token id edukia)))
+                     (liburuak/aldatu! saioak-osagaia (:db-kon konfig) token id edukia)))
     (api-erantzuna DELETE "liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (liburuak/ezabatu! (:db-kon konfig) token id)))  
+                     (liburuak/ezabatu! saioak-osagaia (:db-kon konfig) token id)))  
 
                                         ; iruzkinak
     (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (iruzkinak/gehitu! (:db-kon konfig) token id edukia)))
+                     (iruzkinak/gehitu! saioak-osagaia (:db-kon konfig) token id edukia)))
     (api-erantzuna PUT "iruzkinak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
                          edukia (json/parse-string (slurp (:body eskaera)) true)]
-                     (iruzkinak/aldatu! (:db-kon konfig) token id edukia)))
+                     (iruzkinak/aldatu! saioak-osagaia (:db-kon konfig) token id edukia)))
     (api-erantzuna GET "iruzkinak/:id" eskaera
                    (let [id (:id (:params eskaera))]
                      (iruzkinak/lortu (:db-kon konfig) id)))
     (api-erantzuna DELETE "iruzkinak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (iruzkinak/ezabatu! (:db-kon konfig) token id)))
+                     (iruzkinak/ezabatu! saioak-osagaia (:db-kon konfig) token id)))
     (api-erantzuna GET "iruzkinak" eskaera
                    (let [{query-params :query-params} eskaera]
                      (orriztatu (:muga konfig) iruzkinak/lortu-bilduma query-params (:db-kon konfig))))
@@ -143,11 +143,11 @@
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
-                     (liburuak/gehitu-gogokoa! (:db-kon konfig) token id)))
+                     (liburuak/gehitu-gogokoa! saioak-osagaia (:db-kon konfig) token id)))
     (api-erantzuna DELETE "erabiltzaileak/:erabiltzailea/gogoko_liburuak/:id" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))]
-                     (liburuak/ezabatu-gogokoa! (:db-kon konfig) token id)))    
+                     (liburuak/ezabatu-gogokoa! saioak-osagaia (:db-kon konfig) token id)))    
     (api-erantzuna GET "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [erabiltzailea (:erabiltzailea (:params eskaera))
                          {query-params :query-params} eskaera]
@@ -169,8 +169,8 @@
     (route/resources "/")
     (route/not-found "Not Found")))
 
-(defn handler-sortu [konfig]
-  (-> (bideak-sortu konfig)
+(defn handler-sortu [konfig saioak-osagaia]
+  (-> (bideak-sortu konfig saioak-osagaia)
       handler/site
       (wrap-cors
        :access-control-allow-headers "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept"

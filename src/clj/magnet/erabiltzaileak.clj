@@ -65,11 +65,11 @@
               [:ok {:erabiltzailea (dissoc era :pasahitza)}])))
       [:ezin-prozesatu])))
 
-(defn aldatu! [db-kon token erabiltzailea edukia]
+(defn aldatu! [saio-osa db-kon token erabiltzailea edukia]
   (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
     (sql/with-db-transaction [kon db-kon]
       (if (badago? kon erabiltzailea)
-        (if (= (:erabiltzailea (lortu-saioa token))
+        (if (= (:erabiltzailea (lortu-saioa saio-osa token))
                erabiltzailea)
           (do (aldatu-erabiltzailea! kon erabiltzailea edukia)
               [:ok {:erabiltzailea (dissoc edukia :pasahitza)}])
@@ -79,10 +79,10 @@
 
 (defn ezabatu!
   "Erabiltzaile bat ezabatzen du"
-  [db-kon token erabiltzailea]
+  [saio-osa db-kon token erabiltzailea]
   (sql/with-db-transaction [kon db-kon]
     (if (badago? kon erabiltzailea)
-      (if (= (:erabiltzailea (lortu-saioa token))
+      (if (= (:erabiltzailea (lortu-saioa saio-osa token))
                erabiltzailea)
         (do (sql/delete! kon :erabiltzaileak ["erabiltzailea=?" erabiltzailea])
             [:ok])

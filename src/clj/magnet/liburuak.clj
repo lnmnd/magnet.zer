@@ -115,9 +115,9 @@
                    ["id=?" id])
       (lortu-liburua kon id))))
 
-(defn gehitu! [db-kon partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
+(defn gehitu! [saio-osa db-kon partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
   (if (baliozko-liburu-eskaera edukia)
-    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
+    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa saio-osa token)]
       [:ok (liburua-gehitu! db-kon partekatu kokapenak torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]
       [:baimenik-ez])
     [:ezin-prozesatu]))
@@ -131,12 +131,12 @@
 
 (defn aldatu!
   "id bat eta edukia emanda liburua aldatu"
-  [db-kon token id edukia]
+  [saio-osa db-kon token id edukia]
   (if (baliozko-liburu-eskaera edukia)
     (let [[egoera lib] (lortu db-kon id)]
       (if (= egoera :ez-dago)
         [:ez-dago]
-        (if-let [era (:erabiltzailea (lortu-saioa token))]
+        (if-let [era (:erabiltzailea (lortu-saioa saio-osa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             [:ok {:liburua (liburua-aldatu! db-kon id (assoc edukia :erabiltzailea era))}] 
             [:baimenik-ez])
@@ -145,12 +145,12 @@
 
 (defn ezabatu!
   "id bat emanda liburua ezabatu"
-  [db-kon token id]
+  [saio-osa db-kon token id]
   (sql/with-db-transaction [kon db-kon]
     (let [[egoera lib] (lortu db-kon id)]
       (if (= egoera :ez-dago)
         [:ez-dago]
-        (if-let [era (:erabiltzailea (lortu-saioa token))]
+        (if-let [era (:erabiltzailea (lortu-saioa saio-osa token))]
           (if (= era (:erabiltzailea (:liburua lib)))
             (do (sql/delete! kon :liburuak ["id=?" id])
                 [:ok])            
@@ -181,10 +181,10 @@
 
 (defn gehitu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendan sartzen du."
-  [db-kon token id]
+  [saio-osa db-kon token id]
   (sql/with-db-transaction [kon db-kon]
     (if-let [lib (lortu-liburua kon id)]
-      (if-let [era (:erabiltzailea (lortu-saioa token))]
+      (if-let [era (:erabiltzailea (lortu-saioa saio-osa token))]
         (do (sql/insert! kon :gogokoak
                          [:erabiltzailea :liburua]
                          [era id])    
@@ -199,10 +199,10 @@
 
 (defn ezabatu-gogokoa!
   "Liburua erabiltzailearen gogokoen zerrendatik kentzen du."
-  [db-kon token id]
+  [saio-osa db-kon token id]
   (sql/with-db-transaction [kon db-kon]
     (if-let [lib (lortu-liburua kon id)]
-      (if-let [era (:erabiltzailea (lortu-saioa token))]
+      (if-let [era (:erabiltzailea (lortu-saioa saio-osa token))]
         (if-let [gog (lortu-gogokoa kon era id)]
           (if (= era (:erabiltzailea gog))
             (do

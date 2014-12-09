@@ -48,9 +48,9 @@
 
 (defn gehitu!
   "id liburuarekin lotutako iruzkina gehitu."
-  [db-kon token id edukia]
+  [saio-osa db-kon token id edukia]
   (sql/with-db-transaction [kon db-kon]
-    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa token)]
+    (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa saio-osa token)]
       [:ok {:iruzkina
             (gehitu-iruzkina! kon (assoc edukia
                                     :liburua id
@@ -60,10 +60,10 @@
 
 (defn aldatu!
   "Iruzkinaren edukia aldatzen du."
-  [db-kon token id edukia]
+  [saio-osa db-kon token id edukia]
   (sql/with-db-transaction [kon db-kon]
     (if-let [ir (lortu-iruzkina kon id)]
-      (if (= (:erabiltzailea (lortu-saioa token))
+      (if (= (:erabiltzailea (lortu-saioa saio-osa token))
              (:erabiltzailea ir))
         (do (aldatu-iruzkina! kon id edukia)
             [:ok {:iruzkina (assoc ir :edukia (:edukia edukia))}])
@@ -80,10 +80,10 @@
 
 (defn ezabatu!
   "Iruzkina ezabatzen du."
-  [db-kon token id]
+  [saio-osa db-kon token id]
   (sql/with-db-transaction [kon db-kon]
     (if-let [ir (lortu-iruzkina kon id)]
-      (if (= (:erabiltzailea (lortu-saioa token))
+      (if (= (:erabiltzailea (lortu-saioa saio-osa token))
              (:erabiltzailea ir))
         (do (ezabatu-iruzkina! kon id)
             [:ok])

@@ -3,11 +3,9 @@
             [clj-bcrypt-wrapper.core :refer [check-password]]
             [magnet.lagun :refer [oraingo-data segunduak-gehitu]]))
 
-(def ^{:private true} saioak (atom {}))
-
 (defn- gehitu-saioa!
   "Saioa saioen zerrendan sartzen du."
-  [saio-iraungitze-denbora saioa]
+  [saioak saio-iraungitze-denbora saioa]
   (swap! saioak conj {(:token saioa) saioa})
   (future (Thread/sleep (* saio-iraungitze-denbora 1000))
           (swap! saioak :dissoc (:token saioa))))
@@ -32,29 +30,34 @@
     (check-password pasahitza pasahitz_hash)
     false))
 
+(defn sortu-saioak
+  "Saioak sortzen du. Gainontzeko funtzioek datu hau erabiltzen dute."
+  []
+  (atom {}))
+
 (defn hasi!
   "Erabiltzailea eta pasahitza zuzenak badira saioa hasten du."
-  [db-kon saio-iraungitze-denbora erabiltzailea pasahitza]
+  [saioak db-kon saio-iraungitze-denbora erabiltzailea pasahitza]
   (if (erabiltzaile-zuzena? db-kon erabiltzailea pasahitza)
     (let [orain (oraingo-data)
           saioa {:erabiltzailea erabiltzailea
                  :token (sortu-tokena)
                  :saio_hasiera orain
                  :iraungitze_data (segunduak-gehitu orain saio-iraungitze-denbora)}]
-      (gehitu-saioa! saio-iraungitze-denbora saioa)
+      (gehitu-saioa! saioak saio-iraungitze-denbora saioa)
       [:ok saioa]) 
     [:ezin-prozesatu]))
 
 (defn amaitu!
   "Saioa amaitzen du, tokena baliogabetuz."
-  [token]
+  [saioak token]
   (swap! saioak dissoc token)
   [:ok])
 
 (defn lortu-saioa
   "Tokena duen saioa lortzen du.
 \"lortu\" bezala baina saioa-egoera bikotea ordez saioa soilik itzultzen du edo false tokena ez badago."
-  [token]
+  [saioak token]
   (if (contains? @saioak token)
     (@saioak token)
     false))
