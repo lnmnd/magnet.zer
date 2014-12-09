@@ -26,7 +26,7 @@ Beste zerbitzari bat sortzea posible da konfigurazio ezberdina erabiliz:
 
 > => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001)))
 
-> => (z/hasi zer-3001) ; 3001 portuak hasiko da
+> => (z/hasi zer-3001) ; 3001 portuan hasiko da
 
 > => (def k-ccc (assoc konfig :trackerrak ["udp://tracker.ccc.de:80"]))
 
