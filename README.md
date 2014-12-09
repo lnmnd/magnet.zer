@@ -16,16 +16,22 @@ Geratzeko:
 
 Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
 > => (def zer (z/sortu konfig (handler-sortu konfig)))
+
 > => (z/hasi zer)
+
 > => (z/geratu zer)
 
 Beste zerbitzari bat sortzea posible da konfigurazio ezberdina erabiliz:
 > => (def k-3001 (assoc konfig :portua 3001))
+
 > => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001)))
+
 > => (z/hasi zer-3001) ; 3001 portuak hasiko da
 
 > => (def k-ccc (assoc konfig :trackerrak ["udp://tracker.ccc.de:80"]))
+
 > => (def zer-ccc (z/sortu k-ccc (handler-sortu k-ccc)))
+
 > => (z/hasi zer-ccc) ; CCC trackerra bakarrik erabiliko du
 
 ### Komando lerrotik
@@ -40,6 +46,7 @@ Geratzeko prozesua amaitu, Ctl+C erabiliz adibidez.
 ### REPL barnetik
 Proba denak exekutatu:
 > => (use 'midje.repl)
+
 > => (load-facts)
 
 Etiketa jakin bat dutenak:
