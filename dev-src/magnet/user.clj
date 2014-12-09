@@ -3,7 +3,7 @@
             [magnet.handler :refer [handler-sortu]]
             [magnet.konfiglehenetsia :refer [konfig]]))
 
-(defonce zer (z/sortu konfig (handler-sortu konfig)))
+(def zer (z/sortu konfig (handler-sortu konfig)))
 
 (defn hasi []
   (z/hasi zer))

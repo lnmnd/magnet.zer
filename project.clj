@@ -17,12 +17,13 @@
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
   :main magnet.handler.main/-main
-  :repl-options {:init-ns magnet.user}
   
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [org.clojure/tools.namespace "0.2.7"]
                         [midje "1.6.3"]]
+         :source-paths ["src/clj" "dev-src"]
+         :repl-options {:init-ns magnet.user}
          :ring {:handler magnet.handler/app}
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
                  :src-linenum-anchor-prefix "L"}}
