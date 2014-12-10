@@ -5,7 +5,7 @@
 (defn sortu
   "Zerbitzaria sortzen du."
   [konfig handler]
-  {:konfig konfig
+  {:konfig (select-keys konfig [:portua :partekatu :torrent-gehitze-programa :kokapenak])
    :handler handler
    :http (atom nil)})
 
