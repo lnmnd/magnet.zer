@@ -5,10 +5,17 @@
             [magnet.handler :refer [handler-sortu]]
             [magnet.konfiglehenetsia :refer [konfig]]))
 
-(def zer (z/sortu konfig (handler-sortu konfig (sortu-saioak))))
+(defn sortu []
+  (z/sortu konfig (handler-sortu konfig (sortu-saioak))))
+
+(def zer (sortu))
 
 (defn hasi []
   (z/hasi zer))
 
 (defn geratu []
   (z/geratu zer))
+
+(defn berrezarri []
+  (geratu)
+  (alter-var-root #'zer (constantly (sortu))))
