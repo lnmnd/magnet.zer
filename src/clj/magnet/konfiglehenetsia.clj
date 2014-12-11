@@ -30,7 +30,3 @@
    (fn [torrent katalogoa]
      (sh "transmission-remote" "--add" torrent "-w" katalogoa))})
 
-(def db-kon {:classname "org.h2.Driver"
-             :subprotocol "h2"
-             :subname "jdbc:h2:magnet"})
-
