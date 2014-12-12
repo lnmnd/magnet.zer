@@ -25,19 +25,11 @@
    (not (= "" (:epub lib)))
    (not (= "" (:azala lib)))))
 
-(defn- egileak [kon id]
-  (map (fn [x] (:egilea x))
-       (sql/query kon ["select egilea from liburu_egileak where liburua=?" id])))
-
-(defn- etiketak [kon id]
-  (map (fn [x] (:etiketa x))
-       (sql/query kon ["select etiketa from liburu_etiketak where liburua=?" id])))
-
 (defn- lortu-liburua [kon id]
   (if-let [lib (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, azala, igotze_data, (select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?) as iruzkin_kopurua, (select count(liburua) as gogoko_kopurua from gogokoak where liburua=?) as gogoko_kopurua from liburuak where id=?" id id id]))]
     (assoc lib
-      :egileak (egileak kon id)
-      :etiketak (etiketak kon id))
+      :egileak (map :egilea (sql/query kon ["select egilea from liburu_egileak where liburua=?" id]))
+      :etiketak (map :etiketa (sql/query kon ["select etiketa from liburu_etiketak where liburua=?" id])))
     nil))
 
 (defn- liburuak [db-kon idak]
