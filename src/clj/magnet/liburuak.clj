@@ -55,7 +55,7 @@
     nil))
 
 (defn- liburuak [db-kon idak]
-  (map (fn [x] (lortu-liburua db-kon (:id x))) idak))
+  (pmap (fn [x] (lortu-liburua db-kon (:id x))) idak))
 
 (defn- liburua-gehitu! [db-kon partekatu kokapenak torrent-gehitze-programa trackerrak edukia]
   (sql/with-db-transaction [kon db-kon]

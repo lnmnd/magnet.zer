@@ -38,7 +38,7 @@
                ["erabiltzailea=?" erabiltzailea]))
 
 (defn- erabiltzaileak [db-kon idak]
-  (map #(lortu-erabiltzailea db-kon (:id %)) idak))
+  (pmap #(lortu-erabiltzailea db-kon (:id %)) idak))
 
 (defn lortu-bilduma [desplazamendua muga db-kon]
   (sql/with-db-connection [kon db-kon]
