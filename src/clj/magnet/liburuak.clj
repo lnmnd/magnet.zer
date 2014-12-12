@@ -33,25 +33,11 @@
   (map (fn [x] (:etiketa x))
        (sql/query kon ["select etiketa from liburu_etiketak where liburua=?" id])))
 
-(defn- iruzkin-kopurua [kon id]
-  (->>
-   (sql/query kon ["select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?" id])
-   first
-   :iruzkin_kopurua))
-
-(defn- gogokoak [kon id]
-  (->>
-   (sql/query kon ["select count(liburua) as gogoko_kopurua from gogokoak where liburua=?" id])
-   first
-   :gogoko_kopurua))
-
 (defn- lortu-liburua [kon id]
-  (if-let [lib  (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, azala, igotze_data from liburuak where id=?" id]))]
+  (if-let [lib (first (sql/query kon ["select id, magnet, erabiltzailea, titulua, hizkuntza, sinopsia, argitaletxea, urtea, generoa, azala, igotze_data, (select count(liburua) as iruzkin_kopurua from iruzkinak where liburua=?) as iruzkin_kopurua, (select count(liburua) as gogoko_kopurua from gogokoak where liburua=?) as gogoko_kopurua from liburuak where id=?" id id id]))]
     (assoc lib
       :egileak (egileak kon id)
-      :etiketak (etiketak kon id)      
-      :iruzkin_kopurua (iruzkin-kopurua kon id)
-      :gogoko_kopurua (gogokoak kon id))
+      :etiketak (etiketak kon id))
     nil))
 
 (defn- liburuak [db-kon idak]
