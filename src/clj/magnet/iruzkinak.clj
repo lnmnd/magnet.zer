@@ -17,20 +17,12 @@
                          [gur id]))
           (assoc ir :id id)))))
 
-(defn- gurasoak [kon id]
-  (map (fn [x] (:gurasoa x))
-       (sql/query kon ["select gurasoa as gurasoa from iruzkin_erantzunak where erantzuna=?" id])))
-
-(defn- erantzunak [kon id]
-  (map (fn [x] (:erantzuna x))
-       (sql/query kon ["select erantzuna as erantzuna from iruzkin_erantzunak where gurasoa=?" id])))
-
 (defn- lortu-iruzkina
   [kon id]
   (if-let [ir (first (sql/query kon ["select * from iruzkinak where id=?" id]))]
     (assoc ir
-      :gurasoak (gurasoak kon id)
-      :erantzunak (erantzunak kon id))
+      :gurasoak (map :gurasoa (sql/query kon ["select gurasoa as gurasoa from iruzkin_erantzunak where erantzuna=?" id]))
+      :erantzunak (map :erantzuna (sql/query kon ["select erantzuna as erantzuna from iruzkin_erantzunak where gurasoa=?" id])))
     nil))
 
 (defn- aldatu-iruzkina!
