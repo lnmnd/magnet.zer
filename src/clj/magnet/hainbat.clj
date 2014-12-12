@@ -3,9 +3,6 @@
             [clojure.java.jdbc :as sql]
             [magnet.lagun :refer [orriztatu]]))
 
-(defn- balioak [xs]
-  (map (fn [x] (:x x)) xs))
-
 (defn- hainbat-fun [[izena eremua taula]]
   `(defn ~izena [desp# muga# db-kon#]
      (sql/with-db-connection [kon# db-kon#]
@@ -15,7 +12,7 @@
          [:ok {:desplazamendua desp#
                :muga muga#
                :guztira guztira#
-               gakoa# (balioak xs#)}]))))
+               gakoa# (map :x xs#)}]))))
 
 (defmacro ^:private hainbat-erantzunak [& l]
   (cons 'do
