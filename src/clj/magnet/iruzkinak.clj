@@ -44,7 +44,7 @@
   (sql/delete! kon :iruzkinak ["id=?" id]))
 
 (defn- iruzkinak [db-kon idak]
-  (map (fn [x] (lortu-iruzkina db-kon (:id x))) idak))
+  (pmap (fn [x] (lortu-iruzkina db-kon (:id x))) idak))
 
 (defn gehitu!
   "id liburuarekin lotutako iruzkina gehitu."
