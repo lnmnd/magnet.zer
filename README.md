@@ -8,6 +8,9 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 ## Zerbitzaria martxa jarri
 
 ### REPL bidez
+Datu-basea hasieratu:
+> => (magnet.lagun/db-hasieratu (:db-kon konfig))
+
 Hasteko:
 > => (hasi)
 
