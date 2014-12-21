@@ -30,7 +30,7 @@
      (api-deia metodoa helbidea erantzun-mota {}))  
   ([metodoa helbidea erantzun-mota gorputza]
      (let [metodoak {:get http/get :post http/post :put http/put :delete http/delete}
-           ema @((metodoa metodoak) (str "http://localhost:3001/v1/" helbidea) {:body (json/generate-string gorputza)})]
+           ema @((metodoa metodoak) (str (:proba-url test-konfig) helbidea) {:body (json/generate-string gorputza)})]
        (condp = erantzun-mota
          :json
          (json/parse-string (:body ema) true)
