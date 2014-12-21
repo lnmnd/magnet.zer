@@ -23,5 +23,5 @@
               "udp://tracker.ccc.de:80"]
  ;; Torrent fitxategia eta katalogoa emanda torrenta partekatze duen programa.
  :torrent-gehitze-programa
- (fn [torrent katalogoa]
-   (clojure.java.shell/sh "transmission-remote" "--add" torrent "-w" katalogoa))}
+ (fn [sh torrent katalogoa]
+   (sh "transmission-remote" "--add" torrent "-w" katalogoa))}
