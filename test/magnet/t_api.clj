@@ -8,17 +8,9 @@
             [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
 (def test-konfig
-  (let [konfig (eval (read-string (slurp "konfig.clj")))]
-    (merge konfig
-           {:portua 3001
-            :db-kon {:classname "org.h2.Driver"
-                     :subprotocol "h2"
-                     :subname "jdbc:h2:test"}    
-            :partekatu false
-            :kokapenak {:epub-karpeta "test-resources/private/torrent/"
-                        :torrent-karpeta "test-resources/private/torrent/"
-                        :irudi-karpeta "test-resources/public/img/"
-                        :irudi-url "http://localhost:3001/img/"}})))
+  (let [konfig (eval (read-string (slurp "konfig.clj")))
+        pkonfig (eval (read-string (slurp "proba-konfig.clj")))]
+    (merge konfig pkonfig)))
 
 (defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig (sortu-saioak))))
 
