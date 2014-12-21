@@ -2,11 +2,11 @@
   (:require [midje.repl :refer :all]
             [magnet.zer :as z]
             [magnet.saioak :refer [sortu-saioak]]
-            [magnet.handler :refer [handler-sortu]]
-            [magnet.konfiglehenetsia :refer [konfig]]))
+            [magnet.handler :refer [handler-sortu]]))
 
 (defn sortu []
-  (z/sortu konfig (handler-sortu konfig (sortu-saioak))))
+  (let [konfig (eval (read-string (slurp "konfig.clj")))]
+    (z/sortu konfig (handler-sortu konfig (sortu-saioak)))))
 
 (def zer (sortu))
 

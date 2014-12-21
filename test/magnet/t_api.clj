@@ -5,30 +5,22 @@
             [magnet.saioak :refer [sortu-saioak]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
-            [magnet.lagun :refer [db-hasieratu db-garbitu]]
-            [magnet.konfiglehenetsia :as lkonfig]))
+            [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
-(def test-konfig
-  (assoc lkonfig/konfig
-    :portua 3001
-    :db-kon {:classname "org.h2.Driver"
-             :subprotocol "h2"
-             :subname "jdbc:h2:test"}    
-    :partekatu false
-    :kokapenak {:epub-karpeta "test-resources/private/torrent/"
-                :torrent-karpeta "test-resources/private/torrent/"
-                :irudi-karpeta "test-resources/public/img/"
-                :irudi-url "http://localhost:3001/img/"}))
+(def konfig
+  (let [oinarri-konfig (eval (read-string (slurp "konfig.clj")))
+        proba-konfig (eval (read-string (slurp "proba-konfig.clj")))]
+    (merge oinarri-konfig proba-konfig)))
 
-(defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig (sortu-saioak))))
+(defonce zerbitzaria (sortu konfig (handler-sortu konfig (sortu-saioak))))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
-                    (do (db-hasieratu (:db-kon test-konfig))
+                    (do (db-hasieratu (:db-kon konfig))
                         (hasi zerbitzaria))
                     :after
                     (do (geratu zerbitzaria)
-                        (db-garbitu (:db-kon test-konfig)))))
+                        (db-garbitu (:db-kon konfig)))))
 
 (defn api-deia
   "API deia burutu eta erantzuna jaso eskatzen bada"
@@ -38,7 +30,7 @@
      (api-deia metodoa helbidea erantzun-mota {}))  
   ([metodoa helbidea erantzun-mota gorputza]
      (let [metodoak {:get http/get :post http/post :put http/put :delete http/delete}
-           ema @((metodoa metodoak) (str "http://localhost:3001/v1/" helbidea) {:body (json/generate-string gorputza)})]
+           ema @((metodoa metodoak) (str (:proba-url konfig) helbidea) {:body (json/generate-string gorputza)})]
        (condp = erantzun-mota
          :json
          (json/parse-string (:body ema) true)

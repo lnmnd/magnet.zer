@@ -5,6 +5,9 @@
 ## Dependentziak
 JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 
+## Konfigurazioa
+Zerbitzaria martxan jartzean eta probak burutzean konfigurazioa konfig.clj eta proba-konfig.clj fitxategietatik irakurtzen dira, hurrenez hurren. Horiek ez daude eta ez dira bertsio kontrolean sartu behar, beraz, norberak sortu behar ditu. Horretarako konfig.adb.clj eta proba-konfig.adb.clj erabili daitezke eredu gisa.
+
 ## Zerbitzaria martxa jarri
 
 ### REPL bidez

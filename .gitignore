@@ -19,3 +19,5 @@ pom.xml.asc
 /test-resources/private/torrent/*.epub
 /test-resources/private/torrent/*.torrent
 /test-resources/public/img/*.jpg
+/konfig.clj
+/proba-konfig.clj
