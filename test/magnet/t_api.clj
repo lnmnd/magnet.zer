@@ -5,20 +5,20 @@
             [magnet.saioak :refer [sortu-saioak]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
-            [magnet.lagun :refer [db-hasieratu db-garbitu]]
-            [magnet.konfiglehenetsia :as lkonfig]))
+            [magnet.lagun :refer [db-hasieratu db-garbitu]]))
 
 (def test-konfig
-  (assoc lkonfig/konfig
-    :portua 3001
-    :db-kon {:classname "org.h2.Driver"
-             :subprotocol "h2"
-             :subname "jdbc:h2:test"}    
-    :partekatu false
-    :kokapenak {:epub-karpeta "test-resources/private/torrent/"
-                :torrent-karpeta "test-resources/private/torrent/"
-                :irudi-karpeta "test-resources/public/img/"
-                :irudi-url "http://localhost:3001/img/"}))
+  (let [konfig (eval (read-string (slurp "konfig.clj")))]
+    (assoc konfig
+      :portua 3001
+      :db-kon {:classname "org.h2.Driver"
+               :subprotocol "h2"
+               :subname "jdbc:h2:test"}    
+      :partekatu false
+      :kokapenak {:epub-karpeta "test-resources/private/torrent/"
+                  :torrent-karpeta "test-resources/private/torrent/"
+                  :irudi-karpeta "test-resources/public/img/"
+                  :irudi-url "http://localhost:3001/img/"})))
 
 (defonce zerbitzaria (sortu test-konfig (handler-sortu test-konfig (sortu-saioak))))
 
