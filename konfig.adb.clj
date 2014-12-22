@@ -10,7 +10,8 @@
  :saio-iraungitze-denbora (* 60 60) ; 1 h
  ;; Torrentak partekatu nahi diren edo ez.
  :partekatu true
- :kokapenak {:epub-karpeta "resources/private/torrent/"
+ :kokapenak {:publikoa "resources/public"
+             :epub-karpeta "resources/private/torrent/"
              :torrent-karpeta "resources/private/torrent/"
              :irudi-karpeta "resources/public/img/"
              :irudi-url "http://localhost:3000/img/"}   

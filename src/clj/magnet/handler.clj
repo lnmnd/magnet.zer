@@ -166,7 +166,7 @@
     (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "urteak" hainbat/urteak)
     (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "hizkuntzak" hainbat/hizkuntzak)
     
-    (route/resources "/")
+    (route/files "/" {:root (:publikoa (:kokapenak konfig))})
     (route/not-found "Not Found")))
 
 (defn handler-sortu [konfig saioak-osagaia]

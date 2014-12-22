@@ -3,7 +3,8 @@
           :subprotocol "h2"
           :subname "jdbc:h2:test"}    
  :partekatu false
- :kokapenak {:epub-karpeta "test-resources/private/torrent/"
+ :kokapenak {:publikoa "test-resources/public"
+             :epub-karpeta "test-resources/private/torrent/"
              :torrent-karpeta "test-resources/private/torrent/"
              :irudi-karpeta "test-resources/public/img/"
              :irudi-url "http://localhost:3001/img/"}
