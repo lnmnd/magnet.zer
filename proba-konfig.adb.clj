@@ -3,10 +3,10 @@
           :subprotocol "h2"
           :subname "jdbc:h2:test"}    
  :partekatu false
- :kokapenak {:publikoa "test-resources/public"
-             :epub-karpeta "test-resources/private/torrent/"
-             :torrent-karpeta "test-resources/private/torrent/"
-             :irudi-karpeta "test-resources/public/img/"
+ :kokapenak {:publikoa "test-files/public"
+             :epub-karpeta "test-files/private/torrent/"
+             :torrent-karpeta "test-files/private/torrent/"
+             :irudi-karpeta "test-files/public/img/"
              :irudi-url "http://localhost:3001/img/"}
  ;; Probetan bakarrik erabiltzen da
  :proba-url "http://localhost:3001/v1/"}
