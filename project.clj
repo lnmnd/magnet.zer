@@ -1,4 +1,4 @@
-(defproject magnet "0.1.0-SNAPSHOT"
+(defproject magnet "1.0.0-SNAPSHOT"
   :description "Magnet loturak: zerbitzaria"
   :url "https://github.com/lnmnd/magnet.zer"
   :dependencies [[org.clojure/clojure "1.6.0"]
@@ -26,5 +26,6 @@
          :repl-options {:init-ns magnet.user}
          :ring {:handler magnet.handler/app}
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
-                 :src-linenum-anchor-prefix "L"}}
+                 :src-linenum-anchor-prefix "L"
+                 :project {:name "Magnet", :version "1.0.0", :description "Magnet loturak: zerbitzaria"}}}
    :uberjar {:aot :all}})

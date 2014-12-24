@@ -19,7 +19,7 @@ REPL irekita:
 
 edo banaketako jar fitxategia edukiz gero:
 
-> $ java -jar magnet-0.1.0-standalone.jar hasieratu
+> $ java -jar magnet-1.0.0-standalone.jar hasieratu
 
 ## Zerbitzaria martxa jarri
 ### REPL bidez
@@ -81,4 +81,4 @@ doc katalogoan dokumentazioa sortzen du.
 *target* katalogoan 2 JAR egongo dira, *standalone* duenak dependentzi guztiak ditu.
 
 Exekutatzeko:
-> $ java -jar target/magnet-0.1.0-standalone.jar
+> $ java -jar target/magnet-1.0.0-standalone.jar
