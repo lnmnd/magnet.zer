@@ -30,7 +30,7 @@
     (check-password pasahitza pasahitz_hash)
     false))
 
-(defn sortu-saioak
+(defn saioak-sortu
   "Saioak sortzen du. Gainontzeko funtzioek datu hau erabiltzen dute."
   []
   (atom {}))

@@ -2,7 +2,7 @@
   (:use midje.sweet)
   (:require [org.httpkit.client :as http]
             [clj-json.core :as json]
-            [magnet.saioak :refer [sortu-saioak]]
+            [magnet.saioak :refer [saioak-sortu]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.zer :refer [sortu hasi geratu]]
             [magnet.lagun :refer [db-hasieratu db-garbitu]]))
@@ -12,7 +12,7 @@
         proba-konfig (eval (read-string (slurp "proba-konfig.clj")))]
     (merge oinarri-konfig proba-konfig)))
 
-(defonce zerbitzaria (sortu konfig (handler-sortu konfig (sortu-saioak))))
+(defonce zerbitzaria (sortu konfig (handler-sortu konfig (saioak-sortu))))
 
 ; Proba guztietarako testuingurua ezartzeko
 (background (before :facts
