@@ -8,6 +8,14 @@ JDK 7 edo berriagoa, *Java NIO* bertsio horretan gehitu baitzen.
 ## Konfigurazioa
 Zerbitzaria martxan jartzean eta probak burutzean konfigurazioa konfig.clj eta proba-konfig.clj fitxategietatik irakurtzen dira, hurrenez hurren. Horiek ez daude eta ez dira bertsio kontrolean sartu behar, beraz, norberak sortu behar ditu. Horretarako konfig.adb.clj eta proba-konfig.adb.clj erabili daitezke eredu gisa.
 
+Bestalde, datu-basea hasieratu behar da. Horretarako "hasieratu" argumentua pasa behar zaio aplikazioari:
+
+> $ lein run hasieratu
+
+edo
+
+> $ java -jar magnet.jar hasieratu
+
 ## Zerbitzaria martxa jarri
 
 ### REPL bidez
