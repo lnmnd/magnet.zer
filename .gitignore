@@ -13,9 +13,9 @@ pom.xml.asc
 /jdbc:h2:magnet.trace.db
 /jdbc:h2:test.h2.db
 /jdbc:h2:test.trace.db
-/resources/private/torrent/*.epub
-/resources/private/torrent/*.torrent
-/resources/public/img/*.jpg
+/files/private/torrent/*.epub
+/files/private/torrent/*.torrent
+/files/public/img/*.jpg
 /test-resources/private/torrent/*.epub
 /test-resources/private/torrent/*.torrent
 /test-resources/public/img/*.jpg

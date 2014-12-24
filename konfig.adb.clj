@@ -10,10 +10,10 @@
  :saio-iraungitze-denbora (* 60 60) ; 1 h
  ;; Torrentak partekatu nahi diren edo ez.
  :partekatu true
- :kokapenak {:publikoa "resources/public"
-             :epub-karpeta "resources/private/torrent/"
-             :torrent-karpeta "resources/private/torrent/"
-             :irudi-karpeta "resources/public/img/"
+ :kokapenak {:publikoa "files/public"
+             :epub-karpeta "files/private/torrent/"
+             :torrent-karpeta "files/private/torrent/"
+             :irudi-karpeta "files/public/img/"
              :irudi-url "http://localhost:3000/img/"}   
  ;; Trackerren zerrenda.
  ;; Lehenengoa torrentaren tracker gisa ezarriko da.
