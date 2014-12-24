@@ -38,13 +38,13 @@ Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
 Beste zerbitzari bat sortzea posible da konfigurazio ezberdina erabiliz:
 > => (def k-3001 (assoc konfig :portua 3001))
 
-> => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001 (sortu-saioak))))))
+> => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001 (sortu-saioak))))
 
 > => (z/hasi zer-3001) ; 3001 portuan hasiko da
 
 > => (def k-ccc (assoc konfig :trackerrak ["udp://tracker.ccc.de:80"]))
 
-> => (def zer-ccc (z/sortu k-ccc (handler-sortu k-ccc (sortu-saioak))))))
+> => (def zer-ccc (z/sortu k-ccc (handler-sortu k-ccc (sortu-saioak))))
 
 > => (z/hasi zer-ccc) ; CCC trackerra bakarrik erabiliko du
 

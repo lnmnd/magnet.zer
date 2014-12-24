@@ -4,9 +4,10 @@
             [magnet.saioak :refer [sortu-saioak]]
             [magnet.handler :refer [handler-sortu]]))
 
+(def konfig (eval (read-string (slurp "konfig.clj"))))
+
 (defn sortu []
-  (let [konfig (eval (read-string (slurp "konfig.clj")))]
-    (z/sortu konfig (handler-sortu konfig (sortu-saioak)))))
+  (z/sortu konfig (handler-sortu konfig (sortu-saioak))))
 
 (def zer (sortu))
 
