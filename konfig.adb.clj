@@ -3,7 +3,7 @@
  :db-kon
  {:classname "org.h2.Driver"
   :subprotocol "h2"
-  :subname "jdbc:h2:magnet"}
+  :subname "magnet"}
  ;; Bilduma batean agertuko diren elementu kopurua.
  :muga 25
  ;; Saioaren iraungitze denbora, segundutan.

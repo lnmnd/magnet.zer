@@ -9,10 +9,10 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 /doc
-/jdbc:h2:magnet.h2.db
-/jdbc:h2:magnet.trace.db
-/jdbc:h2:test.h2.db
-/jdbc:h2:test.trace.db
+/magnet.h2.db
+/magnet.trace.db
+/test.h2.db
+/test.trace.db
 /files/private/torrent/*.epub
 /files/private/torrent/*.torrent
 /files/public/img/*.jpg

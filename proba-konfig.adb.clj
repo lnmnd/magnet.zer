@@ -1,7 +1,7 @@
 {:portua 3001
  :db-kon {:classname "org.h2.Driver"
           :subprotocol "h2"
-          :subname "jdbc:h2:test"}    
+          :subname "test"}    
  :partekatu false
  :kokapenak {:publikoa "test-files/public"
              :epub-karpeta "test-files/private/torrent/"
