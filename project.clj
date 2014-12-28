@@ -1,4 +1,4 @@
-(defproject magnet "1.0.0-SNAPSHOT"
+(defproject magnet "1.0.0"
   :description "Magnet loturak: zerbitzaria"
   :url "https://github.com/lnmnd/magnet.zer"
   :dependencies [[org.clojure/clojure "1.6.0"]
