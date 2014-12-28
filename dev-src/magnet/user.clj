@@ -1,4 +1,5 @@
-(ns magnet.user
+(ns ^{:doc "REPL abiaraztean eskura egongo diren funtzio laguntzaileak."}
+  magnet.user
   (:require [midje.repl :refer :all]
             [magnet.zer :as z]
             [magnet.saioak :refer [saioak-sortu]]

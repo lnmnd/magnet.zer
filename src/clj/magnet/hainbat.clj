@@ -1,10 +1,11 @@
-(ns magnet.hainbat
+(ns ^{:doc "Domeinua: hainbat datu motekin lotutako erantzunak."}
+  magnet.hainbat
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
             [magnet.lagun :refer [orriztatu]]))
 
 (defn- hainbat-fun [[izena eremua taula]]
-  `(defn ~izena [desp# muga# db-kon#]
+  `(defn ~izena ~(str izena "-k itzultzen ditu.") [desp# muga# db-kon#]
      (sql/with-db-connection [kon# db-kon#]
        (let [{guztira# :guztira} (first (sql/query kon# [(str "select count(distinct " ~eremua ") as guztira from " ~taula)]))
              xs# (sql/query kon# (orriztatu [(str "select distinct " ~eremua " as x from " ~taula)] desp# muga#))

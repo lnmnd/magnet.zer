@@ -1,11 +1,14 @@
-(ns magnet.handler.main
+(ns ^{:doc "Abiapuntua."}
+  magnet.handler.main
   (:require [magnet.saioak :refer [saioak-sortu]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.lagun :refer [db-hasieratu]]
             [magnet.zer :refer [sortu hasi]])
   (:gen-class))
 
-(defn hasieratu [konfig]
+(defn hasieratu
+  "Datu-basea hasieratzen du."
+  [konfig]
   (db-hasieratu (:db-kon konfig)))
 
 (defn -main [& [kom]]

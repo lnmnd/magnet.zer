@@ -1,4 +1,5 @@
-(ns magnet.erabiltzaileak
+(ns ^{:doc "Domeinua: erabiltzaileak."}
+  magnet.erabiltzaileak
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [encrypt gensalt]]
             [magnet.saioak :refer [lortu-saioa]]
@@ -40,7 +41,9 @@
 (defn- erabiltzaileak [db-kon idak]
   (pmap #(lortu-erabiltzailea db-kon (:id %)) idak))
 
-(defn lortu-bilduma [desplazamendua muga db-kon]
+(defn lortu-bilduma
+  "Erabiltzaileen bilduma lortzen du."
+  [desplazamendua muga db-kon]
   (sql/with-db-connection [kon db-kon]
     (let [{guztira :guztira} (first (sql/query kon ["select count(*) as guztira from erabiltzaileak"]))
           erabiltzaileak (sql/query kon (orriztatu ["select erabiltzailea, izena, deskribapena, sortze_data from erabiltzaileak"] desplazamendua muga))]
@@ -49,13 +52,17 @@
             :guztira guztira
             :erabiltzaileak erabiltzaileak}])))
 
-(defn lortu [db-kon erabiltzailea]
+(defn lortu
+  "Erabiltzailea lortzen du."
+  [db-kon erabiltzailea]
   (sql/with-db-connection [kon db-kon]
     (if-let [era (lortu-erabiltzailea kon erabiltzailea)]
       [:ok {:erabiltzailea era}]
       [:ez-dago])))
 
-(defn gehitu! [db-kon edukia]
+(defn gehitu!
+  "Erabiltzailea gehitzen du."
+  [db-kon edukia]
   (let [era (assoc edukia :sortze_data (oraingo-data))]
     (if (baliozko-erabiltzailea? era)
       (sql/with-db-transaction [kon db-kon]
@@ -65,7 +72,9 @@
               [:ok {:erabiltzailea (dissoc era :pasahitza)}])))
       [:ezin-prozesatu])))
 
-(defn aldatu! [saio-osa db-kon token erabiltzailea edukia]
+(defn aldatu!
+  "Erabiltzailea aldatzen du."
+  [saio-osa db-kon token erabiltzailea edukia]
   (if (baliozko-erabiltzailea? (assoc edukia :erabiltzailea erabiltzailea))
     (sql/with-db-transaction [kon db-kon]
       (if (badago? kon erabiltzailea)

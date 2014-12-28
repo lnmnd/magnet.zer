@@ -1,11 +1,12 @@
-(ns magnet.lagun
+(ns ^{:doc "Funtzio laguntzaileak."}
+  magnet.lagun
   (:require [clojure.java.jdbc :as sql]
             [clj-time.core :as time]
             [clj-time.coerce :as coerce]
             [clj-time.format :as time-format]))
 
 (defn db-hasieratu
-  "Datubasea hasieratzen du"
+  "Datu-basea hasieratzen du"
   [db-kon]
   (sql/db-do-commands
    db-kon
@@ -62,7 +63,7 @@
                            ~@aginduak#)))
 
 (defn db-garbitu [db-kon]
-  "Taulak ezabatu"
+  "Datu-baseko taulak ezabatzen ditu."
   (ezabatu-taulak db-kon :erabiltzaileak :liburuak :liburu_egileak :liburu_etiketak :iruzkinak :iruzkin_erantzunak :gogokoak))
 
 (defn oraingo-data

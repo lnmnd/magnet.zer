@@ -1,4 +1,5 @@
-(ns magnet.iruzkinak
+(ns ^{:doc "Domeinua: iruzkinak."}
+  magnet.iruzkinak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
             [magnet.lagun :refer [oraingo-data orriztatu]]

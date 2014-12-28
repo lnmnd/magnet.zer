@@ -1,4 +1,5 @@
-(ns magnet.torrent
+(ns ^{:doc "Torrent fitxategiekin lan egiteko funtzioak."}
+  magnet.torrent
   (:require [clojure.java.shell :refer [sh]])
   (:import [java.io File])
   (:import [com.magnet Torrent]))

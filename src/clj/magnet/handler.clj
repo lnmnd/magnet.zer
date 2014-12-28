@@ -1,4 +1,5 @@
-(ns magnet.handler
+(ns ^{:doc "Bideak, APIaren sarrera puntuak."}
+  magnet.handler
   (:require [compojure.core :refer :all]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -17,13 +18,17 @@
    :headers {"Content-Type" "application/json"}
    :body (json/generate-string datuak)})
 
-(defn- egoera-zenbakia [egoera]
+(defn- egoera-zenbakia
+  "Egoerari dagokion zenbakia itzultzen du."
+  [egoera]
   (egoera {:ok 200
            :baimenik-ez 401
            :ez-dago 404
            :ezin-prozesatu 422}))
 
-(defn- egoera-gorputza [egoera]
+(defn- egoera-gorputza
+  "Egoerari dagokion gorputza itzultzen du."
+  [egoera]
   (egoera {:baimenik-ez
            {:mezua "Baimenik ez"
             :deskribapena "Baimenik ez, kautotzea beharrezkoa"}
@@ -42,6 +47,7 @@
          (json-erantzuna (if datuak# datuak# (egoera-gorputza egoera#)) (egoera-zenbakia egoera#)))))
 
 (defmacro ^:private hainbat-erantzuna
+  "Hainbat motako API erantzuna osatzen du."
   [muga db-kon hel fun]
   `(api-erantzuna GET ~hel eskaera#
                   (let [qp# (:query-params eskaera#)]
@@ -58,7 +64,9 @@
                  0)]
      (~fn desp# (if (> muga# 0) muga# 0) ~@param)))
 
-(defn bideak-sortu [konfig saioak-osagaia]
+(defn bideak-sortu
+  "Konfigurazioa eta saioak emanda bideak sortzen ditu."
+  [konfig saioak-osagaia]
   (routes
     (api-erantzuna GET "erabiltzaileak" eskaera
                    (let [{query-params :query-params} eskaera]
@@ -169,7 +177,10 @@
     (route/files "/" {:root (:publikoa (:kokapenak konfig))})
     (route/not-found "Not Found")))
 
-(defn handler-sortu [konfig saioak-osagaia]
+(defn handler-sortu
+  "Konfigurazioa eta saioak emanda handler sortzen du.
+   CORS gaitzen du."
+  [konfig saioak-osagaia]
   (-> (bideak-sortu konfig saioak-osagaia)
       handler/site
       (wrap-cors

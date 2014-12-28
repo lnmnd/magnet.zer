@@ -1,4 +1,5 @@
-(ns magnet.zer
+(ns ^{:doc "Zerbitzariaren kudeaketa."}
+  magnet.zer
   (:require  [org.httpkit.server :refer [run-server]]
              [magnet.torrent :as torrent]))
 

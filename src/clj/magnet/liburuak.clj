@@ -1,4 +1,5 @@
-(ns magnet.liburuak
+(ns ^{:doc "Domeinua: liburuak."}
+  magnet.liburuak
   (:require [clojure.string :as str]
             [clojure.java.jdbc :as sql]
             [clojure.data.codec.base64 :as b64]
@@ -76,7 +77,9 @@
                            ["id=?" id])
               {:liburua (assoc edukia :id id :magnet magnet :azala azal-url)}))))))
 
-(defn liburua-aldatu! [db-kon id edukia]
+(defn liburua-aldatu!
+  "id duen liburua aldatzen du."
+  [db-kon id edukia]
   (let [argitaletxea (if (nil? (:argitaletxea edukia))
                         "" (:argitaletxea edukia))
         generoa (if (nil? (:generoa edukia))
@@ -93,7 +96,9 @@
                    ["id=?" id])
       (lortu-liburua kon id))))
 
-(defn gehitu! [saio-osa db-kon partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
+(defn gehitu!
+  "Liburua gehitzen du."
+  [saio-osa db-kon partekatu kokapenak torrent-gehitze-programa trackerrak token edukia]
   (if (baliozko-liburu-eskaera edukia)
     (if-let [{erabiltzailea :erabiltzailea} (lortu-saioa saio-osa token)]
       [:ok (liburua-gehitu! db-kon partekatu kokapenak torrent-gehitze-programa trackerrak (assoc edukia :erabiltzailea erabiltzailea))]

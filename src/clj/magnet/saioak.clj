@@ -1,4 +1,5 @@
-(ns magnet.saioak
+(ns ^{:doc "Domeinua: saioak."}
+  magnet.saioak
   (:require [clojure.java.jdbc :as sql]
             [clj-bcrypt-wrapper.core :refer [check-password]]
             [magnet.lagun :refer [oraingo-data segunduak-gehitu]]))
