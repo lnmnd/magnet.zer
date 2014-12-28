@@ -23,6 +23,9 @@ edo banaketako jar fitxategia edukiz gero:
 
 ## Zerbitzaria martxa jarri
 ### REPL bidez
+REPL abiarazi
+> $ lein repl
+
 Hasteko:
 > => (hasi)
 
@@ -36,7 +39,7 @@ Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
 
 > => (z/geratu zer)
 
-Konfigurazioa konfig aldagaian gordetzen denez, beste zerbitzari bat sortzea posible da konfig aldatuz gero:
+Konfigurazioa konfig aldagaian gordetzen denez, konfigurazio desberdina duen beste zerbitzari bat sortzea posible da:
 > => (def k-3001 (assoc konfig :portua 3001))
 
 > => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001 (saioak-sortu))))
@@ -78,7 +81,7 @@ doc katalogoan dokumentazioa sortzen du.
 ## Banaketa prestatu
 > $ lein ring uberjar
 
-*target* katalogoan 2 JAR egongo dira, *standalone* duenak dependentzi guztiak ditu.
+*target* katalogoan 2 JAR egongo dira, *standalone*-k dependentzi guztiak ditu.
 
 Exekutatzeko:
 > $ java -jar target/magnet-1.0.0-standalone.jar
