@@ -6,7 +6,7 @@
   :subname "magnet"}
  ;; Bilduma batean agertuko diren elementu kopurua.
  :muga 25
- ;; Saioaren iraungitze denbora, segundutan.
+ ;; Saioaren iraungitze denbora, segundotan.
  :saio-iraungitze-denbora (* 60 60) ; 1 h
  ;; Torrentak partekatu nahi diren edo ez.
  :partekatu true
