@@ -79,7 +79,7 @@ Proba guztiak exekutatzea nahiko makala da.
 doc katalogoan dokumentazioa sortzen du.
 
 ## Banaketa prestatu
-> $ lein ring uberjar
+> $ lein uberjar
 
 *target* katalogoan 2 JAR egongo dira, *standalone*-k dependentzi guztiak ditu.
 
