@@ -13,7 +13,6 @@
                  [http-kit "2.1.16"]
                  [org.clojure/data.codec "0.1.0"]]
   :plugins [[lein-midje "3.1.3"]
-            [lein-ring "0.8.11"]
             [codox "0.8.10"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
@@ -24,7 +23,6 @@
                         [midje "1.6.3"]]
          :source-paths ["src/clj" "dev-src"]
          :repl-options {:init-ns magnet.user}
-         :ring {:handler magnet.handler/app}
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
                  :src-linenum-anchor-prefix "L"
                  :project {:name "Magnet", :version "1.0.0", :description "Magnet loturak: zerbitzaria"}}}
