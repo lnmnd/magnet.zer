@@ -6,12 +6,14 @@
             [magnet.zer :as z])
   (:gen-class))
 
-(def konfig (eval (read-string (slurp "konfig.clj"))))
+(def konfig nil)
+(def zer nil)
 
 (defn sortu []
-  (z/sortu konfig (handler-sortu konfig (saioak-sortu))))
-
-(def zer (sortu))
+  (alter-var-root #'konfig
+                  (constantly (eval (read-string (slurp "konfig.clj")))))
+  (alter-var-root #'zer
+                  (constantly (z/sortu konfig (handler-sortu konfig (saioak-sortu))))))
 
 (defn hasi []
   (z/hasi zer))
@@ -19,9 +21,10 @@
 (defn geratu []
   (z/geratu zer))
 
-(defn berrezarri []
+(defn berrabiarazi []
   (geratu)
-  (alter-var-root #'zer (constantly (sortu))))
+  (sortu)
+  (hasi))
 
 (defn hasieratu
   "Datu-basea hasieratzen du."
