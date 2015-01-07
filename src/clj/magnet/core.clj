@@ -3,8 +3,25 @@
   (:require [magnet.saioak :refer [saioak-sortu]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.lagun :refer [db-hasieratu]]
-            [magnet.zer :refer [sortu hasi]])
+            [magnet.zer :as z])
   (:gen-class))
+
+(def konfig (eval (read-string (slurp "konfig.clj"))))
+
+(defn sortu []
+  (z/sortu konfig (handler-sortu konfig (saioak-sortu))))
+
+(def zer (sortu))
+
+(defn hasi []
+  (z/hasi zer))
+
+(defn geratu []
+  (z/geratu zer))
+
+(defn berrezarri []
+  (geratu)
+  (alter-var-root #'zer (constantly (sortu))))
 
 (defn hasieratu
   "Datu-basea hasieratzen du."
@@ -12,7 +29,7 @@
   (db-hasieratu (:db-kon konfig)))
 
 (defn -main [& [kom]]
-  (let [k (eval (read-string (slurp "konfig.clj")))]
-      (if (= kom "hasieratu")
-        (hasieratu k)
-        (hasi (sortu k (handler-sortu k (saioak-sortu)))))))
+  (if (= kom "hasieratu")
+    (hasieratu konfig)
+    (do (sortu)
+        (hasi))))

@@ -21,8 +21,6 @@
   :profiles
   {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]
                         [midje "1.6.3"]]
-         :source-paths ["src/clj" "dev-src"]
-         :repl-options {:init-ns magnet.user}
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
                  :src-linenum-anchor-prefix "L"
                  :project {:name "Magnet", :version "1.0.0", :description "Magnet loturak: zerbitzaria"}}}
