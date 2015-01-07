@@ -26,20 +26,19 @@ edo banaketako jar fitxategia edukiz gero:
 REPL abiarazi
 > $ lein repl
 
-Hasteko:
+Lehenik zerbitzaria sortu:
+> => (sortu)
+
+Eta gero hasi:
 > => (hasi)
 
 Geratzeko:
 > => (geratu)
 
-Zerbitzaria zer aldagaian gordeta dago, norberak sortu dezake:
-> => (def zer (z/sortu konfig (handler-sortu konfig (saioak-sortu)))
+Edo Berrabiarazi nahi bada:
+> => (berrabiarazi)
 
-> => (z/hasi zer)
-
-> => (z/geratu zer)
-
-Konfigurazioa konfig aldagaian gordetzen denez, konfigurazio desberdina duen beste zerbitzari bat sortzea posible da:
+konfig aldagaian konfigurazioa gordetzen da eta zer aldagaian zerbitzaria. Hori jakinda konfigurazio desberdina duen beste zerbitzari bat sortzea posible da:
 > => (def k-3001 (assoc konfig :portua 3001))
 
 > => (def zer-3001 (z/sortu k-3001 (handler-sortu k-3001 (saioak-sortu))))
