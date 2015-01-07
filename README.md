@@ -1,4 +1,4 @@
-# Magnet loturak: zerbitzariak
+# Magnet loturak: zerbitzaria
 
 [![Build Status](https://travis-ci.org/lnmnd/magnet.zer.svg?branch=master)](https://travis-ci.org/lnmnd/magnet.zer)
 
