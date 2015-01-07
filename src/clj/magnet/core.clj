@@ -1,5 +1,5 @@
 (ns ^{:doc "Abiapuntua."}
-  magnet.handler.main
+  magnet.core
   (:require [magnet.saioak :refer [saioak-sortu]]
             [magnet.handler :refer [handler-sortu]]
             [magnet.lagun :refer [db-hasieratu]]

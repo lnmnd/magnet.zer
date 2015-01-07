@@ -17,7 +17,7 @@
             [codox "0.8.10"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
-  :main magnet.handler.main
+  :main magnet.core
   
   :profiles
   {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]
