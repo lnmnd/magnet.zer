@@ -4,6 +4,7 @@
             [clojure.java.jdbc :as sql]
             [clojure.data.codec.base64 :as b64]
             [clojure.java.io :as io]
+            [sanitize-filename.core :as sf]
             [magnet.lagun :refer [oraingo-data orriztatu]]
             [magnet.saioak :refer [lortu-saioa]]
             [magnet.torrent :as torrent]))
@@ -52,8 +53,9 @@
                         (:sinopsia edukia) (:argitaletxea edukia) (:urtea edukia) (:generoa edukia)
                         "aldatuko-da" (:data edukia)])
           (let [id (:id (first (sql/query kon "select identity() as id")))
-                epub-fitx (str (:epub-karpeta kokapenak) id ".epub")
-                torrent-fitx (str (:torrent-karpeta kokapenak) id ".epub.torrent")                
+                izena (str id "-" (sf/sanitize (:titulua edukia)))
+                epub-fitx (str (:epub-karpeta kokapenak) izena ".epub")
+                torrent-fitx (str (:torrent-karpeta kokapenak) izena ".epub.torrent")                
                 azal-fitx (str (:irudi-karpeta kokapenak) id ".jpg")
                 azal-url (str (:irudi-url kokapenak) id ".jpg")]
             (doseq [egi (:egileak edukia)]
