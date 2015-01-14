@@ -86,14 +86,14 @@
                          erabiltzailea (:erabiltzailea (:params eskaera))]
                      (erak/ezabatu! saioak-osagaia (:db-kon konfig) token erabiltzailea)))
 
-                                        ; saioak
+    ;; saioak
     (api-erantzuna POST "saioak" eskaera
                    (let [edukia (json/parse-string (slurp (:body eskaera)) true)]
                      (saioak/hasi! saioak-osagaia (:db-kon konfig) (:saio-iraungitze-denbora konfig) (:erabiltzailea edukia) (:pasahitza edukia))))
     (api-erantzuna DELETE "saioak/:token" {{token :token} :params}
                    (saioak/amaitu! saioak-osagaia token))
 
-                                        ; liburuak
+    ;; liburuak
     (api-erantzuna GET "liburuak" eskaera
                    (let [{query-params :query-params} eskaera]
                      (orriztatu (:muga konfig) liburuak/lortu-bilduma query-params (:db-kon konfig))))
@@ -117,7 +117,7 @@
                          id (:id (:params eskaera))]
                      (liburuak/ezabatu! saioak-osagaia (:db-kon konfig) token id)))  
 
-                                        ; iruzkinak
+    ;; iruzkinak
     (api-erantzuna POST "liburuak/:id/iruzkinak" eskaera
                    (let [token (:token (:params eskaera))
                          id (:id (:params eskaera))
@@ -147,7 +147,7 @@
                          {query-params :query-params} eskaera]
                      (orriztatu (:muga konfig) iruzkinak/lortu-erabiltzailearenak query-params (:db-kon konfig) erabiltzailea)))    
 
-                                        ; gogokoak
+    ;; gogokoak
     (api-erantzuna POST "erabiltzaileak/:erabiltzailea/gogoko_liburuak" eskaera
                    (let [token (:token (:params eskaera))
                          {id :id} (json/parse-string (slurp (:body eskaera)) true)]
@@ -165,7 +165,7 @@
                          {query-params :query-params} eskaera]
                      (orriztatu (:muga konfig) erak/gogoko-erabiltzaileak query-params (:db-kon konfig) id)))
 
-                                        ; hainbat
+    ;; hainbat
     (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "tituluak" hainbat/tituluak)
     (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "egileak" hainbat/egileak)
     (hainbat-erantzuna (:muga konfig) (:db-kon konfig) "argitaletxeak"  hainbat/argitaletxeak)
