@@ -33,6 +33,6 @@
 
 (defn -main [& [kom]]
   (if (= kom "hasieratu")
-    (hasieratu konfig)
+    (hasieratu (eval (read-string (slurp "konfig.clj"))))
     (do (sortu)
         (hasi))))
