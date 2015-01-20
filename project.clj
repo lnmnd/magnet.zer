@@ -25,5 +25,6 @@
          :codox {:src-dir-uri "http://github.com/lnmnd/magnet.zer/blob/master/"
                  :src-linenum-anchor-prefix "L"
                  :project {:name "Magnet", :version "1.0.0", :description "Magnet loturak: zerbitzaria"}}}
-   :uberjar {:aot :all
+   :uberjar {:uberjar-name "magnet.jar"
+             :aot :all
              :omit-source true}})

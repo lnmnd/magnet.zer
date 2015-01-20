@@ -19,7 +19,7 @@ REPL irekita:
 
 edo banaketako jar fitxategia edukiz gero:
 
-> $ java -jar magnet-1.0.0-standalone.jar hasieratu
+> $ java -jar magnet.jar hasieratu
 
 ## Zerbitzaria martxa jarri
 ### REPL bidez
@@ -75,12 +75,12 @@ Proba guztiak exekutatzea nahiko makala da.
 ## Kodearen dokumentazioa
 > $ lein doc
 
-doc katalogoan dokumentazioa sortzen du.
+doc karpetan dokumentazioa sortzen du.
 
 ## Banaketa prestatu
 > $ lein uberjar
 
-*target* katalogoan 2 JAR egongo dira, *standalone*-k dependentzi guztiak ditu.
+*target* karpetaren barnean magnet.jar izeneko JAR fitxategia sortuko dira, dependentzi guztiak dituena.
 
 Exekutatzeko:
-> $ java -jar target/magnet-1.0.0-standalone.jar
+> $ java -jar target/magnet.jar
